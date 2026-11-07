@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --surface: #18181b;
+  --surface-hover: #27272a;
+  --border: #27272a;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --radius: 8px;
+}
+
+/* Scoped preview container variables */
+.fetch-preview {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --surface: #18181b;
+  --surface-hover: #27272a;
+  --border: #27272a;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --radius: 8px;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+}
+
