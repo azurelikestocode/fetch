@@ -1,22 +1,20 @@
 import React from "react";
 import { Navbar } from "../components/landing/navbar";
-import { Hero } from "../components/landing/hero";
-import { Features } from "../components/landing/features";
-import { ShowcaseGrid } from "../components/landing/showcase-grid";
-import { Quickstart } from "../components/landing/quickstart";
-import { Footer } from "../components/landing/footer";
+import { EditorialHero } from "../components/landing/editorial-hero";
+import { EngineeringEthos } from "../components/landing/engineering-ethos";
+import { CuratedShowcase } from "../components/landing/curated-showcase";
+import { EditorialFooter } from "../components/landing/editorial-footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#fafafa] selection:bg-indigo-500/20 selection:text-indigo-300">
+    <div className="min-h-screen bg-[#09090b] text-[#fafafa] selection:bg-zinc-800 selection:text-white">
       <Navbar />
       <main>
-        <Hero />
-        <Features />
-        <ShowcaseGrid />
-        <Quickstart />
+        <EditorialHero />
+        <EngineeringEthos />
+        <CuratedShowcase />
       </main>
-      <Footer />
+      <EditorialFooter />
     </div>
   );
 }

@@ -1,63 +1,57 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Github, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, ArrowRight, Github } from "lucide-react";
 
 export function Navbar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-40 border-b border-zinc-800/80 bg-[#09090b]/90 backdrop-blur-md">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
-        <a href="#" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/30 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-4 h-4" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-7 h-7 rounded-xs bg-[#fafafa] flex items-center justify-center text-[#09090b] shadow-xs group-hover:scale-105 transition-transform">
+            <Sparkles className="w-3.5 h-3.5" />
           </div>
-          <span className="font-bold text-lg tracking-tight text-white">Fetch</span>
-          <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded-sm">
-            alpha
+          <span className="font-semibold text-base tracking-tight text-[#fafafa]">Fetch</span>
+          <span className="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.2 rounded-xs">
+            v2.0
           </span>
-        </a>
+        </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
-          <a href="#playground" className="hover:text-white transition-colors">
-            Playground
-          </a>
-          <a href="#features" className="hover:text-white transition-colors">
-            Features
-          </a>
-          <a href="#showcase" className="hover:text-white transition-colors">
+        <nav className="hidden md:flex items-center gap-8 text-xs font-mono text-zinc-400">
+          <Link href="/components" className="hover:text-white transition-colors">
             Components
+          </Link>
+          <a href="#philosophy" className="hover:text-white transition-colors">
+            Philosophy
           </a>
-          <a href="#quickstart" className="hover:text-white transition-colors">
-            Quickstart
+          <a href="#featured" className="hover:text-white transition-colors">
+            Featured
           </a>
         </nav>
 
-        {/* Right CTA */}
+        {/* Action Button */}
         <div className="flex items-center gap-3">
           <a
             href="https://github.com"
             target="_blank"
             rel="noreferrer"
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
+            className="p-2 text-zinc-400 hover:text-white transition-colors"
             aria-label="GitHub Repository"
           >
             <Github className="w-4 h-4" />
           </a>
-          <a
-            href="#playground"
-            className="hidden sm:inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-medium text-white border border-zinc-700/80 shadow-xs transition-all cursor-pointer"
+          <Link
+            href="/components"
+            className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-xs bg-[#fafafa] hover:bg-zinc-200 text-[#09090b] text-xs font-medium tracking-wide uppercase transition-colors"
           >
-            Launch Studio
-            <span className="text-[10px] font-mono font-semibold text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded-sm border border-zinc-700">
-              Phase 2
-            </span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
-          </a>
+            <span>Explore Components</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
         </div>
       </div>
     </header>
   );
 }
-
