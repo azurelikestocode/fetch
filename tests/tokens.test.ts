@@ -9,10 +9,15 @@ describe('tokens', () => {
     expect(THEME_PRESETS).toHaveProperty('minimal');
   });
 
-  it('generates correct CSS variable strings', () => {
+  it('ensures Emerald Tech has WCAG AA compliant dark text foreground', () => {
+    expect(THEME_PRESETS.emerald.tokens.primaryForeground).toBe('#09090b');
+  });
+
+  it('generates correct CSS variable strings including component usage snippet', () => {
     const css = generateThemeCss(THEME_PRESETS.default.tokens);
     expect(css).toContain('--primary:');
     expect(css).toContain('--radius:');
+    expect(css).toContain('rounded-[var(--radius)]');
   });
 
   it('generates self-contained Tailwind JSX snippet with inlined radius', () => {
@@ -21,3 +26,4 @@ describe('tokens', () => {
     expect(jsx).toContain(THEME_PRESETS.default.tokens.primary);
   });
 });
+

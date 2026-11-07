@@ -18,7 +18,7 @@ describe('UI Primitives', () => {
     render(<Badge variant="subtle">Alpha</Badge>);
     const badge = screen.getByText('Alpha');
     expect(badge).toBeDefined();
-    expect(badge.className).toContain('bg-[var(--primary)]/10');
+    expect(badge.getAttribute('style')).toContain('color-mix');
   });
 
   it('renders Input with accessible attributes', () => {
@@ -41,3 +41,4 @@ describe('UI Primitives', () => {
     expect(screen.getByText('Card Content')).toBeDefined();
   });
 });
+

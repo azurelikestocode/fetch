@@ -47,9 +47,12 @@ export function Navbar() {
           </a>
           <a
             href="#playground"
-            className="hidden sm:inline-flex items-center gap-1.5 h-9 px-4 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-medium text-white border border-zinc-700/80 shadow-xs transition-all cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-xs font-medium text-white border border-zinc-700/80 shadow-xs transition-all cursor-pointer"
           >
             Launch Studio
+            <span className="text-[10px] font-mono font-semibold text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded-sm border border-zinc-700">
+              Phase 2
+            </span>
             <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
           </a>
         </div>

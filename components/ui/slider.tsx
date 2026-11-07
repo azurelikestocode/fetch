@@ -24,3 +24,4 @@ export const Slider = forwardRef<
 ));
 
 Slider.displayName = SliderPrimitive.Root.displayName;
+

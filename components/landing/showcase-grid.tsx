@@ -193,7 +193,7 @@ export function ShowcaseGrid() {
                     Trigger Dialog Modal
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent style={styleObject}>
                   <DialogHeader>
                     <DialogTitle>Live Configured Modal</DialogTitle>
                     <DialogDescription>

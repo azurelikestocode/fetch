@@ -7,3 +7,4 @@ class MockResizeObserver {
 }
 
 global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+

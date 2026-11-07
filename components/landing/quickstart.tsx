@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Terminal, Copy, Check } from "lucide-react";
 import { Button } from "../ui/button";
+import { copyToClipboard } from "../../lib/utils";
 
 export function Quickstart() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -39,11 +40,8 @@ export default function App() {
   ];
 
   const handleCopy = async (code: string, index: number) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000);
-    } catch {
+    const success = await copyToClipboard(code);
+    if (success) {
       setCopiedIndex(index);
       setTimeout(() => setCopiedIndex(null), 2000);
     }

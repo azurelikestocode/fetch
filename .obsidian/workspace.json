@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "e92f66933818154e",
+        "id": "270825fcd0521502",
         "type": "tabs",
         "children": [
           {
-            "id": "48af2d45deb80291",
+            "id": "e4321852fc6180ef",
             "type": "leaf",
             "state": {
               "type": "graph",
@@ -181,12 +181,30 @@
       "bases:Create new base": false
     }
   },
-  "active": "48af2d45deb80291",
+  "active": "e4321852fc6180ef",
   "lastOpenFiles": [
+    "node_modules/get-nonce/dist/es5/index.js",
+    "node_modules/get-nonce/dist/es5/index.d.ts",
+    "node_modules/get-nonce/dist/es2015/index.js",
+    "node_modules/get-nonce/dist/es2015/index.d.ts",
+    "node_modules/get-nonce/dist/es5",
+    "node_modules/get-nonce/dist/es2015",
+    "node_modules/get-nonce/dist",
+    "components/landing/footer.tsx",
+    "components/landing/quickstart.tsx",
+    "components/landing/showcase-grid.tsx",
+    "components/landing/features.tsx",
+    "node_modules/next/README.md",
+    "node_modules/next/dist/compiled/regenerator-runtime/README.md",
+    "node_modules/next/dist/compiled/react-refresh/README.md",
+    "node_modules/next/dist/compiled/react-is/README.md",
+    "node_modules/next/dist/compiled/@babel/runtime/README.md",
+    "node_modules/next/license.md",
+    "node_modules/tailwindcss/src/postcss-plugins/nesting/README.md",
+    "node_modules/tailwindcss/src/value-parser/README.md",
+    "node_modules/tailwindcss/lib/postcss-plugins/nesting/README.md",
+    "node_modules/tailwindcss/lib/value-parser/README.md",
     "docs/superpowers/plans/2026-11-07-landing-page.md",
-    "docs/superpowers/plans",
-    "docs/superpowers",
-    "docs",
     "Badge Component.md",
     "Dialog Component.md",
     "2026-11-07.md",
@@ -201,7 +219,6 @@
     "Tech Stack.md",
     "Input Component.md",
     "Untitled.canvas",
-    "create a link.md",
-    "Welcome.md"
+    "create a link.md"
   ]
 }

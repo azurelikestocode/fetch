@@ -36,7 +36,7 @@ export const THEME_PRESETS: Record<string, PresetTheme> = {
     description: "Clean Emerald accent with modern 6px rounded edges",
     tokens: {
       primary: "#10b981",
-      primaryForeground: "#ffffff",
+      primaryForeground: "#09090b",
       background: "#09090b",
       surface: "#18181b",
       surfaceHover: "#27272a",
@@ -76,14 +76,15 @@ export const THEME_PRESETS: Record<string, PresetTheme> = {
 
 export const COLOR_SWATCHES = [
   { name: "Indigo", value: "#6366f1", foreground: "#ffffff" },
-  { name: "Emerald", value: "#10b981", foreground: "#ffffff" },
+  { name: "Emerald", value: "#10b981", foreground: "#09090b" },
   { name: "Amber", value: "#f59e0b", foreground: "#000000" },
   { name: "Rose", value: "#f43f5e", foreground: "#ffffff" },
   { name: "Violet", value: "#8b5cf6", foreground: "#ffffff" },
 ];
 
 export function generateThemeCss(tokens: ThemeTokens): string {
-  return `:root {
+  return `/* 1. Add to your globals.css */
+:root {
   --primary: ${tokens.primary};
   --primary-foreground: ${tokens.primaryForeground};
   --background: ${tokens.background};
@@ -91,7 +92,14 @@ export function generateThemeCss(tokens: ThemeTokens): string {
   --surface-hover: ${tokens.surfaceHover};
   --border: ${tokens.border};
   --radius: ${tokens.radius}px;
-}`;
+}
+
+/* 2. Component Markup */
+<div className="border border-[var(--border)] bg-[var(--surface)] rounded-[var(--radius)] p-6">
+  <button className="bg-[var(--primary)] text-[var(--primary-foreground)] rounded-[var(--radius)] px-4 py-2">
+    Action
+  </button>
+</div>`;
 }
 
 export function generateTailwindJsx(component: string, tokens: ThemeTokens): string {
@@ -121,3 +129,4 @@ export function generateTailwindJsx(component: string, tokens: ThemeTokens): str
 </button>`;
   }
 }
+

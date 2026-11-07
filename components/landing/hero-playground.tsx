@@ -8,6 +8,7 @@ import { Input } from "../ui/input";
 import { Slider } from "../ui/slider";
 import { useTokenTheme } from "../../hooks/use-token-theme";
 import { COLOR_SWATCHES, THEME_PRESETS, generateTailwindJsx, generateThemeCss } from "../../lib/tokens";
+import { copyToClipboard } from "../../lib/utils";
 import { Copy, Check, Sparkles, Sliders, Palette, Code2 } from "lucide-react";
 
 export function HeroPlayground() {
@@ -21,12 +22,8 @@ export function HeroPlayground() {
       : generateThemeCss(tokens);
 
   const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(currentCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback
+    const success = await copyToClipboard(currentCode);
+    if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
