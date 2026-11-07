@@ -40,3 +40,4 @@ export function TemplateCard({ template }: TemplateCardProps) {
     </div>
   );
 }
+

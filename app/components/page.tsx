@@ -14,11 +14,13 @@ export default function CatalogPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const filteredTemplates = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return Object.values(TEMPLATES).filter((template) => {
       const matchesSearch =
-        template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        template.id.toLowerCase().includes(searchQuery.toLowerCase());
+        !q ||
+        template.name.toLowerCase().includes(q) ||
+        template.description.toLowerCase().includes(q) ||
+        template.id.toLowerCase().includes(q);
 
       const matchesCategory =
         selectedCategory === "all" || template.category.toLowerCase() === selectedCategory.toLowerCase();
@@ -66,3 +68,4 @@ export default function CatalogPage() {
     </div>
   );
 }
+

@@ -134,3 +134,11 @@ export interface ComponentTemplate {
 - Specific visual mockups and SVG accents for the architectural grid.
 - Viewport width switcher implementation details in `/studio/[id]` (Responsive Desktop / Tablet / Mobile frames).
 - Exact text copy and micro-interactions.
+
+
+---
+
+## 6. Architectural Clarifications (Builder Review 2)
+1. **Self-Contained Code Export Contract:** For both primitives and compound patterns, the primary "Tailwind JSX" export generates **100% self-contained, zero-dependency markup** (inlined utility classes with no missing relative imports). Developers can paste it directly into any React/Tailwind project.
+2. **Template-Scoped State with Shareable URLs:** Studio customization is managed per-template instance with optional URL parameter syncing (`?radius=12&primary=...`) so developers can share configured components directly via link.
+3. **Typography & Spacing Boundaries:** Colors and radius are managed as core design tokens (`ThemeTokens`), while font sizing, font weight, padding, and text copy are component-level `configurableProps` serialized directly into Tailwind classes and JSX children.

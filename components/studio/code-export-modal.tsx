@@ -20,6 +20,17 @@ export function CodeExportModal({
   const [activeTab, setActiveTab] = useState<"tailwind" | "tokens">("tailwind");
   const [copied, setCopied] = useState(false);
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const currentCode = activeTab === "tailwind" ? tailwindJsx : themeCss;
@@ -33,18 +44,24 @@ export function CodeExportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="export-dialog-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+    >
       <div className="w-full max-w-2xl border border-zinc-800 bg-zinc-950 rounded-xs shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
         {/* Modal Header */}
         <div className="h-12 border-b border-zinc-800 px-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <Code2 className="w-4 h-4 text-zinc-400" />
-            <span className="text-xs font-mono font-semibold text-[#fafafa] uppercase tracking-wider">
+            <h2 id="export-dialog-title" className="text-xs font-mono font-semibold text-[#fafafa] uppercase tracking-wider">
               Export Production Code
-            </span>
+            </h2>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close export dialog"
             className="p-1 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
@@ -99,3 +116,4 @@ export function CodeExportModal({
     </div>
   );
 }
+

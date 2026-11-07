@@ -24,10 +24,10 @@ export function Navbar() {
           <Link href="/components" className="hover:text-white transition-colors">
             Components
           </Link>
-          <a href="#philosophy" className="hover:text-white transition-colors">
+          <a href="/#philosophy" className="hover:text-white transition-colors">
             Philosophy
           </a>
-          <a href="#featured" className="hover:text-white transition-colors">
+          <a href="/#featured" className="hover:text-white transition-colors">
             Featured
           </a>
         </nav>

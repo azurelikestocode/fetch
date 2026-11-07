@@ -1,8 +1,16 @@
 {
   "userIgnoreFilters": [
-    "node_modules/**",
-    ".next/**",
-    ".git/**",
-    ".superpowers/**"
+    "node_modules/",
+    "/node_modules/",
+    ".next/",
+    "/.next/",
+    ".git/",
+    "/.git/",
+    ".superpowers/",
+    "/.superpowers/",
+    "dist/",
+    "/dist/",
+    "coverage/",
+    "/coverage/"
   ]
 }

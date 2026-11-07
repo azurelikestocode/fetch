@@ -19,7 +19,7 @@ export function EditorialFooter() {
             <Link href="/components" className="hover:text-white transition-colors">
               Components
             </Link>
-            <a href="#philosophy" className="hover:text-white transition-colors">
+            <a href="/#philosophy" className="hover:text-white transition-colors">
               Philosophy
             </a>
             <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
@@ -37,3 +37,4 @@ export function EditorialFooter() {
     </footer>
   );
 }
+
