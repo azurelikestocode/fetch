@@ -18,3 +18,4 @@ describe('Customizer Studio', () => {
     expect(screen.getByText(/template not found/i)).toBeDefined();
   });
 });
+

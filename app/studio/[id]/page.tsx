@@ -1,11 +1,17 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle } from "lucide-react";
-import { getTemplateById } from "../../../lib/templates";
+import { TEMPLATES, getTemplateById } from "../../../lib/templates";
 import { StudioClient } from "../../../components/studio/studio-client";
 
 interface StudioPageProps {
   params: Promise<{ id: string }>;
+}
+
+export function generateStaticParams() {
+  return Object.keys(TEMPLATES).map((id) => ({
+    id,
+  }));
 }
 
 export default async function StudioPage({ params }: StudioPageProps) {
@@ -37,5 +43,6 @@ export default async function StudioPage({ params }: StudioPageProps) {
     );
   }
 
-  return <StudioClient template={template} />;
+  return <StudioClient templateId={id} />;
 }
+

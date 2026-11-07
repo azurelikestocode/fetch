@@ -17,3 +17,4 @@ describe('Editorial Landing Page', () => {
     expect(ctaLinks.some(l => l.getAttribute('href') === '/components')).toBe(true);
   });
 });
+

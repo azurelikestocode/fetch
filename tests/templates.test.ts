@@ -22,3 +22,4 @@ describe('Template Registry', () => {
     expect(jsx).toContain('rounded-[');
   });
 });
+

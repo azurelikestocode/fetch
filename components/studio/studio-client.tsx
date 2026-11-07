@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { ComponentTemplate } from "../../lib/templates";
+import { ComponentTemplate, getTemplateById } from "../../lib/templates";
 import { ThemeTokens, generateThemeCss } from "../../lib/tokens";
 import { copyToClipboard } from "../../lib/utils";
 import { StudioHeader } from "./studio-header";
@@ -10,10 +10,21 @@ import { PreviewViewport } from "./preview-viewport";
 import { CodeExportModal } from "./code-export-modal";
 
 interface StudioClientProps {
-  template: ComponentTemplate;
+  templateId?: string;
+  template?: ComponentTemplate;
 }
 
-export function StudioClient({ template }: StudioClientProps) {
+export function StudioClient({ templateId, template: directTemplate }: StudioClientProps) {
+  const template = directTemplate || (templateId ? getTemplateById(templateId) : undefined);
+
+  if (!template) {
+    return (
+      <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex items-center justify-center p-6">
+        <p className="text-sm font-mono text-zinc-400">Template not found.</p>
+      </div>
+    );
+  }
+
   const [tokens, setTokens] = useState<ThemeTokens>({ ...template.defaultTokens });
   const [props, setProps] = useState<Record<string, any>>(() => {
     const initialProps: Record<string, any> = {};
@@ -50,14 +61,6 @@ export function StudioClient({ template }: StudioClientProps) {
       initialProps[p.key] = p.defaultValue;
     });
     setProps(initialProps);
-  };
-
-  const handleQuickCopy = async () => {
-    const success = await copyToClipboard(tailwindJsx);
-    if (success) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
   };
 
   return (
