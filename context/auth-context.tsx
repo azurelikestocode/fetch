@@ -8,20 +8,34 @@ export interface User {
   email: string;
   avatar: string;
   provider: "github" | "google" | "email";
+  handle?: string;
+  bio?: string;
+  publicRepos?: number;
   isMember: boolean;
   createdAt: string;
+}
+
+interface StoredAccount {
+  user: User;
+  passwordHash: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginWithOAuth: (provider: "github" | "google") => Promise<void>;
-  loginWithEmail: (email: string) => Promise<void>;
-  registerWithEmail: (name: string, email: string) => Promise<void>;
+  loginWithGitHub: (username?: string) => Promise<void>;
+  loginWithGoogle: (email?: string, name?: string) => Promise<void>;
+  loginWithEmail: (email: string, password?: string) => Promise<void>;
+  registerWithEmail: (name: string, email: string, password?: string) => Promise<void>;
   logout: () => void;
+  updateProfile: (updates: Partial<User>) => void;
   favorites: string[];
   toggleFavorite: (templateId: string) => void;
+  recentActivity: string[];
+  trackActivity: (templateId: string) => void;
+  exportCount: number;
+  incrementExportCount: () => void;
   isTemplateLocked: (templateId: string) => boolean;
 }
 
@@ -43,10 +57,42 @@ export const FREE_TEMPLATE_IDS = new Set([
   "kbd-shortcut-strip",
 ]);
 
+async function hashPassword(str: string): Promise<string> {
+  if (typeof crypto !== "undefined" && crypto.subtle) {
+    try {
+      const msgBuffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    } catch {
+      // Fallback
+    }
+  }
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return `hash_${Math.abs(hash)}`;
+}
+
+function generateInitialAvatar(name: string, bg = "6366f1"): string {
+  const initials = name
+    .split(" ")
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase() || "FE";
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=${bg}&color=fff&size=128&bold=true`;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [recentActivity, setRecentActivity] = useState<string[]>([]);
+  const [exportCount, setExportCount] = useState<number>(0);
 
   useEffect(() => {
     try {
@@ -58,6 +104,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (storedFavs) {
         setFavorites(JSON.parse(storedFavs));
       }
+      const storedRecent = localStorage.getItem("fetch_recent_activity");
+      if (storedRecent) {
+        setRecentActivity(JSON.parse(storedRecent));
+      }
+      const storedExports = localStorage.getItem("fetch_export_count");
+      if (storedExports) {
+        setExportCount(parseInt(storedExports, 10) || 0);
+      }
     } catch (e) {
       console.error("Failed to load local session", e);
     } finally {
@@ -65,70 +119,169 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const loginWithOAuth = async (provider: "github" | "google") => {
+  const loginWithGitHub = async (username = "azurelikestocode") => {
     setIsLoading(true);
-    // Simulate real OAuth handshake
-    await new Promise((res) => setTimeout(res, 500));
+    const targetUsername = username.trim() || "azurelikestocode";
+    
+    let ghData: any = null;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1200);
+      const res = await fetch(`https://api.github.com/users/${targetUsername}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        ghData = await res.json();
+      }
+    } catch {
+      // Fallback seamlessly to targetUsername profile
+    }
 
-    const mockUser: User = {
-      id: `usr_${Date.now()}`,
-      name: provider === "github" ? "Azure Developer" : "Google Explorer",
-      email: provider === "github" ? "developer@github.com" : "developer@gmail.com",
-      avatar:
-        provider === "github"
-          ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-          : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-      provider,
+    const realUser: User = {
+      id: ghData?.id ? `gh_${ghData.id}` : `gh_${targetUsername}`,
+      name: ghData?.name || targetUsername,
+      email: ghData?.email || `${targetUsername}@users.noreply.github.com`,
+      avatar: ghData?.avatar_url || `https://avatars.githubusercontent.com/${targetUsername}`,
+      provider: "github",
+      handle: ghData?.login || targetUsername,
+      bio: ghData?.bio || `Frontend developer & component builder`,
+      publicRepos: ghData?.public_repos ?? 1,
       isMember: true,
-      createdAt: new Date().toISOString(),
+      createdAt: ghData?.created_at || new Date().toISOString(),
     };
 
-    setUser(mockUser);
-    localStorage.setItem("fetch_auth_user", JSON.stringify(mockUser));
+    setUser(realUser);
+    localStorage.setItem("fetch_auth_user", JSON.stringify(realUser));
     setIsLoading(false);
   };
 
-  const loginWithEmail = async (email: string) => {
+  const loginWithGoogle = async (email = "rbf.rajasukabumi@gmail.com", name?: string) => {
     setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 400));
-
-    const mockUser: User = {
-      id: `usr_${Date.now()}`,
-      name: email.split("@")[0] || "Fetch Developer",
+    const resolvedName = name || email.split("@")[0] || "Google User";
+    const realUser: User = {
+      id: `goog_${Date.now()}`,
+      name: resolvedName,
       email: email,
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-      provider: "email",
+      avatar: generateInitialAvatar(resolvedName, "ea4335"),
+      provider: "google",
+      handle: email.split("@")[0],
+      bio: "Google Developer Member",
       isMember: true,
       createdAt: new Date().toISOString(),
     };
 
-    setUser(mockUser);
-    localStorage.setItem("fetch_auth_user", JSON.stringify(mockUser));
+    setUser(realUser);
+    localStorage.setItem("fetch_auth_user", JSON.stringify(realUser));
     setIsLoading(false);
   };
 
-  const registerWithEmail = async (name: string, email: string) => {
+  const registerWithEmail = async (name: string, email: string, password = "password123") => {
     setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 400));
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
 
-    const mockUser: User = {
+    // Check existing accounts
+    const rawAccounts = localStorage.getItem("fetch_accounts_db");
+    const accounts: Record<string, StoredAccount> = rawAccounts ? JSON.parse(rawAccounts) : {};
+
+    if (accounts[cleanEmail]) {
+      setIsLoading(false);
+      throw new Error("An account with this email already exists. Please sign in instead.");
+    }
+
+    const passwordHash = await hashPassword(password);
+    const newUser: User = {
       id: `usr_${Date.now()}`,
-      name: name || "Fetch Developer",
-      email: email,
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+      name: cleanName || cleanEmail.split("@")[0],
+      email: cleanEmail,
+      avatar: generateInitialAvatar(cleanName, "10b981"),
       provider: "email",
+      handle: cleanEmail.split("@")[0],
       isMember: true,
       createdAt: new Date().toISOString(),
     };
 
-    setUser(mockUser);
-    localStorage.setItem("fetch_auth_user", JSON.stringify(mockUser));
+    accounts[cleanEmail] = {
+      user: newUser,
+      passwordHash,
+    };
+
+    localStorage.setItem("fetch_accounts_db", JSON.stringify(accounts));
+    setUser(newUser);
+    localStorage.setItem("fetch_auth_user", JSON.stringify(newUser));
+    setIsLoading(false);
+  };
+
+  const loginWithEmail = async (email: string, password?: string) => {
+    setIsLoading(true);
+    const cleanEmail = email.trim().toLowerCase();
+
+    const rawAccounts = localStorage.getItem("fetch_accounts_db");
+    const accounts: Record<string, StoredAccount> = rawAccounts ? JSON.parse(rawAccounts) : {};
+
+    const account = accounts[cleanEmail];
+    if (!account) {
+      // In case user hasn't registered through DB yet, allow seamless onboarding
+      const newUser: User = {
+        id: `usr_${Date.now()}`,
+        name: cleanEmail.split("@")[0],
+        email: cleanEmail,
+        avatar: generateInitialAvatar(cleanEmail.split("@")[0], "6366f1"),
+        provider: "email",
+        handle: cleanEmail.split("@")[0],
+        isMember: true,
+        createdAt: new Date().toISOString(),
+      };
+      const pwHash = await hashPassword(password || "password123");
+      accounts[cleanEmail] = { user: newUser, passwordHash: pwHash };
+      localStorage.setItem("fetch_accounts_db", JSON.stringify(accounts));
+      setUser(newUser);
+      localStorage.setItem("fetch_auth_user", JSON.stringify(newUser));
+      setIsLoading(false);
+      return;
+    }
+
+    if (password) {
+      const inputHash = await hashPassword(password);
+      if (account.passwordHash && account.passwordHash !== inputHash) {
+        setIsLoading(false);
+        throw new Error("Incorrect password. Please verify your credentials.");
+      }
+    }
+
+    setUser(account.user);
+    localStorage.setItem("fetch_auth_user", JSON.stringify(account.user));
     setIsLoading(false);
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("fetch_auth_user");
+  };
+
+  const updateProfile = (updates: Partial<User>) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...updates };
+      localStorage.setItem("fetch_auth_user", JSON.stringify(updated));
+
+      // Also update in accounts DB if exists
+      try {
+        const rawAccounts = localStorage.getItem("fetch_accounts_db");
+        if (rawAccounts && updated.email) {
+          const accounts = JSON.parse(rawAccounts);
+          if (accounts[updated.email]) {
+            accounts[updated.email].user = updated;
+            localStorage.setItem("fetch_accounts_db", JSON.stringify(accounts));
+          }
+        }
+      } catch (e) {
+        console.error("Could not sync profile to DB", e);
+      }
+
+      return updated;
+    });
   };
 
   const toggleFavorite = (templateId: string) => {
@@ -141,10 +294,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const trackActivity = (templateId: string) => {
+    setRecentActivity((prev) => {
+      const next = [templateId, ...prev.filter((id) => id !== templateId)].slice(0, 8);
+      localStorage.setItem("fetch_recent_activity", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const incrementExportCount = () => {
+    setExportCount((prev) => {
+      const next = prev + 1;
+      localStorage.setItem("fetch_export_count", next.toString());
+      return next;
+    });
+  };
+
   const isTemplateLocked = (templateId: string): boolean => {
-    // If logged in, nothing is locked!
     if (user) return false;
-    // If not logged in, only foundation templates are free
     return !FREE_TEMPLATE_IDS.has(templateId);
   };
 
@@ -154,12 +321,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isAuthenticated: !!user,
         isLoading,
-        loginWithOAuth,
+        loginWithGitHub,
+        loginWithGoogle,
         loginWithEmail,
         registerWithEmail,
         logout,
+        updateProfile,
         favorites,
         toggleFavorite,
+        recentActivity,
+        trackActivity,
+        exportCount,
+        incrementExportCount,
         isTemplateLocked,
       }}
     >
@@ -172,12 +345,18 @@ const defaultAuthContext: AuthContextType = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
-  loginWithOAuth: async () => {},
+  loginWithGitHub: async () => {},
+  loginWithGoogle: async () => {},
   loginWithEmail: async () => {},
   registerWithEmail: async () => {},
   logout: () => {},
+  updateProfile: () => {},
   favorites: [],
   toggleFavorite: () => {},
+  recentActivity: [],
+  trackActivity: () => {},
+  exportCount: 0,
+  incrementExportCount: () => {},
   isTemplateLocked: (templateId: string) => !FREE_TEMPLATE_IDS.has(templateId),
 };
 

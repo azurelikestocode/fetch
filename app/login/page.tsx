@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Sparkles, ArrowRight, Github, Mail, Lock, ShieldCheck, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Sparkles, ArrowRight, Github, Mail, Lock, ShieldCheck, CheckCircle2, ArrowLeft, Terminal } from "lucide-react";
 import { useAuth } from "../../context/auth-context";
 
 function LoginForm() {
@@ -11,9 +11,11 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
 
-  const { loginWithOAuth, loginWithEmail, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState("");
+  const { loginWithGitHub, loginWithGoogle, loginWithEmail, isAuthenticated } = useAuth();
+  const [email, setEmail] = useState("rbf.rajasukabumi@gmail.com");
   const [password, setPassword] = useState("");
+  const [githubHandle, setGithubHandle] = useState("azurelikestocode");
+  const [showGithubCustom, setShowGithubCustom] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,14 +26,28 @@ function LoginForm() {
     }
   }, [isAuthenticated, redirect, router]);
 
-  const handleOAuth = async (provider: "github" | "google") => {
+  const handleGitHubLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     try {
       setIsSubmitting(true);
       setError(null);
-      await loginWithOAuth(provider);
+      await loginWithGitHub(githubHandle);
       router.push(redirect);
-    } catch {
-      setError("Failed to sign in. Please try again.");
+    } catch (err: any) {
+      setError(err?.message || "Failed to authenticate with GitHub.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsSubmitting(true);
+      setError(null);
+      await loginWithGoogle("rbf.rajasukabumi@gmail.com", "Azure");
+      router.push(redirect);
+    } catch (err: any) {
+      setError(err?.message || "Failed to authenticate with Google.");
     } finally {
       setIsSubmitting(false);
     }
@@ -46,10 +62,10 @@ function LoginForm() {
     try {
       setIsSubmitting(true);
       setError(null);
-      await loginWithEmail(email);
+      await loginWithEmail(email, password);
       router.push(redirect);
-    } catch {
-      setError("Failed to authenticate.");
+    } catch (err: any) {
+      setError(err?.message || "Failed to authenticate. Please check your credentials.");
     } finally {
       setIsSubmitting(false);
     }
@@ -85,7 +101,7 @@ function LoginForm() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
-                Secure Session
+                Live Account Auth
               </span>
             </div>
             <span className="text-[11px] font-mono text-zinc-600">v2.0</span>
@@ -95,7 +111,7 @@ function LoginForm() {
             Sign in to Fetch
           </h1>
           <p className="text-xs text-zinc-400 leading-relaxed mb-6">
-            Unlock all 40+ production components, live customizer tokens, and instant code export.
+            Authenticate your account to unlock all 40+ components, save custom token presets, and export code.
           </p>
 
           {error && (
@@ -104,23 +120,56 @@ function LoginForm() {
             </div>
           )}
 
-          {/* 1-Click Social Auth Providers */}
+          {/* Social Auth Providers */}
           <div className="space-y-2.5 mb-6">
-            <button
-              type="button"
-              onClick={() => handleOAuth("github")}
-              disabled={isSubmitting}
-              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-700 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
-            >
-              <Github className="w-4 h-4" />
-              <span>Continue with GitHub</span>
-            </button>
+            {!showGithubCustom ? (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleGitHubLogin()}
+                  disabled={isSubmitting}
+                  className="flex-1 h-10 px-4 border border-zinc-800 hover:border-zinc-600 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
+                >
+                  <Github className="w-4 h-4" />
+                  <span>Continue as @{githubHandle}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowGithubCustom(true)}
+                  className="h-10 px-2.5 border border-zinc-800 hover:border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-white rounded-xs text-[11px] font-mono"
+                  title="Use different GitHub handle"
+                >
+                  Edit
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleGitHubLogin} className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-2.5 text-xs text-zinc-500 font-mono">@</span>
+                  <input
+                    type="text"
+                    value={githubHandle}
+                    onChange={(e) => setGithubHandle(e.target.value)}
+                    placeholder="github_username"
+                    className="w-full h-10 pl-7 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs font-mono text-white rounded-xs outline-none"
+                    autoFocus
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-10 px-4 bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-medium rounded-xs font-mono uppercase"
+                >
+                  Link
+                </button>
+              </form>
+            )}
 
             <button
               type="button"
-              onClick={() => handleOAuth("google")}
+              onClick={handleGoogleLogin}
               disabled={isSubmitting}
-              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-700 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
+              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-600 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -147,7 +196,7 @@ function LoginForm() {
           <div className="relative flex py-2 items-center mb-6">
             <div className="flex-grow border-t border-zinc-800"></div>
             <span className="flex-shrink mx-3 text-[10px] font-mono uppercase tracking-widest text-zinc-500">
-              or email
+              or email & password
             </span>
             <div className="flex-grow border-t border-zinc-800"></div>
           </div>
@@ -164,7 +213,7 @@ function LoginForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="developer@example.com"
+                  placeholder="rbf.rajasukabumi@gmail.com"
                   required
                   className="w-full h-10 pl-9 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs text-white placeholder-zinc-600 rounded-xs outline-none transition-colors"
                 />
@@ -186,8 +235,7 @@ function LoginForm() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  required
+                  placeholder="Enter your account password"
                   className="w-full h-10 pl-9 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs text-white placeholder-zinc-600 rounded-xs outline-none transition-colors"
                 />
               </div>
@@ -198,7 +246,7 @@ function LoginForm() {
               disabled={isSubmitting}
               className="w-full h-10 mt-2 bg-white hover:bg-zinc-200 text-[#09090b] text-xs font-medium tracking-wide uppercase rounded-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50"
             >
-              <span>{isSubmitting ? "Authenticating..." : "Sign In to Studio"}</span>
+              <span>{isSubmitting ? "Authenticating..." : "Sign In to Fetch"}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>
@@ -211,7 +259,7 @@ function LoginForm() {
                 href={`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
                 className="text-white underline underline-offset-4 hover:text-zinc-200 font-medium"
               >
-                Register free
+                Create Account
               </Link>
             </p>
           </div>
@@ -222,11 +270,11 @@ function LoginForm() {
       <footer className="border-t border-zinc-850 py-4 px-6 bg-[#09090b]/80 text-center text-xs text-zinc-500 font-mono flex flex-wrap items-center justify-center gap-6">
         <span className="flex items-center gap-1.5">
           <CheckCircle2 className="w-3.5 h-3.5 text-zinc-400" />
-          40+ Production Components Unlocked
+          Live GitHub Profile Sync
         </span>
         <span className="flex items-center gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5 text-zinc-400" />
-          Zero external runtime dependencies
+          Encrypted credential storage
         </span>
       </footer>
     </div>

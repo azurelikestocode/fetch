@@ -18,8 +18,14 @@ interface StudioClientProps {
 }
 
 export function StudioClient({ templateId, template: directTemplate }: StudioClientProps) {
-  const { isTemplateLocked } = useAuth();
+  const { isTemplateLocked, trackActivity } = useAuth();
   const template = directTemplate || (templateId ? getTemplateById(templateId) : undefined);
+
+  React.useEffect(() => {
+    if (template?.id) {
+      trackActivity(template.id);
+    }
+  }, [template?.id, trackActivity]);
 
   if (!template) {
     return (

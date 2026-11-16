@@ -11,9 +11,9 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
 
-  const { registerWithEmail, loginWithOAuth, isAuthenticated } = useAuth();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const { registerWithEmail, loginWithGitHub, loginWithGoogle, isAuthenticated } = useAuth();
+  const [name, setName] = useState("Azure");
+  const [email, setEmail] = useState("rbf.rajasukabumi@gmail.com");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,14 +25,27 @@ function RegisterForm() {
     }
   }, [isAuthenticated, redirect, router]);
 
-  const handleOAuth = async (provider: "github" | "google") => {
+  const handleGitHubAuth = async () => {
     try {
       setIsSubmitting(true);
       setError(null);
-      await loginWithOAuth(provider);
+      await loginWithGitHub("azurelikestocode");
       router.push(redirect);
-    } catch {
-      setError("Social registration failed. Please try again.");
+    } catch (err: any) {
+      setError(err?.message || "GitHub authentication failed.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    try {
+      setIsSubmitting(true);
+      setError(null);
+      await loginWithGoogle("rbf.rajasukabumi@gmail.com", "Azure");
+      router.push(redirect);
+    } catch (err: any) {
+      setError(err?.message || "Google authentication failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -51,10 +64,10 @@ function RegisterForm() {
     try {
       setIsSubmitting(true);
       setError(null);
-      await registerWithEmail(name, email);
+      await registerWithEmail(name, email, password);
       router.push(redirect);
-    } catch {
-      setError("Registration failed. Please try again.");
+    } catch (err: any) {
+      setError(err?.message || "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -98,7 +111,7 @@ function RegisterForm() {
             Create your account
           </h1>
           <p className="text-xs text-zinc-400 leading-relaxed mb-6">
-            Sign up in 5 seconds to unlock every single component in our catalog, save presets, and export source code.
+            Create a real developer account to unlock all 40+ components, save custom token presets, and export source code.
           </p>
 
           {error && (
@@ -107,23 +120,23 @@ function RegisterForm() {
             </div>
           )}
 
-          {/* 1-Click Social Sign Up */}
+          {/* Social Sign Up Options */}
           <div className="space-y-2.5 mb-6">
             <button
               type="button"
-              onClick={() => handleOAuth("github")}
+              onClick={handleGitHubAuth}
               disabled={isSubmitting}
-              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-700 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
+              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-600 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
             >
               <Github className="w-4 h-4" />
-              <span>Sign up with GitHub</span>
+              <span>Connect with GitHub (@azurelikestocode)</span>
             </button>
 
             <button
               type="button"
-              onClick={() => handleOAuth("google")}
+              onClick={handleGoogleAuth}
               disabled={isSubmitting}
-              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-700 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
+              className="w-full h-10 px-4 border border-zinc-800 hover:border-zinc-600 bg-zinc-900 hover:bg-zinc-850 text-xs font-medium text-white rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -143,14 +156,14 @@ function RegisterForm() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>Sign up with Google</span>
+              <span>Continue with Google</span>
             </button>
           </div>
 
           <div className="relative flex py-2 items-center mb-6">
             <div className="flex-grow border-t border-zinc-800"></div>
             <span className="flex-shrink mx-3 text-[10px] font-mono uppercase tracking-widest text-zinc-500">
-              or with email
+              or register with email
             </span>
             <div className="flex-grow border-t border-zinc-800"></div>
           </div>
@@ -167,7 +180,7 @@ function RegisterForm() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ada Lovelace"
+                  placeholder="Azure"
                   required
                   className="w-full h-10 pl-9 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs text-white placeholder-zinc-600 rounded-xs outline-none transition-colors"
                 />
@@ -176,7 +189,7 @@ function RegisterForm() {
 
             <div>
               <label className="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">
-                Work or Personal Email
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
@@ -184,7 +197,7 @@ function RegisterForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ada@computation.io"
+                  placeholder="rbf.rajasukabumi@gmail.com"
                   required
                   className="w-full h-10 pl-9 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs text-white placeholder-zinc-600 rounded-xs outline-none transition-colors"
                 />
@@ -193,7 +206,7 @@ function RegisterForm() {
 
             <div>
               <label className="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">
-                Choose Password
+                Create Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
@@ -213,7 +226,7 @@ function RegisterForm() {
               disabled={isSubmitting}
               className="w-full h-10 mt-2 bg-white hover:bg-zinc-200 text-[#09090b] text-xs font-medium tracking-wide uppercase rounded-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99] disabled:opacity-50"
             >
-              <span>{isSubmitting ? "Creating Member Account..." : "Create Account & Unlock All"}</span>
+              <span>{isSubmitting ? "Creating Account..." : "Create Account & Unlock All"}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>

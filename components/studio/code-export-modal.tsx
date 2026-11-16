@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, Copy, Check, Code2, Download, FileCode, CheckCircle2 } from "lucide-react";
 import { copyToClipboard } from "../../lib/utils";
+import { useAuth } from "../../context/auth-context";
 
 interface CodeExportModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function CodeExportModal({
   templateId = "component",
   templateName = "Component",
 }: CodeExportModalProps) {
+  const { incrementExportCount } = useAuth();
   const [activeTab, setActiveTab] = useState<"tailwind" | "html" | "tokens" | "typescript">("tailwind");
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
@@ -97,6 +99,7 @@ export interface ${componentPascalName}Config {
   const handleCopy = async () => {
     const success = await copyToClipboard(currentCode);
     if (success) {
+      incrementExportCount();
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -114,6 +117,7 @@ export interface ${componentPascalName}Config {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
+    incrementExportCount();
     setDownloaded(true);
     setTimeout(() => setDownloaded(false), 2000);
   };
