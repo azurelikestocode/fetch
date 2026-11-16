@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, Eye, ZoomIn, ZoomOut, Maximize2, Moon, Sun } from "lucide-react";
 import { ComponentTemplate } from "../../lib/templates";
 import { ThemeTokens } from "../../lib/tokens";
+import { InteractivePreview } from "./interactive-preview";
 
 interface PreviewViewportProps {
   template: ComponentTemplate;
@@ -204,7 +205,7 @@ export function PreviewViewport({
               : ""
           }`}
         >
-          {template.renderComponent(props, tokens)}
+          <InteractivePreview template={template} props={props} tokens={tokens} />
         </div>
       </div>
 
