@@ -6,7 +6,8 @@ export interface ThemeTokens {
   surfaceHover: string;
   border: string;
   radius: number; // in pixels
-  fontFamily?: "sans" | "mono" | "serif";
+  fontFamily?: "sans" | "mono" | "serif" | "custom";
+  customFont?: string;
   letterSpacing?: "tight" | "normal" | "wide";
   fontWeight?: "normal" | "medium" | "semibold" | "bold";
   shadow?: "none" | "sm" | "md" | "lg" | "glow";
@@ -91,6 +92,14 @@ export const COLOR_SWATCHES = [
 ];
 
 export function generateThemeCss(tokens: ThemeTokens): string {
+  const fontCss = tokens.customFont
+    ? `"${tokens.customFont}", sans-serif`
+    : tokens.fontFamily === "mono"
+    ? 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+    : tokens.fontFamily === "serif"
+    ? 'Charter, "Bitstream Charter", "Sitka Text", Cambria, serif'
+    : 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
   return `/* 1. Add to your globals.css */
 :root {
   --primary: ${tokens.primary};
@@ -100,10 +109,11 @@ export function generateThemeCss(tokens: ThemeTokens): string {
   --surface-hover: ${tokens.surfaceHover};
   --border: ${tokens.border};
   --radius: ${tokens.radius}px;
+  --font-family: ${fontCss};
 }
 
 /* 2. Component Markup */
-<div className="border border-[var(--border)] bg-[var(--surface)] rounded-[var(--radius)] p-6">
+<div className="border border-[var(--border)] bg-[var(--surface)] rounded-[var(--radius)] p-6 font-[var(--font-family)]">
   <button className="bg-[var(--primary)] text-[var(--primary-foreground)] rounded-[var(--radius)] px-4 py-2">
     Action
   </button>

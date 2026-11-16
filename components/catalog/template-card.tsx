@@ -14,11 +14,19 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "pricing-card":
         return "scale-[0.56] max-w-[280px]";
       case "auth-card":
+      case "newsletter-card":
+      case "testimonial-card":
         return "scale-[0.64] max-w-[280px]";
       case "card":
       case "bento-card":
       case "accordion":
+      case "timeline-stepper":
+      case "radio-group":
+      case "profile-card":
         return "scale-[0.68] max-w-[290px]";
+      case "code-terminal":
+      case "file-dropzone":
+      case "cookie-banner":
       case "stat-card":
       case "stat-ring":
         return "scale-[0.74] max-w-[300px]";

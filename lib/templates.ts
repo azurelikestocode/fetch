@@ -969,6 +969,584 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
 </div>`;
     },
   },
+
+  "code-terminal": {
+    id: "code-terminal",
+    name: "Developer Terminal Window",
+    category: "patterns",
+    description: "Monospaced code execution frame with macOS traffic light headers and copy trigger.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "filename", label: "File Name", type: "text", defaultValue: "deploy.config.ts" },
+      { key: "command", label: "Code Snippet", type: "text", defaultValue: "npx fetch-ui@latest add button" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: "#0d0e12",
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "border shadow-xl max-w-sm w-full overflow-hidden text-xs font-mono",
+        },
+        React.createElement(
+          "div",
+          { className: "px-3 py-2 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80" },
+          React.createElement("div", { className: "flex items-center gap-1.5" },
+            React.createElement("span", { className: "w-2.5 h-2.5 rounded-full bg-red-500/80" }),
+            React.createElement("span", { className: "w-2.5 h-2.5 rounded-full bg-amber-500/80" }),
+            React.createElement("span", { className: "w-2.5 h-2.5 rounded-full bg-emerald-500/80" })
+          ),
+          React.createElement("span", { className: "text-[11px] text-zinc-500" }, props.filename || "deploy.config.ts")
+        ),
+        React.createElement(
+          "div",
+          { className: "p-4 text-zinc-300 flex items-center gap-2" },
+          React.createElement("span", { style: { color: tokens.primary } }, "$"),
+          React.createElement("span", { className: "truncate" }, props.command || "npx fetch-ui@latest add button")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="bg-[#0d0e12] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full overflow-hidden text-xs font-mono">
+  <div className="px-3 py-2 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80">
+    <div className="flex items-center gap-1.5">
+      <span className="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+      <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+    </div>
+    <span className="text-[11px] text-zinc-500">${escapeText(props.filename || "deploy.config.ts")}</span>
+  </div>
+  <div className="p-4 text-zinc-300 flex items-center gap-2">
+    <span className="text-[${tokens.primary}]">$</span>
+    <span className="truncate">${escapeText(props.command || "npx fetch-ui@latest add button")}</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "cookie-banner": {
+    id: "cookie-banner",
+    name: "Privacy & Cookie Consent",
+    category: "primitives",
+    description: "Compact bottom floating banner with essential telemetry explanation and dual action buttons.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Heading", type: "text", defaultValue: "Telemetry & Privacy" },
+      { key: "description", label: "Policy Text", type: "text", defaultValue: "We use strictly necessary cookies to ensure optimal edge token distribution." },
+      { key: "buttonText", label: "Accept Button", type: "text", defaultValue: "Accept All" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-xl max-w-sm w-full space-y-3",
+        },
+        React.createElement("div", { className: "text-xs font-semibold text-white" }, props.title || "Telemetry & Privacy"),
+        React.createElement("p", { className: "text-[11px] text-zinc-400 leading-relaxed" }, props.description || "We use strictly necessary cookies to ensure optimal edge token distribution."),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-2 pt-1" },
+          React.createElement(
+            "button",
+            {
+              style: {
+                backgroundColor: tokens.primary,
+                color: tokens.primaryForeground,
+                borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
+              },
+              className: "flex-1 py-1.5 px-3 text-xs font-medium cursor-pointer",
+            },
+            props.buttonText || "Accept All"
+          ),
+          React.createElement(
+            "button",
+            {
+              style: {
+                borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
+              },
+              className: "py-1.5 px-3 text-xs text-zinc-400 hover:text-white border border-zinc-800 hover:bg-zinc-800 transition-colors cursor-pointer",
+            },
+            "Decline"
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3">
+  <div className="text-xs font-semibold text-white">${escapeText(props.title || "Telemetry & Privacy")}</div>
+  <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.description || "")}</p>
+  <div className="flex items-center gap-2 pt-1">
+    <button className="flex-1 py-1.5 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${Math.max(2, tokens.radius - 2)}px]">${escapeText(props.buttonText || "Accept All")}</button>
+    <button className="py-1.5 px-3 text-xs text-zinc-400 hover:text-white border border-zinc-800 rounded-[${Math.max(2, tokens.radius - 2)}px]">Decline</button>
+  </div>
+</div>`;
+    },
+  },
+
+  "testimonial-card": {
+    id: "testimonial-card",
+    name: "Editorial Quote Testimonial",
+    category: "patterns",
+    description: "High-craft user review box with author portrait initials, quote text, and role tag.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "quote", label: "Quote Text", type: "text", defaultValue: "Fetch eliminated token drift across our entire frontend design engineering team." },
+      { key: "author", label: "Author Name", type: "text", defaultValue: "Marcus Aurel" },
+      { key: "role", label: "Author Role", type: "text", defaultValue: "VP of Product at Hyperlink" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-6 border shadow-lg max-w-sm w-full space-y-4",
+        },
+        React.createElement("p", { className: "text-xs text-zinc-300 leading-relaxed italic" }, `"${props.quote || "Fetch eliminated token drift across our entire frontend design engineering team."}"`),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-3 pt-2 border-t border-zinc-800/80" },
+          React.createElement(
+            "div",
+            {
+              style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+              className: "w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs font-mono shrink-0",
+            },
+            (props.author || "MA").split(" ").map((n: string) => n[0]).join("")
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement("div", { className: "text-xs font-semibold text-white" }, props.author || "Marcus Aurel"),
+            React.createElement("div", { className: "text-[11px] text-zinc-500 font-mono" }, props.role || "VP of Product at Hyperlink")
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-6 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-sm w-full space-y-4">
+  <p className="text-xs text-zinc-300 leading-relaxed italic">"${escapeText(props.quote || "")}"</p>
+  <div className="flex items-center gap-3 pt-2 border-t border-zinc-800/80">
+    <div className="w-8 h-8 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-bold text-xs font-mono shrink-0">MA</div>
+    <div>
+      <div className="text-xs font-semibold text-white">${escapeText(props.author || "Marcus Aurel")}</div>
+      <div className="text-[11px] text-zinc-500 font-mono">${escapeText(props.role || "")}</div>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "timeline-stepper": {
+    id: "timeline-stepper",
+    name: "Step-by-Step Timeline",
+    category: "patterns",
+    description: "Vertical chronological progression tracker with verified checkmarks and active pulse.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "step1", label: "Step 1", type: "text", defaultValue: "System Initialization" },
+      { key: "step2", label: "Step 2", type: "text", defaultValue: "Reactive Token Propagation" },
+      { key: "step3", label: "Step 3", type: "text", defaultValue: "Multi-Zone CDN Sync" },
+    ],
+    renderComponent: (props, tokens) => {
+      const steps = [
+        { label: props.step1 || "System Initialization", done: true },
+        { label: props.step2 || "Reactive Token Propagation", done: true },
+        { label: props.step3 || "Multi-Zone CDN Sync", done: false },
+      ];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-sm max-w-sm w-full space-y-4",
+        },
+        steps.map((st, i) =>
+          React.createElement(
+            "div",
+            { key: i, className: "flex items-center gap-3 text-xs" },
+            React.createElement(
+              "div",
+              {
+                style: st.done
+                  ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
+                  : { backgroundColor: "#27272a", color: "#71717a" },
+                className: "w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] font-bold shrink-0",
+              },
+              st.done ? "✓" : String(i + 1)
+            ),
+            React.createElement("span", { className: st.done ? "text-zinc-200 font-medium" : "text-zinc-500" }, st.label)
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-sm max-w-sm w-full space-y-4">
+  <div className="flex items-center gap-3 text-xs">
+    <div className="w-5 h-5 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-mono text-[10px] font-bold shrink-0">✓</div>
+    <span className="text-zinc-200 font-medium">${escapeText(props.step1 || "System Initialization")}</span>
+  </div>
+  <div className="flex items-center gap-3 text-xs">
+    <div className="w-5 h-5 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-mono text-[10px] font-bold shrink-0">✓</div>
+    <span className="text-zinc-200 font-medium">${escapeText(props.step2 || "Reactive Token Propagation")}</span>
+  </div>
+  <div className="flex items-center gap-3 text-xs">
+    <div className="w-5 h-5 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-mono text-[10px] font-bold shrink-0">3</div>
+    <span className="text-zinc-500">${escapeText(props.step3 || "Multi-Zone CDN Sync")}</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "newsletter-card": {
+    id: "newsletter-card",
+    name: "Architectural Newsletter Box",
+    category: "forms",
+    description: "High-craft inline email subscribe unit with integrated input and submit button.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Header Title", type: "text", defaultValue: "Engineering Dispatch" },
+      { key: "buttonText", label: "Button Label", type: "text", defaultValue: "Subscribe" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-6 border shadow-lg max-w-sm w-full space-y-4",
+        },
+        React.createElement("div", { className: "text-sm font-semibold text-white tracking-tight" }, props.title || "Engineering Dispatch"),
+        React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed" }, "Monthly deep dives into design token engines and low-level web performance."),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-1.5" },
+          React.createElement("input", {
+            type: "email",
+            placeholder: "developer@fetch.dev",
+            readOnly: true,
+            style: {
+              borderRadius: `${tokens.radius}px`,
+              borderColor: tokens.border,
+              backgroundColor: tokens.background,
+            },
+            className: "flex-1 h-8 px-2.5 text-xs border text-white focus:outline-none",
+          }),
+          React.createElement(
+            "button",
+            {
+              style: {
+                backgroundColor: tokens.primary,
+                color: tokens.primaryForeground,
+                borderRadius: `${tokens.radius}px`,
+              },
+              className: "h-8 px-3 text-xs font-medium cursor-pointer shrink-0",
+            },
+            props.buttonText || "Subscribe"
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-6 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-sm w-full space-y-4">
+  <div className="text-sm font-semibold text-white tracking-tight">${escapeText(props.title || "Engineering Dispatch")}</div>
+  <p className="text-xs text-zinc-400 leading-relaxed">Monthly deep dives into design token engines and low-level web performance.</p>
+  <div className="flex items-center gap-1.5">
+    <input type="email" placeholder="developer@fetch.dev" className="flex-1 h-8 px-2.5 text-xs bg-[${tokens.background}] border border-[${tokens.border}] rounded-[${tokens.radius}px] text-white" />
+    <button className="h-8 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] shrink-0">${escapeText(props.buttonText || "Subscribe")}</button>
+  </div>
+</div>`;
+    },
+  },
+
+  "radio-group": {
+    id: "radio-group",
+    name: "Segmented Radio Tiles",
+    category: "forms",
+    description: "Clickable option cards with radio selection indicator and badge highlights.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "opt1", label: "Option 1 Title", type: "text", defaultValue: "Serverless Edge" },
+      { key: "opt2", label: "Option 2 Title", type: "text", defaultValue: "Dedicated Cluster" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        { className: "space-y-2 max-w-sm w-full" },
+        [
+          { title: props.opt1 || "Serverless Edge", sub: "Global sub-15ms execution", active: true },
+          { title: props.opt2 || "Dedicated Cluster", sub: "Isolated VPC & reserved CPU", active: false },
+        ].map((item, idx) =>
+          React.createElement(
+            "div",
+            {
+              key: idx,
+              style: {
+                backgroundColor: tokens.surface,
+                borderColor: item.active ? tokens.primary : tokens.border,
+                borderRadius: `${tokens.radius}px`,
+              },
+              className: `p-3.5 border flex items-center justify-between cursor-pointer transition-colors ${
+                item.active ? "ring-1 ring-offset-0" : ""
+              }`,
+            },
+            React.createElement(
+              "div",
+              { className: "space-y-0.5" },
+              React.createElement("div", { className: "text-xs font-semibold text-white font-mono" }, item.title),
+              React.createElement("div", { className: "text-[11px] text-zinc-400" }, item.sub)
+            ),
+            React.createElement(
+              "div",
+              {
+                style: item.active
+                  ? { borderColor: tokens.primary }
+                  : { borderColor: "#3f3f46" },
+                className: "w-4 h-4 rounded-full border flex items-center justify-center shrink-0",
+              },
+              item.active &&
+                React.createElement("div", {
+                  style: { backgroundColor: tokens.primary },
+                  className: "w-2 h-2 rounded-full",
+                })
+            )
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="space-y-2 max-w-sm w-full">
+  <div className="p-3.5 bg-[${tokens.surface}] border border-[${tokens.primary}] rounded-[${tokens.radius}px] flex items-center justify-between ring-1 ring-[${tokens.primary}]">
+    <div>
+      <div className="text-xs font-semibold text-white font-mono">${escapeText(props.opt1 || "Serverless Edge")}</div>
+      <div className="text-[11px] text-zinc-400">Global sub-15ms execution</div>
+    </div>
+    <div className="w-4 h-4 rounded-full border border-[${tokens.primary}] flex items-center justify-center shrink-0">
+      <div className="w-2 h-2 rounded-full bg-[${tokens.primary}]"></div>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "file-dropzone": {
+    id: "file-dropzone",
+    name: "Interactive File Dropzone",
+    category: "forms",
+    description: "Dashed drag-and-drop container for uploading assets, SVG tokens, and configurations.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Dropzone Heading", type: "text", defaultValue: "Upload Design Tokens" },
+      { key: "hint", label: "File Hint", type: "text", defaultValue: "JSON, TOML, or CSS tokens up to 10MB" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-6 border-2 border-dashed max-w-sm w-full flex flex-col items-center justify-center text-center space-y-2 cursor-pointer hover:border-zinc-600 transition-colors",
+        },
+        React.createElement("div", {
+          style: { color: tokens.primary },
+          className: "font-mono font-bold text-lg mb-1",
+        }, "↑"),
+        React.createElement("div", { className: "text-xs font-semibold text-white" }, props.title || "Upload Design Tokens"),
+        React.createElement("p", { className: "text-[11px] text-zinc-500 font-mono" }, props.hint || "JSON, TOML, or CSS tokens up to 10MB")
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-6 bg-[${tokens.surface}] border-2 border-dashed border-[${tokens.border}] rounded-[${tokens.radius}px] max-w-sm w-full flex flex-col items-center justify-center text-center space-y-2 cursor-pointer">
+  <div className="font-mono font-bold text-lg text-[${tokens.primary}] mb-1">↑</div>
+  <div className="text-xs font-semibold text-white">${escapeText(props.title || "Upload Design Tokens")}</div>
+  <p className="text-[11px] text-zinc-500 font-mono">${escapeText(props.hint || "JSON, TOML, or CSS tokens up to 10MB")}</p>
+</div>`;
+    },
+  },
+
+  "action-dock": {
+    id: "action-dock",
+    name: "Floating Action Dock",
+    category: "navigation",
+    description: "macOS-style floating dock island with active status dots and tooltips.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "item1", label: "Item 1", type: "text", defaultValue: "Home" },
+      { key: "item2", label: "Item 2", type: "text", defaultValue: "Components" },
+      { key: "item3", label: "Item 3", type: "text", defaultValue: "Studio" },
+      { key: "item4", label: "Item 4", type: "text", defaultValue: "Settings" },
+    ],
+    renderComponent: (props, tokens) => {
+      const items = [props.item1 || "Home", props.item2 || "Components", props.item3 || "Studio", props.item4 || "Settings"];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: "9999px",
+          },
+          className: "px-3 py-1.5 border shadow-2xl inline-flex items-center gap-1",
+        },
+        items.map((item, idx) => {
+          const isActive = idx === 1;
+          return React.createElement(
+            "button",
+            {
+              key: item,
+              style: isActive
+                ? {
+                    backgroundColor: tokens.primary,
+                    color: tokens.primaryForeground,
+                  }
+                : {},
+              className: `px-3 py-1 rounded-full text-xs font-medium font-mono transition-all cursor-pointer ${
+                isActive ? "shadow-xs" : "text-zinc-400 hover:text-white"
+              }`,
+            },
+            item
+          );
+        })
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="px-3 py-1.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-full shadow-2xl inline-flex items-center gap-1">
+  <button className="px-3 py-1 rounded-full text-xs font-medium font-mono text-zinc-400">${escapeText(props.item1 || "Home")}</button>
+  <button className="px-3 py-1 rounded-full text-xs font-medium font-mono bg-[${tokens.primary}] text-[${tokens.primaryForeground}] shadow-xs">${escapeText(props.item2 || "Components")}</button>
+  <button className="px-3 py-1 rounded-full text-xs font-medium font-mono text-zinc-400">${escapeText(props.item3 || "Studio")}</button>
+</div>`;
+    },
+  },
+
+  "breadcrumbs": {
+    id: "breadcrumbs",
+    name: "Architectural Breadcrumb Trail",
+    category: "navigation",
+    description: "Hairline path navigation bar with active route highlight and slash separators.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "root", label: "Root Level", type: "text", defaultValue: "Platform" },
+      { key: "section", label: "Section", type: "text", defaultValue: "Workspaces" },
+      { key: "page", label: "Active Page", type: "text", defaultValue: "Customizer Studio" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "nav",
+        {
+          style: {
+            borderRadius: `${tokens.radius}px`,
+            borderColor: tokens.border,
+            backgroundColor: tokens.surface,
+          },
+          className: "px-3 py-2 border inline-flex items-center gap-2 text-xs font-mono shadow-xs",
+        },
+        React.createElement("span", { className: "text-zinc-500 hover:text-zinc-300 cursor-pointer" }, props.root || "Platform"),
+        React.createElement("span", { className: "text-zinc-700" }, "/"),
+        React.createElement("span", { className: "text-zinc-500 hover:text-zinc-300 cursor-pointer" }, props.section || "Workspaces"),
+        React.createElement("span", { className: "text-zinc-700" }, "/"),
+        React.createElement("span", { style: { color: tokens.primary }, className: "font-semibold" }, props.page || "Customizer Studio")
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<nav className="px-3 py-2 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] inline-flex items-center gap-2 text-xs font-mono shadow-xs">
+  <span className="text-zinc-500">${escapeText(props.root || "Platform")}</span>
+  <span className="text-zinc-700">/</span>
+  <span className="text-zinc-500">${escapeText(props.section || "Workspaces")}</span>
+  <span className="text-zinc-700">/</span>
+  <span className="text-[${tokens.primary}] font-semibold">${escapeText(props.page || "Customizer Studio")}</span>
+</nav>`;
+    },
+  },
+
+  "profile-card": {
+    id: "profile-card",
+    name: "Developer Profile Badge",
+    category: "patterns",
+    description: "Compact creator passport with avatar, status chip, repository counter, and connect button.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "name", label: "Developer Name", type: "text", defaultValue: "Azure" },
+      { key: "handle", label: "GitHub Handle", type: "text", defaultValue: "@azurelikestocode" },
+      { key: "bio", label: "Bio Tagline", type: "text", defaultValue: "Building live-configurable UI engines." },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-sm w-full space-y-4 text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-3" },
+          React.createElement(
+            "div",
+            {
+              style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+              className: "w-10 h-10 rounded-full flex items-center justify-center font-bold font-mono text-sm shadow-md shrink-0",
+            },
+            (props.name || "A")[0]
+          ),
+          React.createElement(
+            "div",
+            { className: "truncate" },
+            React.createElement("div", { className: "text-xs font-bold truncate" }, props.name || "Azure"),
+            React.createElement("div", { className: "text-[11px] text-zinc-500 font-mono truncate" }, props.handle || "@azurelikestocode")
+          )
+        ),
+        React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed font-normal" }, props.bio || "Building live-configurable UI engines."),
+        React.createElement(
+          "button",
+          {
+            style: {
+              backgroundColor: tokens.primary,
+              color: tokens.primaryForeground,
+              borderRadius: `${tokens.radius}px`,
+            },
+            className: "w-full py-1.5 px-3 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]",
+          },
+          "Connect on GitHub"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-4 text-white">
+  <div className="flex items-center gap-3">
+    <div className="w-10 h-10 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-bold font-mono text-sm shrink-0">A</div>
+    <div>
+      <div className="text-xs font-bold">${escapeText(props.name || "Azure")}</div>
+      <div className="text-[11px] text-zinc-500 font-mono">${escapeText(props.handle || "@azurelikestocode")}</div>
+    </div>
+  </div>
+  <p className="text-xs text-zinc-400 leading-relaxed">${escapeText(props.bio || "")}</p>
+  <button className="w-full py-1.5 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px]">Connect on GitHub</button>
+</div>`;
+    },
+  },
 };
 
 export function getTemplateById(id: string): ComponentTemplate | undefined {

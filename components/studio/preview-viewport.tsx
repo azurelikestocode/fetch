@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Eye, ZoomIn, ZoomOut, Maximize2, Moon, Sun } from "lucide-react";
 import { ComponentTemplate } from "../../lib/templates";
 import { ThemeTokens } from "../../lib/tokens";
@@ -23,6 +23,21 @@ export function PreviewViewport({
   const [canvasBg, setCanvasBg] = useState<CanvasBg>("dot-grid");
   const [zoom, setZoom] = useState<number>(100);
 
+  // Dynamically load Google Font if a custom font is selected
+  useEffect(() => {
+    if (!tokens.customFont) return;
+    const fontId = `google-font-${tokens.customFont.replace(/\s+/g, "-").toLowerCase()}`;
+    if (!document.getElementById(fontId)) {
+      const link = document.createElement("link");
+      link.id = fontId;
+      link.rel = "stylesheet";
+      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+        tokens.customFont
+      )}:wght@300;400;500;600;700&display=swap`;
+      document.head.appendChild(link);
+    }
+  }, [tokens.customFont]);
+
   const widthClasses = {
     desktop: "w-full max-w-3xl",
     tablet: "w-full max-w-[640px]",
@@ -32,12 +47,13 @@ export function PreviewViewport({
   const simulation = props.simulatedState || "default";
 
   const fontStyle: React.CSSProperties = {
-    fontFamily:
-      tokens.fontFamily === "mono"
-        ? 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
-        : tokens.fontFamily === "serif"
-        ? 'Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif'
-        : 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: tokens.customFont
+      ? `"${tokens.customFont}", sans-serif`
+      : tokens.fontFamily === "mono"
+      ? 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+      : tokens.fontFamily === "serif"
+      ? 'Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif'
+      : 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     letterSpacing:
       tokens.letterSpacing === "tight"
         ? "-0.025em"
