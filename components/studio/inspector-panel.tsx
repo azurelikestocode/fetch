@@ -43,7 +43,7 @@ export function InspectorPanel({
   const currentSimulation = props.simulatedState || "default";
 
   return (
-    <aside className="w-full lg:w-84 border-r border-zinc-800/80 bg-zinc-950 overflow-y-auto p-5 shrink-0 space-y-7">
+    <aside className="w-full md:w-[350px] border-r border-zinc-800/80 bg-zinc-950 overflow-y-auto p-5 shrink-0 space-y-7">
       {/* Header with Reset */}
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
         <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold flex items-center gap-1.5">

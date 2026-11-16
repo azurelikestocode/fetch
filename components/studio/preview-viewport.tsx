@@ -33,7 +33,7 @@ export function PreviewViewport({
 
   return (
     <div
-      className={`flex-1 overflow-auto p-6 sm:p-12 flex flex-col items-center justify-between relative min-h-[550px] transition-colors duration-300 ${
+      className={`flex-1 min-w-0 h-full overflow-auto p-4 sm:p-8 md:p-12 flex flex-col items-center justify-between relative transition-colors duration-300 ${
         canvasBg === "studio-light"
           ? "bg-zinc-100 text-zinc-900"
           : canvasBg === "pitch-dark"

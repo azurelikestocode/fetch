@@ -73,7 +73,7 @@ export function StudioClient({ templateId, template: directTemplate }: StudioCli
         copied={copied}
       />
 
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
         <InspectorPanel
           template={template}
           tokens={tokens}
