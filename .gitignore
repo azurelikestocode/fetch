@@ -33,6 +33,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Obsidian scratch
+*.base
+*.canvas
+
 # Superpowers SDD workspace
 .superpowers/
 

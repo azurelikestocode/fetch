@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Sliders, Palette, Type, RotateCcw } from "lucide-react";
+import React, { useState } from "react";
+import { Sliders, Palette, Type, RotateCcw, Sparkles, Layers, Activity } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { ComponentTemplate } from "../../lib/templates";
 import { ThemeTokens, COLOR_SWATCHES } from "../../lib/tokens";
@@ -15,6 +15,13 @@ interface InspectorPanelProps {
   onReset: () => void;
 }
 
+const SURFACE_PRESETS = [
+  { name: "Zinc Slate", value: "#18181b" },
+  { name: "Pitch Black", value: "#09090b" },
+  { name: "Deep Navy", value: "#0f172a" },
+  { name: "Neutral Dark", value: "#171717" },
+];
+
 export function InspectorPanel({
   template,
   tokens,
@@ -23,11 +30,24 @@ export function InspectorPanel({
   onPropChange,
   onReset,
 }: InspectorPanelProps) {
+  const [hexInput, setHexInput] = useState(tokens.primary);
+
+  const handleCustomHexChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setHexInput(val);
+    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+      onTokenChange({ primary: val, primaryForeground: "#ffffff" });
+    }
+  };
+
+  const currentSimulation = props.simulatedState || "default";
+
   return (
-    <aside className="w-full lg:w-80 border-r border-zinc-800/80 bg-zinc-950 overflow-y-auto p-5 shrink-0 space-y-8">
+    <aside className="w-full lg:w-84 border-r border-zinc-800/80 bg-zinc-950 overflow-y-auto p-5 shrink-0 space-y-7">
       {/* Header with Reset */}
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
-        <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
           Component Inspector
         </span>
         <button
@@ -71,7 +91,7 @@ export function InspectorPanel({
         </div>
       </div>
 
-      {/* Colors / Accent Swatches */}
+      {/* Colors / Accent Swatches & Custom Hex Picker */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs">
           <span className="font-semibold text-zinc-300 flex items-center gap-1.5 font-mono text-[11px]">
@@ -80,25 +100,107 @@ export function InspectorPanel({
           </span>
           <span className="font-mono text-zinc-400 uppercase text-[11px]">{tokens.primary}</span>
         </div>
-        <div className="flex items-center gap-2 pt-1">
+
+        {/* Preset Color Swatches */}
+        <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 pt-1">
           {COLOR_SWATCHES.map((swatch) => (
             <button
               key={swatch.value}
-              onClick={() => onTokenChange({ primary: swatch.value, primaryForeground: swatch.foreground })}
+              onClick={() => {
+                setHexInput(swatch.value);
+                onTokenChange({ primary: swatch.value, primaryForeground: swatch.foreground });
+              }}
+              title={swatch.name}
               aria-label={swatch.name}
-              className={`w-6 h-6 rounded-xs transition-transform cursor-pointer relative flex items-center justify-center ${
+              className={`h-7 rounded-xs transition-all cursor-pointer relative flex items-center justify-center ${
                 tokens.primary.toLowerCase() === swatch.value.toLowerCase()
-                  ? "ring-2 ring-white ring-offset-2 ring-offset-zinc-950 scale-110"
-                  : "hover:scale-105 opacity-80 hover:opacity-100"
+                  ? "ring-2 ring-white ring-offset-2 ring-offset-zinc-950 scale-105"
+                  : "hover:scale-105 opacity-80 hover:opacity-100 border border-zinc-800"
               }`}
               style={{ backgroundColor: swatch.value }}
             />
           ))}
         </div>
+
+        {/* Custom Hex & Color Picker Input */}
+        <div className="flex items-center gap-2 pt-2">
+          <div className="relative w-8 h-8 rounded-xs overflow-hidden border border-zinc-800 shrink-0 cursor-pointer">
+            <input
+              type="color"
+              value={tokens.primary}
+              onChange={(e) => {
+                setHexInput(e.target.value);
+                onTokenChange({ primary: e.target.value, primaryForeground: "#ffffff" });
+              }}
+              className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer border-0 p-0"
+              title="Pick custom color"
+            />
+          </div>
+          <input
+            type="text"
+            value={hexInput}
+            onChange={handleCustomHexChange}
+            placeholder="#6366F1"
+            className="flex-1 h-8 px-2.5 text-xs text-[#fafafa] bg-zinc-900 border border-zinc-800 rounded-xs font-mono uppercase focus:outline-none focus:border-zinc-600"
+          />
+        </div>
+      </div>
+
+      {/* Surface Tone Selector */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-zinc-300 flex items-center gap-1.5 font-mono text-[11px]">
+            <Layers className="w-3.5 h-3.5 text-zinc-400" />
+            Surface Tone
+          </span>
+          <span className="font-mono text-zinc-400 uppercase text-[11px]">{tokens.surface}</span>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {SURFACE_PRESETS.map((surf) => (
+            <button
+              key={surf.value}
+              onClick={() => onTokenChange({ surface: surf.value })}
+              className={`h-8 px-2.5 rounded-xs border text-left text-[11px] font-mono transition-all cursor-pointer flex items-center gap-2 ${
+                tokens.surface === surf.value
+                  ? "border-zinc-500 bg-zinc-900 text-white"
+                  : "border-zinc-850 bg-zinc-950/80 text-zinc-400 hover:text-zinc-200"
+              }`}
+            >
+              <span className="w-3 h-3 rounded-xs border border-zinc-700" style={{ backgroundColor: surf.value }}></span>
+              <span className="truncate">{surf.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Interactive State Simulator */}
+      <div className="space-y-3 pt-3 border-t border-zinc-800/80">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-zinc-300 flex items-center gap-1.5 font-mono text-[11px]">
+            <Activity className="w-3.5 h-3.5 text-zinc-400" />
+            Simulate State
+          </span>
+          <span className="font-mono text-zinc-500 text-[10px] uppercase">{currentSimulation}</span>
+        </div>
+        <div className="grid grid-cols-4 gap-1.5">
+          {["default", "hover", "active", "disabled"].map((st) => (
+            <button
+              key={st}
+              onClick={() => onPropChange("simulatedState", st)}
+              className={`h-7 text-[10px] font-mono uppercase tracking-wider rounded-xs border transition-all cursor-pointer ${
+                currentSimulation === st
+                  ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
+                  : "border-zinc-850 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"
+              }`}
+            >
+              {st}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Template-Specific Content & Typography Controls */}
-      <div className="space-y-4 pt-4 border-t border-zinc-800/80">
+      <div className="space-y-4 pt-3 border-t border-zinc-800/80">
         <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 uppercase tracking-wider font-semibold">
           <Type className="w-3.5 h-3.5" />
           <span>Content & Properties</span>
@@ -163,4 +265,3 @@ export function InspectorPanel({
     </aside>
   );
 }
-

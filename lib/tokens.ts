@@ -80,6 +80,9 @@ export const COLOR_SWATCHES = [
   { name: "Amber", value: "#f59e0b", foreground: "#000000" },
   { name: "Rose", value: "#f43f5e", foreground: "#ffffff" },
   { name: "Violet", value: "#8b5cf6", foreground: "#ffffff" },
+  { name: "Cyan", value: "#06b6d4", foreground: "#09090b" },
+  { name: "Lime", value: "#84cc16", foreground: "#09090b" },
+  { name: "Zinc", value: "#fafafa", foreground: "#09090b" },
 ];
 
 export function generateThemeCss(tokens: ThemeTokens): string {
