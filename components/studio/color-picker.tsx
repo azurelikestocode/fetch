@@ -85,16 +85,21 @@ function isLightColor(hex: string): boolean {
 
 export function VisualColorPicker({ color, onChange }: ColorPickerProps) {
   const [hsv, setHsv] = useState(() => hexToHsv(color));
+  const hsvRef = useRef(hsv);
+  hsvRef.current = hsv;
+
   const spectrumRef = useRef<HTMLDivElement>(null);
   const hueRef = useRef<HTMLDivElement>(null);
   const isDraggingSpectrum = useRef(false);
   const isDraggingHue = useRef(false);
 
-  // Sync HSV when external color prop changes meaningfully
+  // Sync HSV when external color prop changes from preset buttons or inputs
   useEffect(() => {
-    const currentHex = hsvToHex(hsv.h, hsv.s, hsv.v);
+    const currentHex = hsvToHex(hsvRef.current.h, hsvRef.current.s, hsvRef.current.v);
     if (color.toUpperCase() !== currentHex.toUpperCase()) {
-      setHsv(hexToHsv(color));
+      const nextHsv = hexToHsv(color);
+      hsvRef.current = nextHsv;
+      setHsv(nextHsv);
     }
   }, [color]);
 
@@ -108,12 +113,12 @@ export function VisualColorPicker({ color, onChange }: ColorPickerProps) {
       const s = Math.round((x / rect.width) * 100);
       const v = Math.round((1 - y / rect.height) * 100);
 
-      setHsv((prev) => {
-        const next = { ...prev, s, v };
-        const newHex = hsvToHex(next.h, next.s, next.v);
-        onChange(newHex, isLightColor(newHex));
-        return next;
-      });
+      const next = { ...hsvRef.current, s, v };
+      hsvRef.current = next;
+      setHsv(next);
+
+      const newHex = hsvToHex(next.h, next.s, next.v);
+      onChange(newHex, isLightColor(newHex));
     },
     [onChange]
   );
@@ -125,12 +130,12 @@ export function VisualColorPicker({ color, onChange }: ColorPickerProps) {
       const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
       const h = Math.round((x / rect.width) * 360);
 
-      setHsv((prev) => {
-        const next = { ...prev, h };
-        const newHex = hsvToHex(next.h, next.s, next.v);
-        onChange(newHex, isLightColor(newHex));
-        return next;
-      });
+      const next = { ...hsvRef.current, h };
+      hsvRef.current = next;
+      setHsv(next);
+
+      const newHex = hsvToHex(next.h, next.s, next.v);
+      onChange(newHex, isLightColor(newHex));
     },
     [onChange]
   );
@@ -188,7 +193,7 @@ export function VisualColorPicker({ color, onChange }: ColorPickerProps) {
       {/* 1D Rainbow Hue Slider */}
       <div className="space-y-1">
         <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500">
-          <span>HUE</span>
+          <span>HUE SLIDER</span>
           <span>{hsv.h}°</span>
         </div>
         <div
@@ -225,14 +230,16 @@ export function VisualColorPicker({ color, onChange }: ColorPickerProps) {
           onChange={(e) => {
             const val = e.target.value.toUpperCase();
             if (/^#[0-9A-F]{6}$/i.test(val)) {
-              setHsv(hexToHsv(val));
+              const next = hexToHsv(val);
+              hsvRef.current = next;
+              setHsv(next);
               onChange(val, isLightColor(val));
             }
           }}
           className="flex-1 h-7 px-2 text-xs font-mono bg-zinc-950 border border-zinc-800 rounded-xs text-[#fafafa] uppercase focus:outline-none focus:border-zinc-500"
         />
         <span className="text-[10px] font-mono text-zinc-500">
-          {hsv.s}%, {hsv.v}%
+          S:{hsv.s}% V:{hsv.v}%
         </span>
       </div>
     </div>

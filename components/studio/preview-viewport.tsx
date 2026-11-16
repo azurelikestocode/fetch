@@ -31,6 +31,38 @@ export function PreviewViewport({
 
   const simulation = props.simulatedState || "default";
 
+  const fontStyle: React.CSSProperties = {
+    fontFamily:
+      tokens.fontFamily === "mono"
+        ? 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+        : tokens.fontFamily === "serif"
+        ? 'Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif'
+        : 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    letterSpacing:
+      tokens.letterSpacing === "tight"
+        ? "-0.025em"
+        : tokens.letterSpacing === "wide"
+        ? "0.05em"
+        : "normal",
+    fontWeight:
+      tokens.fontWeight === "bold"
+        ? "700"
+        : tokens.fontWeight === "semibold"
+        ? "600"
+        : tokens.fontWeight === "medium"
+        ? "500"
+        : "400",
+  };
+
+  const shadowStyles: React.CSSProperties =
+    tokens.shadow === "glow"
+      ? { filter: `drop-shadow(0 0 25px ${tokens.primary}50)` }
+      : tokens.shadow === "lg"
+      ? { filter: "drop-shadow(0 20px 25px rgba(0, 0, 0, 0.6))" }
+      : tokens.shadow === "sm"
+      ? { filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4))" }
+      : {};
+
   return (
     <div
       className={`flex-1 min-w-0 h-full overflow-auto p-4 sm:p-8 md:p-12 flex flex-col items-center justify-between relative transition-colors duration-300 ${
@@ -59,7 +91,7 @@ export function PreviewViewport({
           <button
             onClick={() => setCanvasBg("dot-grid")}
             title="Dot Grid Canvas"
-            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 ${
+            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 cursor-pointer ${
               canvasBg === "dot-grid" ? "bg-zinc-800 text-white font-semibold" : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -69,7 +101,7 @@ export function PreviewViewport({
           <button
             onClick={() => setCanvasBg("mesh")}
             title="Architectural Mesh"
-            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 ${
+            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 cursor-pointer ${
               canvasBg === "mesh" ? "bg-zinc-800 text-white font-semibold" : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -78,7 +110,7 @@ export function PreviewViewport({
           <button
             onClick={() => setCanvasBg("pitch-dark")}
             title="Pitch Black"
-            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 ${
+            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 cursor-pointer ${
               canvasBg === "pitch-dark" ? "bg-zinc-800 text-white font-semibold" : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -88,7 +120,7 @@ export function PreviewViewport({
           <button
             onClick={() => setCanvasBg("studio-light")}
             title="Studio Light Background"
-            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 ${
+            className={`h-6 px-2 text-[10px] font-mono rounded-xs transition-colors flex items-center gap-1 cursor-pointer ${
               canvasBg === "studio-light" ? "bg-zinc-200 text-zinc-900 font-semibold" : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -102,7 +134,7 @@ export function PreviewViewport({
           <button
             onClick={() => setZoom((z) => Math.max(75, z - 25))}
             title="Zoom Out"
-            className="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"
+            className="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <ZoomOut className="w-3 h-3" />
           </button>
@@ -110,14 +142,14 @@ export function PreviewViewport({
           <button
             onClick={() => setZoom((z) => Math.min(150, z + 25))}
             title="Zoom In"
-            className="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white transition-colors"
+            className="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <ZoomIn className="w-3 h-3" />
           </button>
           <button
             onClick={() => setZoom(100)}
             title="Reset Zoom"
-            className="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-white transition-colors ml-1 border-l border-zinc-800"
+            className="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-white transition-colors ml-1 border-l border-zinc-800 cursor-pointer"
           >
             <Maximize2 className="w-2.5 h-2.5" />
           </button>
@@ -145,6 +177,7 @@ export function PreviewViewport({
         />
 
         <div
+          style={{ ...fontStyle, ...shadowStyles }}
           className={`fetch-preview w-full flex items-center justify-center transition-all duration-300 ${
             simulation === "hover"
               ? "scale-[1.02] filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.5)]"
@@ -166,6 +199,8 @@ export function PreviewViewport({
         <span>
           {viewport === "mobile" ? "375 × 667" : viewport === "tablet" ? "768 × 1024" : "Responsive Full"}
         </span>
+        <span className="text-zinc-700">|</span>
+        <span>Font: {tokens.fontFamily || "sans"}</span>
         {simulation !== "default" && (
           <>
             <span className="text-zinc-700">|</span>

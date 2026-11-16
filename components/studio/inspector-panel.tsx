@@ -15,6 +15,9 @@ import {
   Sun,
   Shield,
   Box,
+  Baseline,
+  SunMedium,
+  Frame,
 } from "lucide-react";
 import { Slider } from "../ui/slider";
 import { ComponentTemplate } from "../../lib/templates";
@@ -127,6 +130,111 @@ export function InspectorPanel({
           <button onClick={() => onTokenChange({ radius: 24 })} className="hover:text-zinc-300 cursor-pointer">
             Pill (24px)
           </button>
+        </div>
+      </div>
+
+      {/* Typography & Fonts Section */}
+      <div className="space-y-3 pt-2 border-t border-zinc-850">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-zinc-300 flex items-center gap-1.5 font-mono text-[11px]">
+            <Baseline className="w-3.5 h-3.5 text-zinc-400" />
+            Typography & Font Family
+          </span>
+          <span className="font-mono text-zinc-400 text-[11px] uppercase">
+            {tokens.fontFamily || "sans"}
+          </span>
+        </div>
+
+        {/* Font Family Pills */}
+        <div className="grid grid-cols-3 gap-1">
+          {[
+            { id: "sans", label: "Sans (Geist)" },
+            { id: "mono", label: "Mono (Code)" },
+            { id: "serif", label: "Serif (Book)" },
+          ].map((f) => (
+            <button
+              key={f.id}
+              onClick={() => onTokenChange({ fontFamily: f.id as any })}
+              className={`h-7 text-[10px] font-mono uppercase tracking-wider rounded-xs border transition-all cursor-pointer ${
+                (tokens.fontFamily || "sans") === f.id
+                  ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
+                  : "border-zinc-850 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"
+              }`}
+            >
+              {f.id}
+            </button>
+          ))}
+        </div>
+
+        {/* Letter Spacing (Tracking) */}
+        <div className="space-y-1 pt-1">
+          <label className="text-[10px] font-mono text-zinc-500 uppercase">Letter Spacing (Tracking)</label>
+          <div className="grid grid-cols-3 gap-1">
+            {["tight", "normal", "wide"].map((track) => (
+              <button
+                key={track}
+                onClick={() => onTokenChange({ letterSpacing: track as any })}
+                className={`h-6 text-[10px] font-mono uppercase rounded-xs border transition-colors cursor-pointer ${
+                  (tokens.letterSpacing || "normal") === track
+                    ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
+                    : "border-zinc-850 text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                {track}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Font Weight */}
+        <div className="space-y-1 pt-1">
+          <label className="text-[10px] font-mono text-zinc-500 uppercase">Font Weight</label>
+          <div className="grid grid-cols-4 gap-1">
+            {["normal", "medium", "semibold", "bold"].map((w) => (
+              <button
+                key={w}
+                onClick={() => onTokenChange({ fontWeight: w as any })}
+                className={`h-6 text-[9px] font-mono uppercase rounded-xs border transition-colors cursor-pointer ${
+                  (tokens.fontWeight || "medium") === w
+                    ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
+                    : "border-zinc-850 text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                {w}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Shadows, Elevation & Glow Aura */}
+      <div className="space-y-3 pt-2 border-t border-zinc-850">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-zinc-300 flex items-center gap-1.5 font-mono text-[11px]">
+            <SunMedium className="w-3.5 h-3.5 text-zinc-400" />
+            Elevation & Shadow
+          </span>
+          <span className="font-mono text-zinc-400 text-[10px] uppercase">{tokens.shadow || "sm"}</span>
+        </div>
+        <div className="grid grid-cols-4 gap-1">
+          {[
+            { id: "none", label: "Flat" },
+            { id: "sm", label: "Subtle" },
+            { id: "lg", label: "Floating" },
+            { id: "glow", label: "Glow" },
+          ].map((sh) => (
+            <button
+              key={sh.id}
+              onClick={() => onTokenChange({ shadow: sh.id as any })}
+              className={`h-7 text-[10px] font-mono uppercase tracking-wider rounded-xs border transition-all cursor-pointer ${
+                (tokens.shadow || "sm") === sh.id
+                  ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
+                  : "border-zinc-850 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"
+              }`}
+            >
+              {sh.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -262,7 +370,7 @@ export function InspectorPanel({
                         className={`h-7 px-2.5 text-[11px] font-mono uppercase tracking-wider rounded-xs border transition-colors cursor-pointer ${
                           val === opt
                             ? "bg-zinc-800 text-white border-zinc-600"
-                            : "border-zinc-800 text-zinc-500 hover:text-zinc-300"
+                            : "border-zinc-850 text-zinc-500 hover:text-zinc-300"
                         }`}
                       >
                         {opt}

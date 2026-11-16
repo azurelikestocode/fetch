@@ -6,6 +6,11 @@ export interface ThemeTokens {
   surfaceHover: string;
   border: string;
   radius: number; // in pixels
+  fontFamily?: "sans" | "mono" | "serif";
+  letterSpacing?: "tight" | "normal" | "wide";
+  fontWeight?: "normal" | "medium" | "semibold" | "bold";
+  shadow?: "none" | "sm" | "md" | "lg" | "glow";
+  borderWidth?: number;
 }
 
 export interface PresetTheme {
