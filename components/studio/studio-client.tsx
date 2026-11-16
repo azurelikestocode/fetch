@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Link from "next/link";
+import { Lock, ArrowRight } from "lucide-react";
 import { ComponentTemplate, getTemplateById } from "../../lib/templates";
 import { ThemeTokens, generateThemeCss } from "../../lib/tokens";
 import { copyToClipboard } from "../../lib/utils";
@@ -8,6 +10,7 @@ import { StudioHeader } from "./studio-header";
 import { InspectorPanel } from "./inspector-panel";
 import { PreviewViewport } from "./preview-viewport";
 import { CodeExportModal } from "./code-export-modal";
+import { useAuth } from "../../context/auth-context";
 
 interface StudioClientProps {
   templateId?: string;
@@ -15,6 +18,7 @@ interface StudioClientProps {
 }
 
 export function StudioClient({ templateId, template: directTemplate }: StudioClientProps) {
+  const { isTemplateLocked } = useAuth();
   const template = directTemplate || (templateId ? getTemplateById(templateId) : undefined);
 
   if (!template) {
@@ -25,6 +29,7 @@ export function StudioClient({ templateId, template: directTemplate }: StudioCli
     );
   }
 
+  const isLocked = isTemplateLocked(template.id);
   const [tokens, setTokens] = useState<ThemeTokens>({ ...template.defaultTokens });
   const [props, setProps] = useState<Record<string, any>>(() => {
     const initialProps: Record<string, any> = {};
@@ -72,6 +77,24 @@ export function StudioClient({ templateId, template: directTemplate }: StudioCli
         onOpenCode={() => setIsCodeModalOpen(true)}
         copied={copied}
       />
+
+      {isLocked && (
+        <div className="bg-zinc-950/95 border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between text-xs font-mono z-30">
+          <div className="flex items-center gap-2 text-zinc-300">
+            <Lock className="w-3.5 h-3.5 text-zinc-400" />
+            <span>
+              Previewing <span className="text-white font-medium">{template.name}</span> in Member Preview mode.
+            </span>
+          </div>
+          <Link
+            href={`/register?redirect=/studio/${template.id}`}
+            className="px-2.5 py-1 bg-white hover:bg-zinc-200 text-[#09090b] font-medium text-[11px] rounded-xs transition-colors flex items-center gap-1.5 active:scale-[0.98]"
+          >
+            <span>Want more? Register!</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
         <InspectorPanel
