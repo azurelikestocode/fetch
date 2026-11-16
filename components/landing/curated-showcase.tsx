@@ -66,17 +66,17 @@ export function CuratedShowcase() {
           {featured.map((template) => {
             const isLarge = ["card", "auth-card", "stat-card", "pricing-card", "bento-card", "feature-grid"].includes(template.id);
             return (
-              <div key={template.id} className="p-8 flex flex-col justify-between bg-[#09090b] hover:bg-zinc-950/60 transition-colors group">
+              <div key={template.id} className="p-8 flex flex-col justify-between bg-[#09090b] hover:bg-zinc-950/80 transition-all duration-300 group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded-xs bg-zinc-900/60">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded-xs bg-zinc-900/60 group-hover:border-zinc-700 transition-colors">
                       {CATEGORY_LABELS[template.category] || template.category}
                     </span>
                     <span className="text-[11px] font-mono text-zinc-600">ID: {template.id}</span>
                   </div>
 
                   {/* Clean Non-Overflowing Preview Box */}
-                  <div className="h-48 flex items-center justify-center p-4 bg-[#09090b] border border-zinc-850 rounded-xs mb-6 overflow-hidden pointer-events-none relative">
+                  <div className="h-48 flex items-center justify-center p-4 bg-[#09090b] border border-zinc-850 group-hover:border-zinc-700 rounded-xs mb-6 overflow-hidden pointer-events-none relative transition-colors duration-300">
                     <div className="absolute inset-0 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px] opacity-25 pointer-events-none" />
                     <div className={`w-full flex items-center justify-center origin-center ${getScaleClass(template.id)}`}>
                       {template.renderComponent({}, template.defaultTokens)}

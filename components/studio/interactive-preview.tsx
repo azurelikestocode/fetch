@@ -136,6 +136,11 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <UserTableRowCanvas props={props} tokens={tokens} />;
   }
 
+  // Metric Sparkline Interactive Preview
+  if (template.id === "metric-sparkline") {
+    return <MetricSparklineCanvas props={props} tokens={tokens} />;
+  }
+
   // Fallback to template's standard render
   return <>{template.renderComponent(props, tokens)}</>;
 }
@@ -1319,6 +1324,111 @@ function UserTableRowCanvas({ props, tokens }: { props: Record<string, any>; tok
           <span style={{ backgroundColor: tokens.primary }} className="w-1.5 h-1.5 rounded-full animate-pulse" />
           {status}
         </button>
+      </div>
+    </div>
+  );
+}
+
+function MetricSparklineCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [timeframe, setTimeframe] = useState("30d");
+
+  const data = {
+    "24h": {
+      value: "128,490",
+      delta: "+12.4%",
+      path: "M 6 32 C 35 34, 70 20, 105 26 C 140 32, 165 14, 192 12",
+      area: "M 6 32 C 35 34, 70 20, 105 26 C 140 32, 165 14, 192 12 L 192 46 L 6 46 Z",
+      endY: 12,
+    },
+    "7d": {
+      value: "892,100",
+      delta: "+28.1%",
+      path: "M 6 36 C 40 30, 75 34, 110 22 C 145 10, 170 18, 192 10",
+      area: "M 6 36 C 40 30, 75 34, 110 22 C 145 10, 170 18, 192 10 L 192 46 L 6 46 Z",
+      endY: 10,
+    },
+    "30d": {
+      value: props.value || "4,829,190",
+      delta: props.delta || "+34.2%",
+      path: "M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10",
+      area: "M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10 L 192 46 L 6 46 Z",
+      endY: 10,
+    },
+    "90d": {
+      value: "14,204,500",
+      delta: "+56.8%",
+      path: "M 6 42 C 50 36, 80 28, 120 18 C 150 10, 175 14, 192 8",
+      area: "M 6 42 C 50 36, 80 28, 120 18 C 150 10, 175 14, 192 8 L 192 46 L 6 46 Z",
+      endY: 8,
+    },
+  }[timeframe] || {
+    value: "4,829,190",
+    delta: "+34.2%",
+    path: "M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10",
+    area: "M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10 L 192 46 L 6 46 Z",
+    endY: 10,
+  };
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-5 border shadow-xl max-w-sm w-full space-y-4 text-white select-none transition-all duration-300"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-mono text-zinc-400 font-medium">{props.title || "Monthly API Calls"}</span>
+        <span
+          style={{ backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` }}
+          className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-xs border"
+        >
+          {data.delta}
+        </span>
+      </div>
+
+      <div className="text-2xl font-bold font-mono tracking-tight text-white transition-all">
+        {data.value}
+      </div>
+
+      <div className="h-14 w-full pt-1">
+        <svg viewBox="0 0 200 48" className="w-full h-full overflow-hidden">
+          <path d={data.area} fill={`${tokens.primary}18`} className="transition-all duration-300" />
+          <path
+            d={data.path}
+            fill="none"
+            stroke={tokens.primary}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            className="transition-all duration-300"
+          />
+          <circle cx="192" cy={data.endY} r="6" fill={tokens.primary} opacity="0.25" />
+          <circle cx="192" cy={data.endY} r="3" fill={tokens.primary} />
+        </svg>
+      </div>
+
+      <div className="flex items-center justify-between pt-1 border-t border-zinc-800/60">
+        <span className="text-[10px] font-mono text-zinc-500">Filter Range:</span>
+        <div className="flex items-center gap-1 font-mono text-[10px]">
+          {["24h", "7d", "30d", "90d"].map((tf) => (
+            <button
+              key={tf}
+              type="button"
+              onClick={() => setTimeframe(tf)}
+              style={
+                timeframe === tf
+                  ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
+                  : undefined
+              }
+              className={`px-1.5 py-0.5 rounded-xs transition-colors cursor-pointer ${
+                timeframe !== tf ? "text-zinc-500 hover:text-white bg-zinc-900/60" : "font-bold"
+              }`}
+            >
+              {tf}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -63,7 +63,7 @@ export function TemplateCard({ template }: TemplateCardProps) {
   const scaleClass = getScaleClass(template.id);
 
   return (
-    <div className="border border-zinc-850 bg-zinc-950 p-6 flex flex-col justify-between hover:border-zinc-750 transition-colors duration-200 group rounded-xs">
+    <div className="border border-zinc-850 bg-zinc-950 p-6 flex flex-col justify-between hover:border-zinc-700 hover:-translate-y-0.5 transition-all duration-200 group rounded-xs animate-fade-in shadow-xs hover:shadow-xl">
       <div>
         <div className="flex items-center justify-between mb-4">
           <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 rounded-xs flex items-center gap-1.5">

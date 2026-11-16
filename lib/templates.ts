@@ -2129,15 +2129,20 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
           { className: "h-14 w-full pt-1" },
           React.createElement(
             "svg",
-            { viewBox: "0 0 200 48", className: "w-full h-full overflow-visible" },
+            { viewBox: "0 0 200 48", className: "w-full h-full" },
             React.createElement("path", {
-              d: "M 0 40 Q 30 38, 60 25 T 120 18 T 160 8 T 200 2",
+              d: "M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10 L 192 46 L 6 46 Z",
+              fill: `${tokens.primary}18`,
+            }),
+            React.createElement("path", {
+              d: "M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10",
               fill: "none",
               stroke: tokens.primary,
               strokeWidth: "2.5",
               strokeLinecap: "round",
             }),
-            React.createElement("circle", { cx: "200", cy: "2", r: "3.5", fill: tokens.primary })
+            React.createElement("circle", { cx: "192", cy: "10", r: "6", fill: tokens.primary, opacity: "0.25" }),
+            React.createElement("circle", { cx: "192", cy: "10", r: "3", fill: tokens.primary })
           )
         ),
         React.createElement("div", { className: "text-[10px] font-mono text-zinc-500 text-right" }, props.timeframe || "Last 30 Days")
@@ -2152,8 +2157,9 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   <div className="text-2xl font-bold font-mono tracking-tight text-white">${escapeText(props.value || "4,829,190")}</div>
   <div className="h-14 w-full">
     <svg viewBox="0 0 200 48" className="w-full h-full">
-      <path d="M 0 40 Q 30 38, 60 25 T 120 18 T 160 8 T 200 2" fill="none" stroke="${tokens.primary}" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="200" cy="2" r="3.5" fill="${tokens.primary}" />
+      <path d="M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10 L 192 46 L 6 46 Z" fill="${tokens.primary}" fillOpacity="0.12" />
+      <path d="M 6 38 C 45 38, 70 30, 100 24 C 130 18, 155 14, 192 10" fill="none" stroke="${tokens.primary}" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="192" cy="10" r="3" fill="${tokens.primary}" />
     </svg>
   </div>
   <div className="text-[10px] font-mono text-zinc-500 text-right">${escapeText(props.timeframe || "Last 30 Days")}</div>
