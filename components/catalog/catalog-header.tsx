@@ -9,6 +9,7 @@ interface CatalogHeaderProps {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
   categories: string[];
+  categoryCounts?: Record<string, number>;
 }
 
 export function CatalogHeader({
@@ -17,6 +18,7 @@ export function CatalogHeader({
   selectedCategory,
   onCategoryChange,
   categories,
+  categoryCounts,
 }: CatalogHeaderProps) {
   return (
     <div className="border-b border-zinc-800/80 pb-10 mb-12">
@@ -45,22 +47,33 @@ export function CatalogHeader({
           />
         </div>
 
-        {/* Category Filter Pills */}
+        {/* Category Filter Pills with Item Counts */}
         <div className="flex flex-wrap items-center gap-1.5" role="tablist">
           {categories.map((cat) => {
             const isActive = selectedCategory === cat;
+            const count = categoryCounts ? categoryCounts[cat] : undefined;
             return (
               <button
                 key={cat}
                 role="button"
+                aria-label={cat}
                 onClick={() => onCategoryChange(cat)}
-                className={`h-9 px-3.5 text-xs font-mono uppercase tracking-wider rounded-xs border transition-all cursor-pointer ${
+                className={`h-9 px-3 text-xs font-mono uppercase tracking-wider rounded-xs border transition-all cursor-pointer flex items-center gap-1.5 ${
                   isActive
                     ? "bg-[#fafafa] text-[#09090b] border-white font-semibold"
                     : "border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-900 bg-zinc-950"
                 }`}
               >
-                {cat}
+                <span>{cat}</span>
+                {count !== undefined && (
+                  <span
+                    className={`text-[10px] px-1 py-0.2 rounded-xs font-mono ${
+                      isActive ? "bg-black/20 text-black font-bold" : "bg-zinc-900 text-zinc-500"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                )}
               </button>
             );
           })}

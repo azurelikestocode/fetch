@@ -18,7 +18,7 @@ export function CtaSection() {
               Craft interfaces with architectural precision.
             </h2>
             <p className="text-xs sm:text-sm text-zinc-400 font-normal leading-relaxed">
-              Explore 31+ live-configurable components, adjust design tokens and Google Fonts in real time, and copy pure self-contained Tailwind code directly into your stack.
+              Explore 40+ live-configurable components, adjust design tokens and Google Fonts in real time, and copy pure self-contained Tailwind code directly into your stack.
             </p>
           </div>
 
@@ -35,7 +35,7 @@ export function CtaSection() {
               className="inline-flex items-center gap-2 h-10 px-5 rounded-xs border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800/80 text-zinc-300 font-medium text-xs transition-colors"
             >
               <Layers className="w-3.5 h-3.5 text-zinc-500" />
-              <span>All 31 Components</span>
+              <span>All 40 Components</span>
               <ArrowRight className="w-3.5 h-3.5 text-zinc-500" />
             </Link>
           </div>

@@ -21,11 +21,13 @@ export function TemplateCard({ template }: TemplateCardProps) {
   const getScaleClass = (id: string) => {
     switch (id) {
       case "pricing-card":
-        return "scale-[0.56] max-w-[280px]";
+        return "scale-[0.52] max-w-[280px]";
       case "auth-card":
       case "testimonial-card":
       case "feature-grid":
       case "changelog-entry":
+      case "modal-dialog":
+      case "activity-feed":
         return "scale-[0.60] max-w-[290px]";
       case "newsletter-card":
         return "scale-[0.66] w-full max-w-[320px]";
@@ -35,6 +37,9 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "timeline-stepper":
       case "radio-group":
       case "profile-card":
+      case "metric-sparkline":
+      case "empty-state":
+      case "user-table-row":
         return "scale-[0.68] max-w-[290px]";
       case "code-terminal":
       case "file-dropzone":
@@ -45,6 +50,10 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "search-bar-popover":
       case "banner-alert":
       case "segment-picker":
+      case "skeleton-loader":
+      case "color-palette-swatch":
+      case "kbd-shortcut-strip":
+      case "slider-stepper":
         return "scale-[0.74] max-w-[300px]";
       default:
         return "scale-[0.88] max-w-[320px]";

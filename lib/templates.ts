@@ -2002,6 +2002,654 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
 </div>`;
     },
   },
+
+  "kbd-shortcut-strip": {
+    id: "kbd-shortcut-strip",
+    name: "Keyboard Shortcut Cheatsheet",
+    category: "elements",
+    description: "High-contrast keyboard shortcut cheatsheet strip for developer toolbars and modals.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "heading", label: "Toolbar Heading", type: "text", defaultValue: "Quick Commands" },
+      { key: "key1", label: "Key 1", type: "text", defaultValue: "⌘K" },
+      { key: "desc1", label: "Action 1", type: "text", defaultValue: "Search" },
+      { key: "key2", label: "Key 2", type: "text", defaultValue: "⌘J" },
+      { key: "desc2", label: "Action 2", type: "text", defaultValue: "Terminal" },
+      { key: "key3", label: "Key 3", type: "text", defaultValue: "⌘S" },
+      { key: "desc3", label: "Action 3", type: "text", defaultValue: "Export" },
+      { key: "key4", label: "Key 4", type: "text", defaultValue: "ESC" },
+      { key: "desc4", label: "Action 4", type: "text", defaultValue: "Close" },
+    ],
+    renderComponent: (props, tokens) => {
+      const shortcuts = [
+        { key: props.key1 || "⌘K", desc: props.desc1 || "Search" },
+        { key: props.key2 || "⌘J", desc: props.desc2 || "Terminal" },
+        { key: props.key3 || "⌘S", desc: props.desc3 || "Export" },
+        { key: props.key4 || "ESC", desc: props.desc4 || "Close" },
+      ];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-lg max-w-md w-full space-y-3 text-white select-none",
+        },
+        React.createElement("div", { className: "text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider" }, props.heading || "Quick Commands"),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-2 gap-2" },
+          shortcuts.map((s, i) =>
+            React.createElement(
+              "div",
+              {
+                key: i,
+                className: "flex items-center justify-between p-2 rounded-xs bg-zinc-950/70 border border-zinc-800/80 text-xs",
+              },
+              React.createElement("span", { className: "text-zinc-300 font-normal" }, s.desc),
+              React.createElement(
+                "span",
+                {
+                  style: { color: tokens.primary, borderColor: `${tokens.primary}40` },
+                  className: "px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border rounded-xs shadow-xs",
+                },
+                s.key
+              )
+            )
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-md w-full space-y-3 text-white">
+  <div className="text-xs font-mono font-bold text-zinc-400 uppercase">${escapeText(props.heading || "Quick Commands")}</div>
+  <div className="grid grid-cols-2 gap-2">
+    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
+      <span className="text-zinc-300">${escapeText(props.desc1 || "Search")}</span>
+      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key1 || "⌘K")}</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
+      <span className="text-zinc-300">${escapeText(props.desc2 || "Terminal")}</span>
+      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key2 || "⌘J")}</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
+      <span className="text-zinc-300">${escapeText(props.desc3 || "Export")}</span>
+      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key3 || "⌘S")}</span>
+    </div>
+    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
+      <span className="text-zinc-300">${escapeText(props.desc4 || "Close")}</span>
+      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key4 || "ESC")}</span>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "metric-sparkline": {
+    id: "metric-sparkline",
+    name: "Metric KPI Sparkline Card",
+    category: "components",
+    description: "Executive telemetry metric card with embedded SVG sparkline trend curve and growth delta.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Metric Title", type: "text", defaultValue: "Monthly API Calls" },
+      { key: "value", label: "Metric Value", type: "text", defaultValue: "4,829,190" },
+      { key: "delta", label: "Growth Delta", type: "text", defaultValue: "+34.2%" },
+      { key: "timeframe", label: "Timeframe", type: "text", defaultValue: "Last 30 Days" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-sm w-full space-y-4 text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", { className: "text-xs font-mono text-zinc-400 font-medium" }, props.title || "Monthly API Calls"),
+          React.createElement(
+            "span",
+            {
+              style: { backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` },
+              className: "px-2 py-0.5 text-[10px] font-mono font-bold rounded-xs border",
+            },
+            props.delta || "+34.2%"
+          )
+        ),
+        React.createElement("div", { className: "text-2xl font-bold font-mono tracking-tight text-white" }, props.value || "4,829,190"),
+        React.createElement(
+          "div",
+          { className: "h-14 w-full pt-1" },
+          React.createElement(
+            "svg",
+            { viewBox: "0 0 200 48", className: "w-full h-full overflow-visible" },
+            React.createElement("path", {
+              d: "M 0 40 Q 30 38, 60 25 T 120 18 T 160 8 T 200 2",
+              fill: "none",
+              stroke: tokens.primary,
+              strokeWidth: "2.5",
+              strokeLinecap: "round",
+            }),
+            React.createElement("circle", { cx: "200", cy: "2", r: "3.5", fill: tokens.primary })
+          )
+        ),
+        React.createElement("div", { className: "text-[10px] font-mono text-zinc-500 text-right" }, props.timeframe || "Last 30 Days")
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-4 text-white">
+  <div className="flex items-center justify-between">
+    <span className="text-xs font-mono text-zinc-400">${escapeText(props.title || "Monthly API Calls")}</span>
+    <span className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-xs border bg-[${tokens.primary}]/10 text-[${tokens.primary}] border-[${tokens.primary}]/30">${escapeText(props.delta || "+34.2%")}</span>
+  </div>
+  <div className="text-2xl font-bold font-mono tracking-tight text-white">${escapeText(props.value || "4,829,190")}</div>
+  <div className="h-14 w-full">
+    <svg viewBox="0 0 200 48" className="w-full h-full">
+      <path d="M 0 40 Q 30 38, 60 25 T 120 18 T 160 8 T 200 2" fill="none" stroke="${tokens.primary}" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="200" cy="2" r="3.5" fill="${tokens.primary}" />
+    </svg>
+  </div>
+  <div className="text-[10px] font-mono text-zinc-500 text-right">${escapeText(props.timeframe || "Last 30 Days")}</div>
+</div>`;
+    },
+  },
+
+  "skeleton-loader": {
+    id: "skeleton-loader",
+    name: "Shimmering Skeleton Loader",
+    category: "elements",
+    description: "Wireframe content skeleton placeholder with pulsing layout blocks.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "cardTitle", label: "Preview Header", type: "text", defaultValue: "Content Loading..." },
+      { key: "lineCount", label: "Text Lines", type: "select", defaultValue: "3", options: ["2", "3", "4"] },
+      { key: "showAvatar", label: "Show Avatar", type: "boolean", defaultValue: true },
+    ],
+    renderComponent: (props, tokens) => {
+      const count = parseInt(props.lineCount || "3", 10);
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-md max-w-sm w-full space-y-4 text-white animate-pulse",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-3" },
+          props.showAvatar !== false &&
+            React.createElement("div", {
+              style: { backgroundColor: `${tokens.primary}30` },
+              className: "w-9 h-9 rounded-full shrink-0",
+            }),
+          React.createElement(
+            "div",
+            { className: "space-y-1.5 flex-1" },
+            React.createElement("div", { className: "h-3.5 bg-zinc-800 rounded-xs w-3/4" }),
+            React.createElement("div", { className: "h-2.5 bg-zinc-850 rounded-xs w-1/2" })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "space-y-2 pt-1" },
+          Array.from({ length: count }).map((_, i) =>
+            React.createElement("div", {
+              key: i,
+              style: { width: i === count - 1 ? "60%" : "100%" },
+              className: "h-3 bg-zinc-850 rounded-xs",
+            })
+          )
+        ),
+        React.createElement("div", {
+          style: {
+            backgroundColor: tokens.primary,
+            borderRadius: `${tokens.radius}px`,
+            opacity: 0.35,
+          },
+          className: "h-8 w-full",
+        })
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-md max-w-sm w-full space-y-4 text-white animate-pulse">
+  <div className="flex items-center gap-3">
+    <div className="w-9 h-9 rounded-full bg-[${tokens.primary}]/30 shrink-0" />
+    <div className="space-y-1.5 flex-1">
+      <div className="h-3.5 bg-zinc-800 rounded-xs w-3/4" />
+      <div className="h-2.5 bg-zinc-850 rounded-xs w-1/2" />
+    </div>
+  </div>
+  <div className="space-y-2 pt-1">
+    <div className="h-3 bg-zinc-850 rounded-xs w-full" />
+    <div className="h-3 bg-zinc-850 rounded-xs w-full" />
+    <div className="h-3 bg-zinc-850 rounded-xs w-3/5" />
+  </div>
+  <div className="h-8 w-full bg-[${tokens.primary}]/35 rounded-[${tokens.radius}px]" />
+</div>`;
+    },
+  },
+
+  "empty-state": {
+    id: "empty-state",
+    name: "Zero-Data Empty State",
+    category: "components",
+    description: "Architectural empty state container with icon, message, and call-to-action button.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Heading", type: "text", defaultValue: "No Deployments Active" },
+      { key: "description", label: "Body Text", type: "text", defaultValue: "Connect a GitHub repository or trigger a manual pipeline build to get started." },
+      { key: "buttonText", label: "Button Label", type: "text", defaultValue: "Create Deployment" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-8 border-2 border-dashed max-w-md w-full flex flex-col items-center justify-center text-center space-y-3.5 text-white",
+        },
+        React.createElement(
+          "div",
+          {
+            style: { backgroundColor: `${tokens.primary}15`, color: tokens.primary, borderColor: `${tokens.primary}30` },
+            className: "w-12 h-12 rounded-full border flex items-center justify-center font-mono text-xl",
+          },
+          "✦"
+        ),
+        React.createElement("div", { className: "text-sm font-bold text-white tracking-tight" }, props.title || "No Deployments Active"),
+        React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed font-normal max-w-xs" }, props.description || "Connect a repository to get started."),
+        React.createElement(
+          "button",
+          {
+            style: {
+              backgroundColor: tokens.primary,
+              color: tokens.primaryForeground,
+              borderRadius: `${tokens.radius}px`,
+            },
+            className: "px-4 py-2 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]",
+          },
+          props.buttonText || "Create Deployment"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-8 bg-[${tokens.surface}] border-2 border-dashed border-[${tokens.border}] rounded-[${tokens.radius}px] max-w-md w-full flex flex-col items-center justify-center text-center space-y-3.5 text-white">
+  <div className="w-12 h-12 rounded-full border border-[${tokens.primary}]/30 bg-[${tokens.primary}]/15 text-[${tokens.primary}] flex items-center justify-center font-mono text-xl">✦</div>
+  <div className="text-sm font-bold text-white tracking-tight">${escapeText(props.title || "No Deployments Active")}</div>
+  <p className="text-xs text-zinc-400 leading-relaxed max-w-xs">${escapeText(props.description || "Connect a repository to get started.")}</p>
+  <button className="px-4 py-2 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px]">${escapeText(props.buttonText || "Create Deployment")}</button>
+</div>`;
+    },
+  },
+
+  "activity-feed": {
+    id: "activity-feed",
+    name: "Audit Activity Stream",
+    category: "components",
+    description: "Chronological event log stream with actor chip, event badge, and timestamp.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Feed Title", type: "text", defaultValue: "System Activity" },
+      { key: "event1", label: "Event 1", type: "text", defaultValue: "Production release v2.0 deployed" },
+      { key: "actor1", label: "Actor 1", type: "text", defaultValue: "alex@fetch.dev" },
+      { key: "event2", label: "Event 2", type: "text", defaultValue: "Updated color tokens in Studio" },
+      { key: "actor2", label: "Actor 2", type: "text", defaultValue: "sarah@fetch.dev" },
+      { key: "event3", label: "Event 3", type: "text", defaultValue: "Ran Vitest 26-test suite" },
+      { key: "actor3", label: "Actor 3", type: "text", defaultValue: "ci-bot" },
+    ],
+    renderComponent: (props, tokens) => {
+      const events = [
+        { desc: props.event1 || "Production release deployed", actor: props.actor1 || "alex@fetch.dev", time: "2m ago" },
+        { desc: props.event2 || "Updated tokens in Studio", actor: props.actor2 || "sarah@fetch.dev", time: "14m ago" },
+        { desc: props.event3 || "Ran test suite", actor: props.actor3 || "ci-bot", time: "1h ago" },
+      ];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-md w-full space-y-4 text-white",
+        },
+        React.createElement("div", { className: "text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider" }, props.title || "System Activity"),
+        React.createElement(
+          "div",
+          { className: "divide-y divide-zinc-850" },
+          events.map((e, idx) =>
+            React.createElement(
+              "div",
+              { key: idx, className: "py-2.5 first:pt-0 last:pb-0 flex items-start justify-between gap-3 text-xs" },
+              React.createElement(
+                "div",
+                { className: "space-y-0.5 truncate" },
+                React.createElement("div", { className: "text-white font-medium truncate" }, e.desc),
+                React.createElement("div", { className: "text-[11px] font-mono text-zinc-500 truncate" }, e.actor)
+              ),
+              React.createElement(
+                "span",
+                {
+                  style: idx === 0 ? { color: tokens.primary } : undefined,
+                  className: "text-[10px] font-mono text-zinc-500 shrink-0",
+                },
+                e.time
+              )
+            )
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-4 text-white">
+  <div className="text-xs font-mono font-bold text-zinc-400 uppercase">${escapeText(props.title || "System Activity")}</div>
+  <div className="divide-y divide-zinc-800">
+    <div className="py-2.5 flex items-start justify-between gap-3 text-xs">
+      <div>
+        <div className="text-white font-medium">${escapeText(props.event1 || "Production release deployed")}</div>
+        <div className="text-[11px] font-mono text-zinc-500">${escapeText(props.actor1 || "alex@fetch.dev")}</div>
+      </div>
+      <span className="text-[10px] font-mono text-[${tokens.primary}]">2m ago</span>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "color-palette-swatch": {
+    id: "color-palette-swatch",
+    name: "Design Token Swatch Grid",
+    category: "elements",
+    description: "Multi-shade tonal palette card showcasing 5 tint steps and hex values.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "paletteName", label: "Palette Title", type: "text", defaultValue: "Brand Indigo" },
+      { key: "baseHex", label: "Base Color", type: "text", defaultValue: "#6366F1" },
+    ],
+    renderComponent: (props, tokens) => {
+      const swatches = [
+        { shade: "100", hex: "#E0E7FF" },
+        { shade: "300", hex: "#A5B4FC" },
+        { shade: "500", hex: props.baseHex || tokens.primary },
+        { shade: "700", hex: "#4338CA" },
+        { shade: "900", hex: "#312E81" },
+      ];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-xl max-w-sm w-full space-y-3 text-white select-none",
+        },
+        React.createElement("div", { className: "text-xs font-bold text-white tracking-tight" }, props.paletteName || "Brand Palette"),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-5 gap-1.5" },
+          swatches.map((s) =>
+            React.createElement(
+              "div",
+              { key: s.shade, className: "space-y-1.5 text-center cursor-pointer group" },
+              React.createElement("div", {
+                style: { backgroundColor: s.hex },
+                className: "h-12 w-full rounded-xs border border-white/10 group-hover:scale-105 transition-transform",
+              }),
+              React.createElement("div", { className: "text-[10px] font-mono text-zinc-400" }, s.shade)
+            )
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3 text-white">
+  <div className="text-xs font-bold text-white tracking-tight">${escapeText(props.paletteName || "Brand Palette")}</div>
+  <div className="grid grid-cols-5 gap-1.5">
+    <div className="h-12 bg-[#E0E7FF] rounded-xs" />
+    <div className="h-12 bg-[#A5B4FC] rounded-xs" />
+    <div className="h-12 bg-[${tokens.primary}] rounded-xs" />
+    <div className="h-12 bg-[#4338CA] rounded-xs" />
+    <div className="h-12 bg-[#312E81] rounded-xs" />
+  </div>
+</div>`;
+    },
+  },
+
+  "slider-stepper": {
+    id: "slider-stepper",
+    name: "Granular Step Slider",
+    category: "forms",
+    description: "Range slider input container with numerical badge and quick jump buttons.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "label", label: "Setting Name", type: "text", defaultValue: "Worker Concurrency" },
+      { key: "value", label: "Default Value", type: "number", defaultValue: 64, min: 1, max: 128 },
+      { key: "unit", label: "Unit Label", type: "text", defaultValue: "instances" },
+    ],
+    renderComponent: (props, tokens) => {
+      const val = Number(props.value) || 64;
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-sm w-full space-y-3.5 text-white select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between text-xs" },
+          React.createElement("span", { className: "font-semibold text-zinc-300" }, props.label || "Worker Concurrency"),
+          React.createElement(
+            "span",
+            {
+              style: { color: tokens.primary, borderColor: `${tokens.primary}40` },
+              className: "font-mono font-bold text-xs px-2 py-0.5 rounded-xs border bg-zinc-950",
+            },
+            `${val} ${props.unit || "instances"}`
+          )
+        ),
+        React.createElement("input", {
+          type: "range",
+          min: "1",
+          max: "128",
+          defaultValue: val,
+          className: "w-full accent-indigo-500 cursor-pointer h-1.5 bg-zinc-800 rounded-lg",
+        }),
+        React.createElement(
+          "div",
+          { className: "flex justify-between text-[10px] font-mono text-zinc-500" },
+          React.createElement("span", null, "1 min"),
+          React.createElement("span", null, "64 def"),
+          React.createElement("span", null, "128 max")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3.5 text-white">
+  <div className="flex items-center justify-between text-xs">
+    <span className="font-semibold text-zinc-300">${escapeText(props.label || "Worker Concurrency")}</span>
+    <span className="font-mono font-bold text-xs px-2 py-0.5 rounded-xs border border-[${tokens.primary}]/40 text-[${tokens.primary}] bg-zinc-950">${props.value || 64} ${escapeText(props.unit || "instances")}</span>
+  </div>
+  <input type="range" min="1" max="128" defaultValue="${props.value || 64}" className="w-full cursor-pointer h-1.5 bg-zinc-800 rounded-lg" />
+  <div className="flex justify-between text-[10px] font-mono text-zinc-500">
+    <span>1 min</span>
+    <span>128 max</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "modal-dialog": {
+    id: "modal-dialog",
+    name: "Confirmation Action Dialog",
+    category: "components",
+    description: "Centered confirmation modal card with title, warning body, and action buttons.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Dialog Title", type: "text", defaultValue: "Revoke API Secret" },
+      { key: "message", label: "Warning Message", type: "text", defaultValue: "This action cannot be undone. Active clients using this key will immediately receive 401 Unauthorized." },
+      { key: "confirmText", label: "Confirm Button", type: "text", defaultValue: "Revoke Secret" },
+      { key: "cancelText", label: "Cancel Button", type: "text", defaultValue: "Keep Active" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-6 border shadow-2xl max-w-md w-full space-y-4 text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-2.5 text-rose-400 font-mono text-xs font-bold" },
+          React.createElement("span", { className: "px-1.5 py-0.5 rounded-xs bg-rose-500/10 border border-rose-500/30" }, "⚠ DESTRUCTIVE"),
+          React.createElement("span", { className: "text-zinc-500" }, "ID: sec_98x1")
+        ),
+        React.createElement("h3", { className: "text-sm font-bold text-white tracking-tight" }, props.title || "Revoke API Secret"),
+        React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed font-normal" }, props.message || "This action cannot be undone."),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-end gap-2 pt-2 border-t border-zinc-800/80" },
+          React.createElement(
+            "button",
+            {
+              className: "px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded-xs border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer",
+            },
+            props.cancelText || "Keep Active"
+          ),
+          React.createElement(
+            "button",
+            {
+              style: {
+                backgroundColor: tokens.primary,
+                color: tokens.primaryForeground,
+                borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+              },
+              className: "px-3 py-1.5 text-xs font-semibold rounded-xs cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]",
+            },
+            props.confirmText || "Revoke Secret"
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-6 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-2xl max-w-md w-full space-y-4 text-white">
+  <div className="flex items-center gap-2.5 text-rose-400 font-mono text-xs font-bold">
+    <span className="px-1.5 py-0.5 rounded-xs bg-rose-500/10 border border-rose-500/30">⚠ DESTRUCTIVE</span>
+  </div>
+  <h3 className="text-sm font-bold text-white tracking-tight">${escapeText(props.title || "Revoke API Secret")}</h3>
+  <p className="text-xs text-zinc-400 leading-relaxed">${escapeText(props.message || "This action cannot be undone.")}</p>
+  <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-800">
+    <button className="px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white border border-zinc-800 rounded-xs">${escapeText(props.cancelText || "Keep Active")}</button>
+    <button className="px-3 py-1.5 text-xs font-semibold bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-xs">${escapeText(props.confirmText || "Revoke Secret")}</button>
+  </div>
+</div>`;
+    },
+  },
+
+  "user-table-row": {
+    id: "user-table-row",
+    name: "Data Table Member Row",
+    category: "elements",
+    description: "Enterprise table data row with avatar, name, email, role badge, status indicator, and action ellipsis.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "name", label: "Full Name", type: "text", defaultValue: "Azure Code" },
+      { key: "email", label: "Email Address", type: "text", defaultValue: "developer@fetch.dev" },
+      { key: "role", label: "User Role", type: "text", defaultValue: "Admin" },
+      { key: "status", label: "Account Status", type: "select", defaultValue: "Active", options: ["Active", "Pending", "Suspended"] },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-3.5 border shadow-sm max-w-lg w-full flex items-center justify-between gap-4 text-white select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-3 truncate" },
+          React.createElement(
+            "div",
+            {
+              style: { backgroundColor: `${tokens.primary}25`, color: tokens.primary },
+              className: "w-8 h-8 rounded-full font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-white/10",
+            },
+            (props.name || "A")[0].toUpperCase()
+          ),
+          React.createElement(
+            "div",
+            { className: "truncate" },
+            React.createElement("div", { className: "text-xs font-semibold text-white truncate" }, props.name || "Azure Code"),
+            React.createElement("div", { className: "text-[11px] text-zinc-500 font-mono truncate" }, props.email || "developer@fetch.dev")
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-3 shrink-0" },
+          React.createElement(
+            "span",
+            { className: "px-2 py-0.5 text-[10px] font-mono rounded-xs border border-zinc-800 bg-zinc-950 text-zinc-400" },
+            props.role || "Admin"
+          ),
+          React.createElement(
+            "span",
+            {
+              style: { color: tokens.primary },
+              className: "text-[10px] font-mono flex items-center gap-1",
+            },
+            React.createElement("span", {
+              style: { backgroundColor: tokens.primary },
+              className: "w-1.5 h-1.5 rounded-full animate-pulse",
+            }),
+            props.status || "Active"
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-3.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-sm max-w-lg w-full flex items-center justify-between gap-4 text-white">
+  <div className="flex items-center gap-3 truncate">
+    <div className="w-8 h-8 rounded-full bg-[${tokens.primary}]/25 text-[${tokens.primary}] font-mono font-bold text-xs flex items-center justify-center shrink-0">${(props.name || "A")[0].toUpperCase()}</div>
+    <div className="truncate">
+      <div className="text-xs font-semibold text-white">${escapeText(props.name || "Azure Code")}</div>
+      <div className="text-[11px] text-zinc-500 font-mono">${escapeText(props.email || "developer@fetch.dev")}</div>
+    </div>
+  </div>
+  <div className="flex items-center gap-3 shrink-0">
+    <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs border border-zinc-800 bg-zinc-950 text-zinc-400">${escapeText(props.role || "Admin")}</span>
+    <span className="text-[10px] font-mono text-[${tokens.primary}] flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-[${tokens.primary}]" />
+      ${escapeText(props.status || "Active")}
+    </span>
+  </div>
+</div>`;
+    },
+  },
 };
 
 export function getTemplateById(id: string): ComponentTemplate | undefined {

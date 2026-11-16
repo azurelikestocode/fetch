@@ -2,7 +2,7 @@ import React from "react";
 
 export function MetricsStrip() {
   const metrics = [
-    { value: "31+", label: "Production Components", sub: "Modular & fully typed" },
+    { value: "40+", label: "Production Components", sub: "Modular & fully typed" },
     { value: "28+", label: "Google Font Families", sub: "Sans, Serif, Mono & Display" },
     { value: "0 kb", label: "Runtime Dependencies", sub: "Pure self-contained Tailwind" },
     { value: "100%", label: "Code Ownership", sub: "Direct copy-paste JSX & CSS" },

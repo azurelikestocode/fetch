@@ -22,8 +22,25 @@ const CATEGORY_LABELS: Record<string, string> = {
 export function CuratedShowcase() {
   const featured = FEATURED_IDS.map((id) => TEMPLATES[id]).filter(Boolean);
 
+  const getScaleClass = (id: string) => {
+    switch (id) {
+      case "pricing-card":
+        return "scale-[0.52] max-w-[280px]";
+      case "bento-card":
+      case "auth-card":
+      case "feature-grid":
+        return "scale-[0.60] max-w-[290px]";
+      case "stat-ring":
+        return "scale-[0.72] max-w-[290px]";
+      case "action-dock":
+        return "scale-[0.80] max-w-[320px]";
+      default:
+        return "scale-[0.75] max-w-[300px]";
+    }
+  };
+
   return (
-    <section id="featured" className="py-24 border-b border-zinc-800/80 bg-[#09090b]">
+    <section id="featured" className="py-24 border-b border-zinc-800/80 bg-[#09090b] scroll-mt-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16">
           <div>
@@ -59,9 +76,9 @@ export function CuratedShowcase() {
                   </div>
 
                   {/* Clean Non-Overflowing Preview Box */}
-                  <div className="h-44 flex items-center justify-center p-3 bg-zinc-950/80 border border-zinc-850 rounded-xs mb-6 overflow-hidden pointer-events-none relative">
-                    <div className="absolute inset-0 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none" />
-                    <div className={`w-full flex items-center justify-center ${isLarge ? "scale-[0.70] origin-center max-w-[280px]" : "scale-90"}`}>
+                  <div className="h-48 flex items-center justify-center p-4 bg-[#09090b] border border-zinc-850 rounded-xs mb-6 overflow-hidden pointer-events-none relative">
+                    <div className="absolute inset-0 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px] opacity-25 pointer-events-none" />
+                    <div className={`w-full flex items-center justify-center origin-center ${getScaleClass(template.id)}`}>
                       {template.renderComponent({}, template.defaultTokens)}
                     </div>
                   </div>

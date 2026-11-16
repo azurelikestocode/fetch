@@ -39,7 +39,7 @@ export function FaqSection() {
   };
 
   return (
-    <section id="faq" className="py-24 border-b border-zinc-800/80 bg-[#09090b]">
+    <section id="faq" className="py-24 border-b border-zinc-800/80 bg-[#09090b] scroll-mt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-14">
           <div className="inline-flex items-center gap-1.5 text-zinc-500 text-[11px] font-mono uppercase tracking-widest mb-2">

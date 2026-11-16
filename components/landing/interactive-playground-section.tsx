@@ -4,7 +4,7 @@ import { HeroPlayground } from "./hero-playground";
 
 export function InteractivePlaygroundSection() {
   return (
-    <section id="playground" className="py-24 border-b border-zinc-800/80 bg-[#09090b]">
+    <section id="playground" className="py-24 border-b border-zinc-800/80 bg-[#09090b] scroll-mt-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
           <div>

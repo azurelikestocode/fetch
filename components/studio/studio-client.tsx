@@ -96,6 +96,8 @@ export function StudioClient({ templateId, template: directTemplate }: StudioCli
         onClose={() => setIsCodeModalOpen(false)}
         tailwindJsx={tailwindJsx}
         themeCss={themeCss}
+        templateId={template.id}
+        templateName={template.name}
       />
     </div>
   );

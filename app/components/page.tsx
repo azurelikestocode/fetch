@@ -13,6 +13,14 @@ export default function CatalogPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: Object.keys(TEMPLATES).length };
+    Object.values(TEMPLATES).forEach((t) => {
+      counts[t.category] = (counts[t.category] || 0) + 1;
+    });
+    return counts;
+  }, []);
+
   const filteredTemplates = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return Object.values(TEMPLATES).filter((template) => {
@@ -40,6 +48,7 @@ export default function CatalogPage() {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           categories={CATEGORIES}
+          categoryCounts={categoryCounts}
         />
 
         {filteredTemplates.length > 0 ? (

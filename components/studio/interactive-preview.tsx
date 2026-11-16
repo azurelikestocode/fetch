@@ -106,6 +106,36 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <FeatureGridCanvas props={props} tokens={tokens} />;
   }
 
+  // Slider Stepper Interactive Preview
+  if (template.id === "slider-stepper") {
+    return <SliderStepperCanvas props={props} tokens={tokens} />;
+  }
+
+  // Modal Dialog Interactive Preview
+  if (template.id === "modal-dialog") {
+    return <ModalDialogCanvas props={props} tokens={tokens} />;
+  }
+
+  // Color Palette Swatch Interactive Preview
+  if (template.id === "color-palette-swatch") {
+    return <ColorPaletteSwatchCanvas props={props} tokens={tokens} />;
+  }
+
+  // Empty State Interactive Preview
+  if (template.id === "empty-state") {
+    return <EmptyStateCanvas props={props} tokens={tokens} />;
+  }
+
+  // Keyboard Shortcut Strip Interactive Preview
+  if (template.id === "kbd-shortcut-strip") {
+    return <KbdShortcutStripCanvas props={props} tokens={tokens} />;
+  }
+
+  // User Table Row Interactive Preview
+  if (template.id === "user-table-row") {
+    return <UserTableRowCanvas props={props} tokens={tokens} />;
+  }
+
   // Fallback to template's standard render
   return <>{template.renderComponent(props, tokens)}</>;
 }
@@ -1019,6 +1049,276 @@ function FeatureGridCanvas({ props, tokens }: { props: Record<string, any>; toke
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function SliderStepperCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [val, setVal] = useState(Number(props.value) || 64);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-5 border shadow-xl max-w-sm w-full space-y-3.5 text-white select-none"
+    >
+      <div className="flex items-center justify-between text-xs">
+        <span className="font-semibold text-zinc-300">{props.label || "Worker Concurrency"}</span>
+        <span
+          style={{ color: tokens.primary, borderColor: `${tokens.primary}40` }}
+          className="font-mono font-bold text-xs px-2 py-0.5 rounded-xs border bg-zinc-950"
+        >
+          {val} {props.unit || "instances"}
+        </span>
+      </div>
+      <input
+        type="range"
+        min="1"
+        max="128"
+        value={val}
+        onChange={(e) => setVal(Number(e.target.value))}
+        className="w-full accent-indigo-500 cursor-pointer h-1.5 bg-zinc-800 rounded-lg"
+      />
+      <div className="flex justify-between items-center text-[10px] font-mono text-zinc-500">
+        <button onClick={() => setVal(16)} className="hover:text-white cursor-pointer">16</button>
+        <button onClick={() => setVal(32)} className="hover:text-white cursor-pointer">32</button>
+        <button onClick={() => setVal(64)} className="hover:text-white cursor-pointer">64 (Def)</button>
+        <button onClick={() => setVal(96)} className="hover:text-white cursor-pointer">96</button>
+        <button onClick={() => setVal(128)} className="hover:text-white cursor-pointer">128 (Max)</button>
+      </div>
+    </div>
+  );
+}
+
+function ModalDialogCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [status, setStatus] = useState<string | null>(null);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-6 border shadow-2xl max-w-md w-full space-y-4 text-white"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5 text-rose-400 font-mono text-xs font-bold">
+          <span className="px-1.5 py-0.5 rounded-xs bg-rose-500/10 border border-rose-500/30">⚠ DESTRUCTIVE</span>
+          <span className="text-zinc-500">ID: sec_98x1</span>
+        </div>
+        {status && <span className="text-[10px] font-mono text-emerald-400">{status}</span>}
+      </div>
+      <h3 className="text-sm font-bold text-white tracking-tight">{props.title || "Revoke API Secret"}</h3>
+      <p className="text-xs text-zinc-400 leading-relaxed font-normal">{props.message || "This action cannot be undone."}</p>
+      <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-800/80">
+        <button
+          onClick={() => {
+            setStatus("Dismissed");
+            setTimeout(() => setStatus(null), 2000);
+          }}
+          className="px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white rounded-xs border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer"
+        >
+          {props.cancelText || "Keep Active"}
+        </button>
+        <button
+          onClick={() => {
+            setStatus("Revoked Successfully");
+            setTimeout(() => setStatus(null), 2500);
+          }}
+          style={{
+            backgroundColor: tokens.primary,
+            color: tokens.primaryForeground,
+            borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+          }}
+          className="px-3 py-1.5 text-xs font-semibold rounded-xs cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]"
+        >
+          {props.confirmText || "Revoke Secret"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ColorPaletteSwatchCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
+  const swatches = [
+    { shade: "100", hex: "#E0E7FF" },
+    { shade: "300", hex: "#A5B4FC" },
+    { shade: "500", hex: props.baseHex || tokens.primary },
+    { shade: "700", hex: "#4338CA" },
+    { shade: "900", hex: "#312E81" },
+  ];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-xl max-w-sm w-full space-y-3 text-white select-none"
+    >
+      <div className="flex items-center justify-between">
+        <div className="text-xs font-bold text-white tracking-tight">{props.paletteName || "Brand Palette"}</div>
+        {copiedHex && <span className="text-[10px] font-mono text-emerald-400">Copied {copiedHex}!</span>}
+      </div>
+      <div className="grid grid-cols-5 gap-1.5">
+        {swatches.map((s) => (
+          <div
+            key={s.shade}
+            onClick={() => {
+              navigator.clipboard?.writeText(s.hex);
+              setCopiedHex(s.hex);
+              setTimeout(() => setCopiedHex(null), 1500);
+            }}
+            className="space-y-1.5 text-center cursor-pointer group"
+          >
+            <div
+              style={{ backgroundColor: s.hex }}
+              className="h-12 w-full rounded-xs border border-white/10 group-hover:scale-105 group-hover:border-white transition-all shadow-inner"
+            />
+            <div className="text-[10px] font-mono text-zinc-400 group-hover:text-white transition-colors">{s.shade}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EmptyStateCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-8 border-2 border-dashed max-w-md w-full flex flex-col items-center justify-center text-center space-y-3.5 text-white"
+    >
+      <div
+        style={{ backgroundColor: `${tokens.primary}15`, color: tokens.primary, borderColor: `${tokens.primary}30` }}
+        className="w-12 h-12 rounded-full border flex items-center justify-center font-mono text-xl"
+      >
+        ✦
+      </div>
+      <div className="text-sm font-bold text-white tracking-tight">{props.title || "No Deployments Active"}</div>
+      <p className="text-xs text-zinc-400 leading-relaxed font-normal max-w-xs">
+        {props.description || "Connect a repository to get started."}
+      </p>
+      <button
+        onClick={() => {
+          setLoading(true);
+          setTimeout(() => setLoading(false), 2000);
+        }}
+        style={{
+          backgroundColor: tokens.primary,
+          color: tokens.primaryForeground,
+          borderRadius: `${tokens.radius}px`,
+        }}
+        className="px-4 py-2 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]"
+      >
+        {loading ? "Initializing..." : props.buttonText || "Create Deployment"}
+      </button>
+    </div>
+  );
+}
+
+function KbdShortcutStripCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [activeKey, setActiveKey] = useState<string | null>(null);
+  const shortcuts = [
+    { key: props.key1 || "⌘K", desc: props.desc1 || "Search" },
+    { key: props.key2 || "⌘J", desc: props.desc2 || "Terminal" },
+    { key: props.key3 || "⌘S", desc: props.desc3 || "Export" },
+    { key: props.key4 || "ESC", desc: props.desc4 || "Close" },
+  ];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-lg max-w-md w-full space-y-3 text-white select-none"
+    >
+      <div className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">
+        {props.heading || "Quick Commands"}
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {shortcuts.map((s, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              setActiveKey(s.key);
+              setTimeout(() => setActiveKey(null), 1000);
+            }}
+            className={`flex items-center justify-between p-2 rounded-xs border text-xs cursor-pointer transition-all ${
+              activeKey === s.key ? "bg-zinc-800 border-zinc-600 scale-[1.02]" : "bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700"
+            }`}
+          >
+            <span className="text-zinc-300 font-normal">{s.desc}</span>
+            <span
+              style={{ color: tokens.primary, borderColor: `${tokens.primary}40` }}
+              className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border rounded-xs shadow-xs"
+            >
+              {s.key}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function UserTableRowCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [status, setStatus] = useState(props.status || "Active");
+  const cycleStatus = () => {
+    if (status === "Active") setStatus("Pending");
+    else if (status === "Pending") setStatus("Suspended");
+    else setStatus("Active");
+  };
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-3.5 border shadow-sm max-w-lg w-full flex items-center justify-between gap-4 text-white select-none"
+    >
+      <div className="flex items-center gap-3 truncate">
+        <div
+          style={{ backgroundColor: `${tokens.primary}25`, color: tokens.primary }}
+          className="w-8 h-8 rounded-full font-mono font-bold text-xs flex items-center justify-center shrink-0 border border-white/10"
+        >
+          {(props.name || "A")[0].toUpperCase()}
+        </div>
+        <div className="truncate">
+          <div className="text-xs font-semibold text-white truncate">{props.name || "Azure Code"}</div>
+          <div className="text-[11px] text-zinc-500 font-mono truncate">{props.email || "developer@fetch.dev"}</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 shrink-0">
+        <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs border border-zinc-800 bg-zinc-950 text-zinc-400">
+          {props.role || "Admin"}
+        </span>
+        <button
+          onClick={cycleStatus}
+          style={{ color: tokens.primary }}
+          title="Click to cycle status"
+          className="text-[10px] font-mono flex items-center gap-1 cursor-pointer hover:underline"
+        >
+          <span style={{ backgroundColor: tokens.primary }} className="w-1.5 h-1.5 rounded-full animate-pulse" />
+          {status}
+        </button>
       </div>
     </div>
   );
