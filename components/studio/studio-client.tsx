@@ -64,7 +64,7 @@ export function StudioClient({ templateId, template: directTemplate }: StudioCli
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#09090b] text-[#fafafa] selection:bg-zinc-800 selection:text-white">
+    <div className="h-screen max-h-screen overflow-hidden flex flex-col bg-[#09090b] text-[#fafafa] selection:bg-zinc-800 selection:text-white">
       <StudioHeader
         template={template}
         activeViewport={viewport}
