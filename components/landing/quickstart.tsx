@@ -25,7 +25,7 @@ export function Quickstart() {
 }`,
     },
     {
-      title: "3. Copy Primitives & Use Immediately",
+      title: "3. Copy Components & Use Immediately",
       code: `import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 

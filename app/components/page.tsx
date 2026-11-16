@@ -7,7 +7,7 @@ import { CatalogHeader } from "../../components/catalog/catalog-header";
 import { TemplateCard } from "../../components/catalog/template-card";
 import { TEMPLATES } from "../../lib/templates";
 
-const CATEGORIES = ["all", "primitives", "patterns", "forms", "navigation"];
+const CATEGORIES = ["all", "elements", "components", "forms", "navigation"];
 
 export default function CatalogPage() {
   const [searchQuery, setSearchQuery] = useState("");

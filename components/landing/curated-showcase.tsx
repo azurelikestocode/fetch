@@ -3,8 +3,24 @@ import Link from "next/link";
 import { ArrowRight, Layers, Sliders } from "lucide-react";
 import { TEMPLATES } from "../../lib/templates";
 
+const FEATURED_IDS = [
+  "action-dock",
+  "pricing-card",
+  "bento-card",
+  "auth-card",
+  "feature-grid",
+  "stat-ring",
+];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  elements: "Elements",
+  components: "Cards & Blocks",
+  forms: "Forms",
+  navigation: "Navigation",
+};
+
 export function CuratedShowcase() {
-  const featured = Object.values(TEMPLATES).slice(0, 3);
+  const featured = FEATURED_IDS.map((id) => TEMPLATES[id]).filter(Boolean);
 
   return (
     <section id="featured" className="py-24 border-b border-zinc-800/80 bg-[#09090b]">
@@ -28,16 +44,16 @@ export function CuratedShowcase() {
           </Link>
         </div>
 
-        {/* 3-Column Hairline Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 border border-zinc-800/80 divide-y md:divide-y-0 md:divide-x divide-zinc-800/80 bg-[#09090b]">
+        {/* 6-Card Hairline Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-zinc-800/80 divide-y md:divide-y-0 gap-[1px] bg-zinc-800/80">
           {featured.map((template) => {
-            const isLarge = ["card", "auth-card", "stat-card", "pricing-card", "bento-card"].includes(template.id);
+            const isLarge = ["card", "auth-card", "stat-card", "pricing-card", "bento-card", "feature-grid"].includes(template.id);
             return (
-              <div key={template.id} className="p-8 flex flex-col justify-between hover:bg-zinc-950/40 transition-colors group">
+              <div key={template.id} className="p-8 flex flex-col justify-between bg-[#09090b] hover:bg-zinc-950/60 transition-colors group">
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 border border-zinc-800 px-2 py-0.5 rounded-xs">
-                      {template.category}
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 px-2 py-0.5 rounded-xs bg-zinc-900/60">
+                      {CATEGORY_LABELS[template.category] || template.category}
                     </span>
                     <span className="text-[11px] font-mono text-zinc-600">ID: {template.id}</span>
                   </div>

@@ -15,7 +15,7 @@ export interface TemplateProperty {
 export interface ComponentTemplate {
   id: string;
   name: string;
-  category: "primitives" | "patterns" | "forms" | "navigation";
+  category: "elements" | "components" | "forms" | "navigation";
   description: string;
   defaultTokens: ThemeTokens;
   configurableProps: TemplateProperty[];
@@ -41,7 +41,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   button: {
     id: "button",
     name: "Primary Action Button",
-    category: "primitives",
+    category: "elements",
     description: "High-contrast action button with configurable label, padding, and corner radius.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -86,7 +86,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   card: {
     id: "card",
     name: "Elevated Content Card",
-    category: "primitives",
+    category: "elements",
     description: "Architectural content container with surface contrast, title, description, and action footer.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -201,7 +201,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   badge: {
     id: "badge",
     name: "Status Indicator Badge",
-    category: "primitives",
+    category: "elements",
     description: "Compact tag for status indicators, categories, and version chips.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -252,7 +252,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "auth-card": {
     id: "auth-card",
     name: "Authentication Card",
-    category: "patterns",
+    category: "components",
     description: "Complete sign-in section with email, password fields, and primary submit action.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -345,7 +345,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "stat-card": {
     id: "stat-card",
     name: "Metric KPI Card",
-    category: "patterns",
+    category: "components",
     description: "Executive metric indicator featuring KPI value, percentage delta, and title.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -398,7 +398,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "bento-card": {
     id: "bento-card",
     name: "Architectural Bento Card",
-    category: "patterns",
+    category: "components",
     description: "Multi-layered feature spotlight container with sub-metrics, status chip, and subtle gradient border.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -473,7 +473,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "pricing-card": {
     id: "pricing-card",
     name: "Tiered Pricing Card",
-    category: "patterns",
+    category: "components",
     description: "Subscription tier container with feature checklist, highlighted price, and primary checkout CTA.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -574,7 +574,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "notification": {
     id: "notification",
     name: "Interactive Notification Toast",
-    category: "primitives",
+    category: "elements",
     description: "Compact floating status toast with active indicator dot, message, and action link.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -669,7 +669,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "switch": {
     id: "switch",
     name: "Tactile Toggle Switch",
-    category: "primitives",
+    category: "elements",
     description: "Fluid state toggle with tactile thumb transition and accompanying label/subtext.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -792,7 +792,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "avatar-stack": {
     id: "avatar-stack",
     name: "Collaborative Avatar Stack",
-    category: "primitives",
+    category: "elements",
     description: "Overlapping team member avatars with online presence pulse indicator.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -884,7 +884,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "accordion": {
     id: "accordion",
     name: "Interactive FAQ Accordion",
-    category: "patterns",
+    category: "components",
     description: "Expandable content section with chevron rotation and surface accent highlight.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -931,7 +931,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "stat-ring": {
     id: "stat-ring",
     name: "Radial Progress Dial",
-    category: "patterns",
+    category: "components",
     description: "Circular completion indicator with KPI percentage, status chip, and glowing border.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -998,7 +998,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "code-terminal": {
     id: "code-terminal",
     name: "Developer Terminal Window",
-    category: "patterns",
+    category: "components",
     description: "Monospaced code execution frame with macOS traffic light headers and copy trigger.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -1055,7 +1055,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "cookie-banner": {
     id: "cookie-banner",
     name: "Privacy & Cookie Consent",
-    category: "primitives",
+    category: "elements",
     description: "Compact bottom floating banner with essential telemetry explanation and dual action buttons.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -1119,7 +1119,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "testimonial-card": {
     id: "testimonial-card",
     name: "Editorial Quote Testimonial",
-    category: "patterns",
+    category: "components",
     description: "High-craft user review box with author portrait initials, quote text, and role tag.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -1175,7 +1175,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "timeline-stepper": {
     id: "timeline-stepper",
     name: "Step-by-Step Timeline",
-    category: "patterns",
+    category: "components",
     description: "Vertical chronological progression tracker with verified checkmarks and active pulse.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -1505,7 +1505,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   "profile-card": {
     id: "profile-card",
     name: "Developer Profile Badge",
-    category: "patterns",
+    category: "components",
     description: "Compact creator passport with avatar, status chip, repository counter, and connect button.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
@@ -1567,6 +1567,438 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
   </div>
   <p className="text-xs text-zinc-400 leading-relaxed">${escapeText(props.bio || "")}</p>
   <button className="w-full py-1.5 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px]">Connect on GitHub</button>
+</div>`;
+    },
+  },
+
+  "feature-grid": {
+    id: "feature-grid",
+    name: "Feature Highlights Grid",
+    category: "components",
+    description: "Responsive 3-card architectural feature grid with badge, header, and icon accents.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "heading", label: "Section Heading", type: "text", defaultValue: "Architectural Precision" },
+      { key: "card1Title", label: "Card 1 Title", type: "text", defaultValue: "Type Safe" },
+      { key: "card1Desc", label: "Card 1 Description", type: "text", defaultValue: "100% strict TypeScript types with zero ambient overhead." },
+      { key: "card2Title", label: "Card 2 Title", type: "text", defaultValue: "Zero Runtime" },
+      { key: "card2Desc", label: "Card 2 Description", type: "text", defaultValue: "Self-contained Tailwind JSX with zero extra npm packages." },
+      { key: "card3Title", label: "Card 3 Title", type: "text", defaultValue: "Deep Theming" },
+      { key: "card3Desc", label: "Card 3 Description", type: "text", defaultValue: "Live token adjustments with 28+ Google Fonts and HSV palette." },
+    ],
+    renderComponent: (props, tokens) => {
+      const cards = [
+        { title: props.card1Title || "Type Safe", desc: props.card1Desc || "100% strict TypeScript types.", tag: "01" },
+        { title: props.card2Title || "Zero Runtime", desc: props.card2Desc || "Self-contained Tailwind JSX.", tag: "02" },
+        { title: props.card3Title || "Deep Theming", desc: props.card3Desc || "Live token adjustments.", tag: "03" },
+      ];
+      return React.createElement(
+        "div",
+        { className: "w-full max-w-xl space-y-4 text-white" },
+        React.createElement("div", { className: "text-sm font-bold tracking-tight text-white mb-2" }, props.heading || "Architectural Precision"),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-1 sm:grid-cols-3 gap-3" },
+          cards.map((c, i) =>
+            React.createElement(
+              "div",
+              {
+                key: i,
+                style: {
+                  backgroundColor: tokens.surface,
+                  borderColor: tokens.border,
+                  borderRadius: `${tokens.radius}px`,
+                },
+                className: "p-4 border shadow-sm space-y-2 hover:border-zinc-700 transition-colors",
+              },
+              React.createElement(
+                "div",
+                {
+                  style: { color: tokens.primary },
+                  className: "text-[11px] font-mono font-bold",
+                },
+                c.tag
+              ),
+              React.createElement("div", { className: "text-xs font-semibold text-white" }, c.title),
+              React.createElement("p", { className: "text-[11px] text-zinc-400 leading-relaxed font-normal" }, c.desc)
+            )
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="w-full max-w-xl space-y-4 text-white">
+  <div className="text-sm font-bold tracking-tight text-white">${escapeText(props.heading || "Architectural Precision")}</div>
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] space-y-2">
+      <div className="text-[11px] font-mono font-bold text-[${tokens.primary}]">01</div>
+      <div className="text-xs font-semibold text-white">${escapeText(props.card1Title || "Type Safe")}</div>
+      <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.card1Desc || "100% strict TypeScript types.")}</p>
+    </div>
+    <div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] space-y-2">
+      <div className="text-[11px] font-mono font-bold text-[${tokens.primary}]">02</div>
+      <div className="text-xs font-semibold text-white">${escapeText(props.card2Title || "Zero Runtime")}</div>
+      <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.card2Desc || "Self-contained Tailwind JSX.")}</p>
+    </div>
+    <div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] space-y-2">
+      <div className="text-[11px] font-mono font-bold text-[${tokens.primary}]">03</div>
+      <div className="text-xs font-semibold text-white">${escapeText(props.card3Title || "Deep Theming")}</div>
+      <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.card3Desc || "Live token adjustments.")}</p>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "rating-widget": {
+    id: "rating-widget",
+    name: "Interactive Feedback Rating",
+    category: "forms",
+    description: "Compact feedback widget with 5-star rating selection, comment input, and submit trigger.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Widget Title", type: "text", defaultValue: "How was your experience?" },
+      { key: "subtitle", label: "Subtitle", type: "text", defaultValue: "Your feedback helps shape our product roadmap." },
+      { key: "rating", label: "Default Star Rating", type: "select", defaultValue: "5", options: ["1", "2", "3", "4", "5"] },
+      { key: "buttonText", label: "Button Text", type: "text", defaultValue: "Submit Feedback" },
+    ],
+    renderComponent: (props, tokens) => {
+      const rating = parseInt(props.rating || "5", 10);
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-sm w-full space-y-3.5 text-white",
+        },
+        React.createElement("div", { className: "text-xs font-bold text-white" }, props.title || "How was your experience?"),
+        React.createElement("p", { className: "text-[11px] text-zinc-400 leading-relaxed font-normal" }, props.subtitle || "Your feedback helps shape our product roadmap."),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-1.5 py-1" },
+          [1, 2, 3, 4, 5].map((star) =>
+            React.createElement(
+              "span",
+              {
+                key: star,
+                style: { color: star <= rating ? tokens.primary : "#52525b" },
+                className: "text-base cursor-pointer select-none",
+              },
+              "★"
+            )
+          )
+        ),
+        React.createElement("input", {
+          type: "text",
+          placeholder: "Share optional details...",
+          className: "w-full px-3 py-1.5 text-xs bg-zinc-950/80 border border-zinc-800 rounded-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500",
+        }),
+        React.createElement(
+          "button",
+          {
+            style: {
+              backgroundColor: tokens.primary,
+              color: tokens.primaryForeground,
+              borderRadius: `${tokens.radius}px`,
+            },
+            className: "w-full py-1.5 px-3 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]",
+          },
+          props.buttonText || "Submit Feedback"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      const rating = parseInt(props.rating || "5", 10);
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3.5 text-white">
+  <div className="text-xs font-bold text-white">${escapeText(props.title || "How was your experience?")}</div>
+  <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.subtitle || "Your feedback helps shape our product roadmap.")}</p>
+  <div className="flex items-center gap-1.5 py-1">
+    ${[1, 2, 3, 4, 5].map(star => `<span className="text-base cursor-pointer ${star <= rating ? `text-[${tokens.primary}]` : 'text-zinc-600'}">★</span>`).join("\n    ")}
+  </div>
+  <input type="text" placeholder="Share optional details..." className="w-full px-3 py-1.5 text-xs bg-zinc-950/80 border border-zinc-800 rounded-[${tokens.radius}px] text-white placeholder-zinc-500 focus:outline-none" />
+  <button className="w-full py-1.5 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px]">${escapeText(props.buttonText || "Submit Feedback")}</button>
+</div>`;
+    },
+  },
+
+  "search-bar-popover": {
+    id: "search-bar-popover",
+    name: "Spotlight Search Bar",
+    category: "navigation",
+    description: "Spotlight command search bar with keyboard shortcut tag and instant filter chips.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "placeholder", label: "Search Placeholder", type: "text", defaultValue: "Type a command or search..." },
+      { key: "shortcut", label: "Keyboard Badge", type: "text", defaultValue: "⌘K" },
+      { key: "tag1", label: "Filter Tag 1", type: "text", defaultValue: "Components" },
+      { key: "tag2", label: "Filter Tag 2", type: "text", defaultValue: "Tokens" },
+      { key: "tag3", label: "Filter Tag 3", type: "text", defaultValue: "Docs" },
+    ],
+    renderComponent: (props, tokens) => {
+      const tags = [props.tag1 || "Components", props.tag2 || "Tokens", props.tag3 || "Docs"];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-3 border shadow-2xl max-w-md w-full space-y-2.5 text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-2 px-2.5 py-1.5 bg-zinc-950/80 border border-zinc-800/80 rounded-xs" },
+          React.createElement("span", { className: "text-zinc-500 text-xs font-mono" }, "⌕"),
+          React.createElement("input", {
+            type: "text",
+            placeholder: props.placeholder || "Type a command or search...",
+            className: "flex-1 bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none min-w-0",
+          }),
+          React.createElement(
+            "span",
+            { className: "px-1.5 py-0.5 text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-xs shrink-0" },
+            props.shortcut || "⌘K"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-1.5 pt-1" },
+          React.createElement("span", { className: "text-[10px] font-mono text-zinc-500 uppercase mr-1" }, "Jump to:"),
+          tags.map((tag, i) =>
+            React.createElement(
+              "span",
+              {
+                key: i,
+                style: i === 0 ? { backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` } : undefined,
+                className: `px-2 py-0.5 text-[10px] font-mono rounded-xs border cursor-pointer transition-colors ${i !== 0 ? "border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white" : ""}`,
+              },
+              tag
+            )
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-3 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-2xl max-w-md w-full space-y-2.5 text-white">
+  <div className="flex items-center gap-2 px-2.5 py-1.5 bg-zinc-950 border border-zinc-800 rounded-[${tokens.radius}px]">
+    <span className="text-zinc-500 text-xs font-mono">⌕</span>
+    <input type="text" placeholder="${escapeAttr(props.placeholder || "Type a command or search...")}" className="flex-1 bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none min-w-0" />
+    <span className="px-1.5 py-0.5 text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-xs">${escapeText(props.shortcut || "⌘K")}</span>
+  </div>
+  <div className="flex items-center gap-1.5 pt-1">
+    <span className="text-[10px] font-mono text-zinc-500 uppercase mr-1">Jump to:</span>
+    <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs border bg-[${tokens.primary}]/10 text-[${tokens.primary}] border-[${tokens.primary}]/30">${escapeText(props.tag1 || "Components")}</span>
+    <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs border border-zinc-800 bg-zinc-900 text-zinc-400">${escapeText(props.tag2 || "Tokens")}</span>
+    <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs border border-zinc-800 bg-zinc-900 text-zinc-400">${escapeText(props.tag3 || "Docs")}</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "segment-picker": {
+    id: "segment-picker",
+    name: "Segmented Control Pills",
+    category: "elements",
+    description: "Multi-option segmented button group with active surface indicator.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "activeOption", label: "Active Option", type: "select", defaultValue: "Monthly", options: ["Monthly", "Quarterly", "Yearly", "Lifetime"] },
+      { key: "option1", label: "Option 1", type: "text", defaultValue: "Monthly" },
+      { key: "option2", label: "Option 2", type: "text", defaultValue: "Quarterly" },
+      { key: "option3", label: "Option 3", type: "text", defaultValue: "Yearly" },
+      { key: "option4", label: "Option 4", type: "text", defaultValue: "Lifetime" },
+    ],
+    renderComponent: (props, tokens) => {
+      const active = props.activeOption || "Monthly";
+      const options = [props.option1 || "Monthly", props.option2 || "Quarterly", props.option3 || "Yearly", props.option4 || "Lifetime"];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-1.5 border inline-flex items-center gap-1 shadow-md select-none",
+        },
+        options.map((opt) => {
+          const isActive = opt.toLowerCase() === active.toLowerCase();
+          return React.createElement(
+            "button",
+            {
+              key: opt,
+              style: isActive
+                ? {
+                    backgroundColor: tokens.primary,
+                    color: tokens.primaryForeground,
+                    borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+                  }
+                : undefined,
+              className: `px-3 py-1.5 text-xs font-medium cursor-pointer transition-all ${
+                isActive ? "shadow-sm font-semibold" : "text-zinc-400 hover:text-white"
+              }`,
+            },
+            opt
+          );
+        })
+      );
+    },
+    generateJsx: (props, tokens) => {
+      const active = props.activeOption || "Monthly";
+      const options = [props.option1 || "Monthly", props.option2 || "Quarterly", props.option3 || "Yearly", props.option4 || "Lifetime"];
+      return `<div className="p-1.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] inline-flex items-center gap-1 shadow-md">
+  ${options.map(opt => {
+    const isActive = opt.toLowerCase() === active.toLowerCase();
+    return `<button className="px-3 py-1.5 text-xs font-medium ${isActive ? `bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${Math.max(0, tokens.radius - 2)}px] shadow-sm font-semibold` : 'text-zinc-400 hover:text-white'}">${escapeText(opt)}</button>`;
+  }).join("\n  ")}
+</div>`;
+    },
+  },
+
+  "changelog-entry": {
+    id: "changelog-entry",
+    name: "Changelog Release Card",
+    category: "components",
+    description: "Product release update card with version badge, date, highlights, and link action.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "version", label: "Version Tag", type: "text", defaultValue: "v2.4.0" },
+      { key: "date", label: "Release Date", type: "text", defaultValue: "November 2026" },
+      { key: "title", label: "Release Title", type: "text", defaultValue: "Interactive Canvas & Dynamic Typography" },
+      { key: "item1", label: "Bullet 1", type: "text", defaultValue: "Interactive clicks across all canvas components" },
+      { key: "item2", label: "Bullet 2", type: "text", defaultValue: "Searchable Google Fonts library with 28+ typefaces" },
+      { key: "item3", label: "Bullet 3", type: "text", defaultValue: "2D HSV color spectrum with precision hue slider" },
+    ],
+    renderComponent: (props, tokens) => {
+      const bullets = [
+        props.item1 || "Interactive clicks across canvas components",
+        props.item2 || "Searchable Google Fonts library",
+        props.item3 || "2D HSV color spectrum picker",
+      ];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-6 border shadow-xl max-w-md w-full space-y-4 text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement(
+            "span",
+            {
+              style: { backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` },
+              className: "px-2 py-0.5 text-xs font-mono font-bold rounded-xs border",
+            },
+            props.version || "v2.4.0"
+          ),
+          React.createElement("span", { className: "text-xs font-mono text-zinc-500" }, props.date || "November 2026")
+        ),
+        React.createElement("h3", { className: "text-sm font-bold text-white tracking-tight" }, props.title || "Interactive Canvas & Dynamic Typography"),
+        React.createElement(
+          "ul",
+          { className: "space-y-1.5 text-xs text-zinc-400" },
+          bullets.map((b, i) =>
+            React.createElement(
+              "li",
+              { key: i, className: "flex items-center gap-2" },
+              React.createElement("span", { style: { color: tokens.primary }, className: "font-mono font-bold text-[11px]" }, "•"),
+              React.createElement("span", { className: "truncate" }, b)
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "pt-2 border-t border-zinc-800/80 flex items-center justify-between text-xs" },
+          React.createElement("span", { className: "text-zinc-500 font-mono text-[11px]" }, "Coral / Hack Club Release"),
+          React.createElement("span", { style: { color: tokens.primary }, className: "font-medium hover:underline cursor-pointer" }, "Read Notes →")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-6 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-4 text-white">
+  <div className="flex items-center justify-between">
+    <span className="px-2 py-0.5 text-xs font-mono font-bold rounded-xs border bg-[${tokens.primary}]/10 text-[${tokens.primary}] border-[${tokens.primary}]/30">${escapeText(props.version || "v2.4.0")}</span>
+    <span className="text-xs font-mono text-zinc-500">${escapeText(props.date || "November 2026")}</span>
+  </div>
+  <h3 className="text-sm font-bold text-white tracking-tight">${escapeText(props.title || "Interactive Canvas & Dynamic Typography")}</h3>
+  <ul className="space-y-1.5 text-xs text-zinc-400">
+    <li className="flex items-center gap-2"><span className="text-[${tokens.primary}]">•</span><span>${escapeText(props.item1 || "Interactive clicks across canvas components")}</span></li>
+    <li className="flex items-center gap-2"><span className="text-[${tokens.primary}]">•</span><span>${escapeText(props.item2 || "Searchable Google Fonts library")}</span></li>
+    <li className="flex items-center gap-2"><span className="text-[${tokens.primary}]">•</span><span>${escapeText(props.item3 || "2D HSV color spectrum picker")}</span></li>
+  </ul>
+  <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-xs">
+    <span className="text-zinc-500 font-mono text-[11px]">Release Archive</span>
+    <span className="text-[${tokens.primary}] font-medium cursor-pointer">Read Notes →</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "banner-alert": {
+    id: "banner-alert",
+    name: "Announcement Banner",
+    category: "elements",
+    description: "High-contrast announcement strip with accent badge, message text, and action trigger.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "tag", label: "Badge Label", type: "text", defaultValue: "ANNOUNCEMENT" },
+      { key: "message", label: "Message Text", type: "text", defaultValue: "Fetch v2.0 is live with 31+ production UI components." },
+      { key: "actionText", label: "Action Link", type: "text", defaultValue: "Explore Studio" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-3 border shadow-md max-w-xl w-full flex items-center justify-between gap-3 text-white text-xs",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-2.5 truncate" },
+          React.createElement(
+            "span",
+            {
+              style: { backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` },
+              className: "px-2 py-0.5 text-[10px] font-mono font-bold rounded-xs border shrink-0",
+            },
+            props.tag || "ANNOUNCEMENT"
+          ),
+          React.createElement("span", { className: "text-zinc-300 font-normal truncate" }, props.message || "Fetch v2.0 is live.")
+        ),
+        React.createElement(
+          "button",
+          {
+            style: {
+              backgroundColor: tokens.primary,
+              color: tokens.primaryForeground,
+              borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+            },
+            className: "px-3 py-1 text-xs font-medium cursor-pointer transition-all hover:opacity-90 shrink-0",
+          },
+          props.actionText || "Explore Studio"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-3 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-md max-w-xl w-full flex items-center justify-between gap-3 text-white text-xs">
+  <div className="flex items-center gap-2.5 truncate">
+    <span className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-xs border bg-[${tokens.primary}]/10 text-[${tokens.primary}] border-[${tokens.primary}]/30 shrink-0">${escapeText(props.tag || "ANNOUNCEMENT")}</span>
+    <span className="text-zinc-300 font-normal truncate">${escapeText(props.message || "Fetch v2.0 is live.")}</span>
+  </div>
+  <button className="px-3 py-1 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${Math.max(0, tokens.radius - 2)}px] shrink-0">${escapeText(props.actionText || "Explore Studio")}</button>
 </div>`;
     },
   },

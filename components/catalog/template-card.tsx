@@ -9,6 +9,13 @@ interface TemplateCardProps {
   template: ComponentTemplate;
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  elements: "Elements",
+  components: "Cards & Blocks",
+  forms: "Forms",
+  navigation: "Navigation",
+};
+
 export function TemplateCard({ template }: TemplateCardProps) {
   // Proportional scale to guarantee zero clipping in thumbnail preview
   const getScaleClass = (id: string) => {
@@ -17,7 +24,9 @@ export function TemplateCard({ template }: TemplateCardProps) {
         return "scale-[0.56] max-w-[280px]";
       case "auth-card":
       case "testimonial-card":
-        return "scale-[0.64] max-w-[280px]";
+      case "feature-grid":
+      case "changelog-entry":
+        return "scale-[0.60] max-w-[290px]";
       case "newsletter-card":
         return "scale-[0.66] w-full max-w-[320px]";
       case "card":
@@ -32,6 +41,10 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "cookie-banner":
       case "stat-card":
       case "stat-ring":
+      case "rating-widget":
+      case "search-bar-popover":
+      case "banner-alert":
+      case "segment-picker":
         return "scale-[0.74] max-w-[300px]";
       default:
         return "scale-[0.88] max-w-[320px]";
@@ -46,7 +59,7 @@ export function TemplateCard({ template }: TemplateCardProps) {
         <div className="flex items-center justify-between mb-4">
           <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 rounded-xs flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 group-hover:bg-indigo-400 transition-colors"></span>
-            {template.category}
+            {CATEGORY_LABELS[template.category] || template.category}
           </span>
           <span className="text-[11px] font-mono text-zinc-600">ID: {template.id}</span>
         </div>

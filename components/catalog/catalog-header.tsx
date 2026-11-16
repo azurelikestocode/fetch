@@ -22,13 +22,13 @@ export function CatalogHeader({
     <div className="border-b border-zinc-800/80 pb-10 mb-12">
       <div className="max-w-2xl mb-8">
         <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
-          Directory & Primitives
+          Component Directory
         </span>
         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#fafafa] mb-3">
           Component Catalog
         </h1>
         <p className="text-sm text-zinc-400 font-normal">
-          Explore our architecture-grade components. Filter by design style or use the search bar to locate specific patterns.
+          Explore our production-ready UI catalog. Filter by category or use the search bar to locate specific components.
         </p>
       </div>
 
@@ -40,7 +40,7 @@ export function CatalogHeader({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search components, templates, or primitives..."
+            placeholder="Search components and templates..."
             className="w-full h-10 pl-9 pr-4 rounded-xs border border-zinc-800 bg-zinc-950 text-xs text-[#fafafa] placeholder:text-zinc-500 focus:outline-none focus:border-zinc-600 transition-colors font-mono"
           />
         </div>

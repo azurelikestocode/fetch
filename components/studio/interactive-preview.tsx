@@ -76,6 +76,36 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <ButtonCanvas props={props} tokens={tokens} />;
   }
 
+  // Rating Feedback Widget Interactive Preview
+  if (template.id === "rating-widget") {
+    return <RatingWidgetCanvas props={props} tokens={tokens} />;
+  }
+
+  // Segmented Control Pills Interactive Preview
+  if (template.id === "segment-picker") {
+    return <SegmentPickerCanvas props={props} tokens={tokens} />;
+  }
+
+  // Spotlight Search Bar Interactive Preview
+  if (template.id === "search-bar-popover") {
+    return <SearchBarPopoverCanvas props={props} tokens={tokens} />;
+  }
+
+  // Announcement Banner Interactive Preview
+  if (template.id === "banner-alert") {
+    return <BannerAlertCanvas props={props} tokens={tokens} />;
+  }
+
+  // Changelog Release Card Interactive Preview
+  if (template.id === "changelog-entry") {
+    return <ChangelogEntryCanvas props={props} tokens={tokens} />;
+  }
+
+  // Feature Highlights Grid Interactive Preview
+  if (template.id === "feature-grid") {
+    return <FeatureGridCanvas props={props} tokens={tokens} />;
+  }
+
   // Fallback to template's standard render
   return <>{template.renderComponent(props, tokens)}</>;
 }
@@ -675,6 +705,321 @@ function ButtonCanvas({ props, tokens }: { props: Record<string, any>; tokens: T
           Clicked {clicks} {clicks === 1 ? "time" : "times"}
         </span>
       )}
+    </div>
+  );
+}
+
+function RatingWidgetCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [rating, setRating] = useState(parseInt(props.rating || "5", 10));
+  const [comment, setComment] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-5 border shadow-xl max-w-sm w-full space-y-3.5 text-white"
+    >
+      <div className="flex items-center justify-between">
+        <div className="text-xs font-bold text-white">{props.title || "How was your experience?"}</div>
+        {submitted && <span className="text-[10px] font-mono text-emerald-400">✓ Submitted</span>}
+      </div>
+      <p className="text-[11px] text-zinc-400 leading-relaxed font-normal">
+        {props.subtitle || "Your feedback helps shape our product roadmap."}
+      </p>
+      <div className="flex items-center gap-1.5 py-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => setRating(star)}
+            style={{ color: star <= rating ? tokens.primary : "#52525b" }}
+            className="text-lg cursor-pointer select-none transition-transform hover:scale-125 focus:outline-none"
+          >
+            ★
+          </button>
+        ))}
+        <span className="text-xs font-mono text-zinc-500 ml-1.5">{rating}/5</span>
+      </div>
+      <input
+        type="text"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Share optional details..."
+        className="w-full px-3 py-1.5 text-xs bg-zinc-950/80 border border-zinc-800 rounded-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+      />
+      <button
+        type="button"
+        onClick={() => {
+          setSubmitted(true);
+          setTimeout(() => setSubmitted(false), 2500);
+        }}
+        style={{
+          backgroundColor: tokens.primary,
+          color: tokens.primaryForeground,
+          borderRadius: `${tokens.radius}px`,
+        }}
+        className="w-full py-1.5 px-3 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]"
+      >
+        {submitted ? "Feedback Received!" : props.buttonText || "Submit Feedback"}
+      </button>
+    </div>
+  );
+}
+
+function SegmentPickerCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [selected, setSelected] = useState(props.activeOption || "Monthly");
+  const options = [props.option1 || "Monthly", props.option2 || "Quarterly", props.option3 || "Yearly", props.option4 || "Lifetime"];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-1.5 border inline-flex items-center gap-1 shadow-md select-none"
+    >
+      {options.map((opt) => {
+        const isActive = opt.toLowerCase() === selected.toLowerCase();
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => setSelected(opt)}
+            style={
+              isActive
+                ? {
+                    backgroundColor: tokens.primary,
+                    color: tokens.primaryForeground,
+                    borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+                  }
+                : undefined
+            }
+            className={`px-3 py-1.5 text-xs font-medium cursor-pointer transition-all ${
+              isActive ? "shadow-sm font-semibold" : "text-zinc-400 hover:text-white"
+            }`}
+          >
+            {opt}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function SearchBarPopoverCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [query, setQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState(props.tag1 || "Components");
+  const tags = [props.tag1 || "Components", props.tag2 || "Tokens", props.tag3 || "Docs"];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-3 border shadow-2xl max-w-md w-full space-y-2.5 text-white"
+    >
+      <div className="flex items-center gap-2 px-2.5 py-1.5 bg-zinc-950/80 border border-zinc-800/80 rounded-xs">
+        <span className="text-zinc-500 text-xs font-mono">⌕</span>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={props.placeholder || "Type a command or search..."}
+          className="flex-1 bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none min-w-0"
+        />
+        <span className="px-1.5 py-0.5 text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-xs shrink-0">
+          {props.shortcut || "⌘K"}
+        </span>
+      </div>
+      <div className="flex items-center gap-1.5 pt-1">
+        <span className="text-[10px] font-mono text-zinc-500 uppercase mr-1">Jump to:</span>
+        {tags.map((tag) => {
+          const isChosen = tag === selectedTag;
+          return (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => setSelectedTag(tag)}
+              style={
+                isChosen
+                  ? { backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` }
+                  : undefined
+              }
+              className={`px-2 py-0.5 text-[10px] font-mono rounded-xs border cursor-pointer transition-colors ${
+                !isChosen ? "border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white" : ""
+              }`}
+            >
+              {tag}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function BannerAlertCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) {
+    return (
+      <button
+        onClick={() => setDismissed(false)}
+        className="px-3 py-1.5 text-xs font-mono text-zinc-500 hover:text-white border border-dashed border-zinc-800 rounded-xs cursor-pointer"
+      >
+        + Restore Banner Preview
+      </button>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-3 border shadow-md max-w-xl w-full flex items-center justify-between gap-3 text-white text-xs"
+    >
+      <div className="flex items-center gap-2.5 truncate">
+        <span
+          style={{ backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` }}
+          className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-xs border shrink-0"
+        >
+          {props.tag || "ANNOUNCEMENT"}
+        </span>
+        <span className="text-zinc-300 font-normal truncate">{props.message || "Fetch v2.0 is live."}</span>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          style={{
+            backgroundColor: tokens.primary,
+            color: tokens.primaryForeground,
+            borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+          }}
+          className="px-3 py-1 text-xs font-medium cursor-pointer transition-all hover:opacity-90"
+        >
+          {props.actionText || "Explore Studio"}
+        </button>
+        <button
+          onClick={() => setDismissed(true)}
+          className="text-zinc-500 hover:text-white text-xs px-1 cursor-pointer font-mono"
+          title="Dismiss"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ChangelogEntryCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [expanded, setExpanded] = useState(false);
+  const bullets = [
+    props.item1 || "Interactive clicks across canvas components",
+    props.item2 || "Searchable Google Fonts library",
+    props.item3 || "2D HSV color spectrum picker",
+  ];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-6 border shadow-xl max-w-md w-full space-y-4 text-white"
+    >
+      <div className="flex items-center justify-between">
+        <span
+          style={{ backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` }}
+          className="px-2 py-0.5 text-xs font-mono font-bold rounded-xs border"
+        >
+          {props.version || "v2.4.0"}
+        </span>
+        <span className="text-xs font-mono text-zinc-500">{props.date || "November 2026"}</span>
+      </div>
+      <h3 className="text-sm font-bold text-white tracking-tight">
+        {props.title || "Interactive Canvas & Dynamic Typography"}
+      </h3>
+      <ul className="space-y-1.5 text-xs text-zinc-400">
+        {bullets.map((b, i) => (
+          <li key={i} className="flex items-center gap-2">
+            <span style={{ color: tokens.primary }} className="font-mono font-bold text-[11px]">
+              •
+            </span>
+            <span className="truncate">{b}</span>
+          </li>
+        ))}
+      </ul>
+      {expanded && (
+        <div className="p-3 bg-zinc-950/80 border border-zinc-800 rounded-xs text-[11px] text-zinc-400 font-mono space-y-1">
+          <div>Commit: 94baf5b</div>
+          <div>All 26 tests verified green.</div>
+          <div>Next.js 15.5.29 Turbopack engine.</div>
+        </div>
+      )}
+      <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-xs">
+        <span className="text-zinc-500 font-mono text-[11px]">Coral / Hack Club Release</span>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          style={{ color: tokens.primary }}
+          className="font-medium hover:underline cursor-pointer"
+        >
+          {expanded ? "Hide Details ↑" : "Read Notes →"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FeatureGridCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const cards = [
+    { title: props.card1Title || "Type Safe", desc: props.card1Desc || "100% strict TypeScript types.", tag: "01" },
+    { title: props.card2Title || "Zero Runtime", desc: props.card2Desc || "Self-contained Tailwind JSX.", tag: "02" },
+    { title: props.card3Title || "Deep Theming", desc: props.card3Desc || "Live token adjustments.", tag: "03" },
+  ];
+
+  return (
+    <div className="w-full max-w-xl space-y-4 text-white">
+      <div className="text-sm font-bold tracking-tight text-white mb-2">
+        {props.heading || "Architectural Precision"}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {cards.map((c, i) => {
+          const isSelected = activeCard === i;
+          return (
+            <div
+              key={i}
+              onClick={() => setActiveCard(isSelected ? null : i)}
+              style={{
+                backgroundColor: tokens.surface,
+                borderColor: isSelected ? tokens.primary : tokens.border,
+                borderRadius: `${tokens.radius}px`,
+              }}
+              className="p-4 border shadow-sm space-y-2 cursor-pointer transition-all hover:scale-[1.02]"
+            >
+              <div
+                style={{ color: tokens.primary }}
+                className="text-[11px] font-mono font-bold flex items-center justify-between"
+              >
+                <span>{c.tag}</span>
+                {isSelected && <span className="text-[10px]">ACTIVE</span>}
+              </div>
+              <div className="text-xs font-semibold text-white">{c.title}</div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed font-normal">{c.desc}</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

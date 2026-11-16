@@ -18,7 +18,7 @@ export function EngineeringEthos() {
     {
       num: "03",
       title: "WAI-ARIA Accessibility",
-      description: "Built upon headless Radix UI primitives ensuring comprehensive screen-reader support, focus trapping, and keyboard controls.",
+      description: "Built upon accessible, unstyled component foundations ensuring comprehensive screen-reader support, focus trapping, and keyboard controls.",
       icon: ShieldCheck,
     },
     {

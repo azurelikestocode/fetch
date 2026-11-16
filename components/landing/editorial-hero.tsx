@@ -14,11 +14,11 @@ export function EditorialHero() {
 
         {/* Crisp Monochromatic Editorial Headline */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-[#fafafa] max-w-4xl leading-[1.08] mb-6">
-          Live-configurable UI primitives built for architectural precision.
+          Live-configurable UI components built for architectural precision.
         </h1>
 
         <p className="text-base sm:text-lg text-zinc-400 max-w-2xl leading-relaxed mb-10 font-normal">
-          Visually tune design tokens across foundational primitives and compound patterns. Zero runtime styling overhead, no vendor lock-in, and pure self-contained code.
+          Visually tune design tokens, Google Fonts, and color palettes across production-ready UI components and layouts. Zero runtime styling overhead, no vendor lock-in, and pure self-contained code.
         </p>
 
         {/* Action Row */}

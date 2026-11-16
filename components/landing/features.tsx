@@ -5,9 +5,9 @@ export function Features() {
   const pillars = [
     {
       step: "01",
-      title: "Choose Primitives",
+      title: "Choose Components",
       description:
-        "Built on accessible, unstyled Radix UI primitives. Full keyboard navigation and WAI-ARIA compliance built in from the start.",
+        "Built on accessible, unstyled component foundations. Full keyboard navigation and WAI-ARIA compliance built in from the start.",
       icon: Boxes,
     },
     {
