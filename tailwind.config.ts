@@ -11,6 +11,10 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        zinc: {
+          750: "#303036",
+          850: "#1f1f23",
+        },
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
@@ -21,6 +25,7 @@ const config: Config = {
         },
       },
       borderRadius: {
+        xs: "2px",
         custom: "var(--radius)",
       },
     },

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Sliders } from "lucide-react";
@@ -14,9 +16,10 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "pricing-card":
         return "scale-[0.56] max-w-[280px]";
       case "auth-card":
-      case "newsletter-card":
       case "testimonial-card":
         return "scale-[0.64] max-w-[280px]";
+      case "newsletter-card":
+        return "scale-[0.66] w-full max-w-[320px]";
       case "card":
       case "bento-card":
       case "accordion":

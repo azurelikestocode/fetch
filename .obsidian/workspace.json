@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "e685c4759d7df490",
+        "id": "05aa8e6bb9529d7c",
         "type": "tabs",
         "children": [
           {
-            "id": "41d521c0fc6c3d84",
+            "id": "f1c98b2c6f06b57a",
             "type": "leaf",
             "state": {
               "type": "graph",
@@ -181,8 +181,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "41d521c0fc6c3d84",
+  "active": "f1c98b2c6f06b57a",
   "lastOpenFiles": [
+    "Untitled 1.canvas",
+    "Untitled 1.base",
+    "Untitled.base",
+    "Badge Component.md",
+    "Untitled",
+    "Roadmap.md",
+    "architecture.md",
+    "Untitled.canvas",
     "app/not-found.tsx",
     "app/studio/[id]/page.tsx",
     "app/studio/[id]",
@@ -190,10 +198,6 @@
     "components/studio/studio-client.tsx",
     "components/studio/code-export-modal.tsx",
     "components/studio/preview-viewport.tsx",
-    "components/studio/inspector-panel.tsx",
-    "components/studio/studio-header.tsx",
-    "components/studio",
-    "tests/studio.test.tsx",
     "docs/superpowers/plans/2026-11-07-multipage-redesign.md",
     "Studio Workspace Spec.md",
     "node_modules/next/README.md",
@@ -207,18 +211,14 @@
     "node_modules/tailwindcss/lib/postcss-plugins/nesting/README.md",
     "node_modules/tailwindcss/lib/value-parser/README.md",
     "docs/superpowers/plans/2026-11-07-landing-page.md",
-    "Badge Component.md",
     "Dialog Component.md",
     "2026-11-07.md",
     "Design Tokens.md",
-    "Roadmap.md",
     "Hero Playground.md",
     "Landing Page Spec.md",
     "Card Component.md",
     "Button Component.md",
     "Component Catalog.md",
-    "architecture.md",
-    "Tech Stack.md",
-    "Untitled.canvas"
+    "Tech Stack.md"
   ]
 }

@@ -23,6 +23,7 @@ import { Slider } from "../ui/slider";
 import { ComponentTemplate } from "../../lib/templates";
 import { ThemeTokens, COLOR_SWATCHES, THEME_PRESETS } from "../../lib/tokens";
 import { VisualColorPicker } from "./color-picker";
+import { FontPicker } from "./font-picker";
 
 interface InspectorPanelProps {
   template: ComponentTemplate;
@@ -145,51 +146,12 @@ export function InspectorPanel({
           </span>
         </div>
 
-        {/* Curated Google Fonts Selection */}
-        <div className="grid grid-cols-2 gap-1.5">
-          {[
-            { name: "Geist Sans", val: "Geist" },
-            { name: "Space Grotesk", val: "Space Grotesk" },
-            { name: "Plus Jakarta", val: "Plus Jakarta Sans" },
-            { name: "JetBrains Mono", val: "JetBrains Mono" },
-            { name: "Playfair Serif", val: "Playfair Display" },
-            { name: "Outfit Modern", val: "Outfit" },
-          ].map((f) => (
-            <button
-              key={f.val}
-              onClick={() => onTokenChange({ customFont: f.val, fontFamily: "custom" })}
-              className={`h-7 px-2 text-[10px] font-mono rounded-xs border text-left truncate transition-all cursor-pointer ${
-                tokens.customFont === f.val
-                  ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
-                  : "border-zinc-850 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"
-              }`}
-            >
-              {f.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Custom Font Name Input */}
-        <div className="space-y-1 pt-1">
-          <label className="text-[10px] font-mono text-zinc-500 uppercase flex items-center justify-between">
-            <span>Custom Google Font</span>
-            {tokens.customFont && (
-              <button
-                onClick={() => onTokenChange({ customFont: undefined, fontFamily: "sans" })}
-                className="text-[9px] text-zinc-500 hover:text-zinc-300 underline cursor-pointer"
-              >
-                Reset
-              </button>
-            )}
-          </label>
-          <input
-            type="text"
-            value={tokens.customFont || ""}
-            onChange={(e) => onTokenChange({ customFont: e.target.value, fontFamily: "custom" })}
-            placeholder="e.g. Syne, Lora, Cinzel, Montserrat..."
-            className="w-full h-7 px-2 text-[11px] font-mono bg-zinc-900 border border-zinc-800 rounded-xs text-[#fafafa] placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500"
-          />
-        </div>
+        {/* Interactive Google Fonts Library & Search */}
+        <FontPicker
+          currentFont={tokens.customFont}
+          onSelectFont={(fontName) => onTokenChange({ customFont: fontName, fontFamily: "custom" })}
+          onReset={() => onTokenChange({ customFont: undefined, fontFamily: "sans" })}
+        />
 
         {/* Letter Spacing (Tracking) */}
         <div className="space-y-1 pt-1">
