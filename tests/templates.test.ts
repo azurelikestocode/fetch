@@ -43,5 +43,18 @@ describe('Template Registry', () => {
     expect(jsx).not.toContain('placeholder="15" Display"');
     expect(jsx).toContain('&quot;');
   });
+
+  it('registers modern architectural templates including AI copilot and pipeline tracker', () => {
+    expect(TEMPLATES).toHaveProperty('ai-prompt-bar');
+    expect(TEMPLATES).toHaveProperty('code-diff-viewer');
+    expect(TEMPLATES).toHaveProperty('usage-quota-meter');
+    expect(TEMPLATES).toHaveProperty('kanban-task-card');
+    expect(TEMPLATES).toHaveProperty('deploy-pipeline-status');
+
+    const aiTemplate = getTemplateById('ai-prompt-bar');
+    expect(aiTemplate).toBeDefined();
+    const aiJsx = aiTemplate!.generateJsx({ modelName: 'GPT-4o' }, aiTemplate!.defaultTokens);
+    expect(aiJsx).toContain('GPT-4o');
+  });
 });
 

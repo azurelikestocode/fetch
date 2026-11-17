@@ -1650,80 +1650,6 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "rating-widget": {
-    id: "rating-widget",
-    name: "Interactive Feedback Rating",
-    category: "forms",
-    description: "Compact feedback widget with 5-star rating selection, comment input, and submit trigger.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "title", label: "Widget Title", type: "text", defaultValue: "How was your experience?" },
-      { key: "subtitle", label: "Subtitle", type: "text", defaultValue: "Your feedback helps shape our product roadmap." },
-      { key: "rating", label: "Default Star Rating", type: "select", defaultValue: "5", options: ["1", "2", "3", "4", "5"] },
-      { key: "buttonText", label: "Button Text", type: "text", defaultValue: "Submit Feedback" },
-    ],
-    renderComponent: (props, tokens) => {
-      const rating = parseInt(props.rating || "5", 10);
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-5 border shadow-xl max-w-sm w-full space-y-3.5 text-white",
-        },
-        React.createElement("div", { className: "text-xs font-bold text-white" }, props.title || "How was your experience?"),
-        React.createElement("p", { className: "text-[11px] text-zinc-400 leading-relaxed font-normal" }, props.subtitle || "Your feedback helps shape our product roadmap."),
-        React.createElement(
-          "div",
-          { className: "flex items-center gap-1.5 py-1" },
-          [1, 2, 3, 4, 5].map((star) =>
-            React.createElement(
-              "span",
-              {
-                key: star,
-                style: { color: star <= rating ? tokens.primary : "#52525b" },
-                className: "text-base cursor-pointer select-none",
-              },
-              "★"
-            )
-          )
-        ),
-        React.createElement("input", {
-          type: "text",
-          placeholder: "Share optional details...",
-          className: "w-full px-3 py-1.5 text-xs bg-zinc-950/80 border border-zinc-800 rounded-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500",
-        }),
-        React.createElement(
-          "button",
-          {
-            style: {
-              backgroundColor: tokens.primary,
-              color: tokens.primaryForeground,
-              borderRadius: `${tokens.radius}px`,
-            },
-            className: "w-full py-1.5 px-3 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]",
-          },
-          props.buttonText || "Submit Feedback"
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      const rating = parseInt(props.rating || "5", 10);
-      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3.5 text-white">
-  <div className="text-xs font-bold text-white">${escapeText(props.title || "How was your experience?")}</div>
-  <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.subtitle || "Your feedback helps shape our product roadmap.")}</p>
-  <div className="flex items-center gap-1.5 py-1">
-    ${[1, 2, 3, 4, 5].map(star => `<span className="text-base cursor-pointer ${star <= rating ? `text-[${tokens.primary}]` : 'text-zinc-600'}">★</span>`).join("\n    ")}
-  </div>
-  <input type="text" placeholder="Share optional details..." className="w-full px-3 py-1.5 text-xs bg-zinc-950/80 border border-zinc-800 rounded-[${tokens.radius}px] text-white placeholder-zinc-500 focus:outline-none" />
-  <button className="w-full py-1.5 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px]">${escapeText(props.buttonText || "Submit Feedback")}</button>
-</div>`;
-    },
-  },
-
   "search-bar-popover": {
     id: "search-bar-popover",
     name: "Spotlight Search Bar",
@@ -1999,90 +1925,6 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     <span className="text-zinc-300 font-normal truncate">${escapeText(props.message || "Fetch v2.0 is live.")}</span>
   </div>
   <button className="px-3 py-1 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${Math.max(0, tokens.radius - 2)}px] shrink-0">${escapeText(props.actionText || "Explore Studio")}</button>
-</div>`;
-    },
-  },
-
-  "kbd-shortcut-strip": {
-    id: "kbd-shortcut-strip",
-    name: "Keyboard Shortcut Cheatsheet",
-    category: "elements",
-    description: "High-contrast keyboard shortcut cheatsheet strip for developer toolbars and modals.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "heading", label: "Toolbar Heading", type: "text", defaultValue: "Quick Commands" },
-      { key: "key1", label: "Key 1", type: "text", defaultValue: "⌘K" },
-      { key: "desc1", label: "Action 1", type: "text", defaultValue: "Search" },
-      { key: "key2", label: "Key 2", type: "text", defaultValue: "⌘J" },
-      { key: "desc2", label: "Action 2", type: "text", defaultValue: "Terminal" },
-      { key: "key3", label: "Key 3", type: "text", defaultValue: "⌘S" },
-      { key: "desc3", label: "Action 3", type: "text", defaultValue: "Export" },
-      { key: "key4", label: "Key 4", type: "text", defaultValue: "ESC" },
-      { key: "desc4", label: "Action 4", type: "text", defaultValue: "Close" },
-    ],
-    renderComponent: (props, tokens) => {
-      const shortcuts = [
-        { key: props.key1 || "⌘K", desc: props.desc1 || "Search" },
-        { key: props.key2 || "⌘J", desc: props.desc2 || "Terminal" },
-        { key: props.key3 || "⌘S", desc: props.desc3 || "Export" },
-        { key: props.key4 || "ESC", desc: props.desc4 || "Close" },
-      ];
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-4 border shadow-lg max-w-md w-full space-y-3 text-white select-none",
-        },
-        React.createElement("div", { className: "text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider" }, props.heading || "Quick Commands"),
-        React.createElement(
-          "div",
-          { className: "grid grid-cols-2 gap-2" },
-          shortcuts.map((s, i) =>
-            React.createElement(
-              "div",
-              {
-                key: i,
-                className: "flex items-center justify-between p-2 rounded-xs bg-zinc-950/70 border border-zinc-800/80 text-xs",
-              },
-              React.createElement("span", { className: "text-zinc-300 font-normal" }, s.desc),
-              React.createElement(
-                "span",
-                {
-                  style: { color: tokens.primary, borderColor: `${tokens.primary}40` },
-                  className: "px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border rounded-xs shadow-xs",
-                },
-                s.key
-              )
-            )
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-md w-full space-y-3 text-white">
-  <div className="text-xs font-mono font-bold text-zinc-400 uppercase">${escapeText(props.heading || "Quick Commands")}</div>
-  <div className="grid grid-cols-2 gap-2">
-    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
-      <span className="text-zinc-300">${escapeText(props.desc1 || "Search")}</span>
-      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key1 || "⌘K")}</span>
-    </div>
-    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
-      <span className="text-zinc-300">${escapeText(props.desc2 || "Terminal")}</span>
-      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key2 || "⌘J")}</span>
-    </div>
-    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
-      <span className="text-zinc-300">${escapeText(props.desc3 || "Export")}</span>
-      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key3 || "⌘S")}</span>
-    </div>
-    <div className="flex items-center justify-between p-2 rounded-xs bg-zinc-950 border border-zinc-800 text-xs">
-      <span className="text-zinc-300">${escapeText(props.desc4 || "Close")}</span>
-      <span className="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-zinc-900 border border-[${tokens.primary}]/40 text-[${tokens.primary}] rounded-xs">${escapeText(props.key4 || "ESC")}</span>
-    </div>
-  </div>
 </div>`;
     },
   },
@@ -2375,66 +2217,6 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "color-palette-swatch": {
-    id: "color-palette-swatch",
-    name: "Design Token Swatch Grid",
-    category: "elements",
-    description: "Multi-shade tonal palette card showcasing 5 tint steps and hex values.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "paletteName", label: "Palette Title", type: "text", defaultValue: "Brand Indigo" },
-      { key: "baseHex", label: "Base Color", type: "text", defaultValue: "#6366F1" },
-    ],
-    renderComponent: (props, tokens) => {
-      const swatches = [
-        { shade: "100", hex: "#E0E7FF" },
-        { shade: "300", hex: "#A5B4FC" },
-        { shade: "500", hex: props.baseHex || tokens.primary },
-        { shade: "700", hex: "#4338CA" },
-        { shade: "900", hex: "#312E81" },
-      ];
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-4 border shadow-xl max-w-sm w-full space-y-3 text-white select-none",
-        },
-        React.createElement("div", { className: "text-xs font-bold text-white tracking-tight" }, props.paletteName || "Brand Palette"),
-        React.createElement(
-          "div",
-          { className: "grid grid-cols-5 gap-1.5" },
-          swatches.map((s) =>
-            React.createElement(
-              "div",
-              { key: s.shade, className: "space-y-1.5 text-center cursor-pointer group" },
-              React.createElement("div", {
-                style: { backgroundColor: s.hex },
-                className: "h-12 w-full rounded-xs border border-white/10 group-hover:scale-105 transition-transform",
-              }),
-              React.createElement("div", { className: "text-[10px] font-mono text-zinc-400" }, s.shade)
-            )
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3 text-white">
-  <div className="text-xs font-bold text-white tracking-tight">${escapeText(props.paletteName || "Brand Palette")}</div>
-  <div className="grid grid-cols-5 gap-1.5">
-    <div className="h-12 bg-[#E0E7FF] rounded-xs" />
-    <div className="h-12 bg-[#A5B4FC] rounded-xs" />
-    <div className="h-12 bg-[${tokens.primary}] rounded-xs" />
-    <div className="h-12 bg-[#4338CA] rounded-xs" />
-    <div className="h-12 bg-[#312E81] rounded-xs" />
-  </div>
-</div>`;
-    },
-  },
-
   "slider-stepper": {
     id: "slider-stepper",
     name: "Granular Step Slider",
@@ -2652,6 +2434,921 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
       <span className="w-1.5 h-1.5 rounded-full bg-[${tokens.primary}]" />
       ${escapeText(props.status || "Active")}
     </span>
+  </div>
+</div>`;
+    },
+  },
+
+  "ai-prompt-bar": {
+    id: "ai-prompt-bar",
+    name: "AI Copilot Prompt Bar",
+    category: "forms",
+    description: "Multimodal AI chat bar with model selector pill, web search toggle, token counter, and send CTA.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "placeholder", label: "Prompt Placeholder", type: "text", defaultValue: "Ask anything, brainstorm code, or paste diff..." },
+      { key: "modelName", label: "Model Chip", type: "text", defaultValue: "Claude 3.5 Sonnet" },
+      { key: "tokensEstimate", label: "Token Estimate", type: "text", defaultValue: "~128 tokens" },
+      { key: "webSearch", label: "Web Search Active", type: "boolean", defaultValue: true },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${Math.max(tokens.radius, 12)}px`,
+          },
+          className: "p-3.5 border shadow-2xl max-w-md w-full space-y-3 text-white transition-all",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement(
+            "div",
+            {
+              style: { borderColor: `${tokens.primary}40`, backgroundColor: `${tokens.primary}15` },
+              className: "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[11px] font-mono",
+            },
+            React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-1.5 h-1.5 rounded-full animate-pulse" }),
+            React.createElement("span", { className: "text-zinc-200" }, props.modelName || "Claude 3.5 Sonnet")
+          ),
+          React.createElement(
+            "span",
+            { className: "text-[10px] font-mono text-zinc-500" },
+            props.tokensEstimate || "~128 tokens"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "relative min-h-[44px] flex items-center" },
+          React.createElement(
+            "p",
+            { className: "text-xs text-zinc-400 font-sans leading-relaxed select-none" },
+            props.placeholder || "Ask anything, brainstorm code, or paste diff..."
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between pt-1 border-t border-zinc-800" },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-2" },
+            React.createElement(
+              "span",
+              {
+                className: `px-2 py-1 rounded-xs text-[10px] font-mono flex items-center gap-1 border ${
+                  props.webSearch !== false
+                    ? "border-emerald-800/80 bg-emerald-950/50 text-emerald-300"
+                    : "border-zinc-800 text-zinc-500"
+                }`,
+              },
+              "🌐 Web Search"
+            ),
+            React.createElement(
+              "span",
+              { className: "px-2 py-1 rounded-xs text-[10px] font-mono text-zinc-500 hover:text-zinc-300 cursor-pointer" },
+              "📎 Attach"
+            )
+          ),
+          React.createElement(
+            "button",
+            {
+              style: {
+                backgroundColor: tokens.primary,
+                color: tokens.primaryForeground,
+                borderRadius: `${tokens.radius}px`,
+              },
+              className: "h-7 px-3 text-xs font-mono font-medium flex items-center gap-1 hover:opacity-90 active:scale-95 transition-all shadow-xs",
+            },
+            React.createElement("span", null, "Send"),
+            React.createElement("span", { className: "font-mono text-[10px]" }, "↑")
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-3.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 12)}px] shadow-2xl max-w-md w-full space-y-3 text-white">
+  <div className="flex items-center justify-between">
+    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[${tokens.primary}]/40 bg-[${tokens.primary}]/15 text-[11px] font-mono">
+      <span className="w-1.5 h-1.5 rounded-full bg-[${tokens.primary}] animate-pulse" />
+      <span className="text-zinc-200">${escapeText(props.modelName || "Claude 3.5 Sonnet")}</span>
+    </div>
+    <span className="text-[10px] font-mono text-zinc-500">${escapeText(props.tokensEstimate || "~128 tokens")}</span>
+  </div>
+  <div className="min-h-[44px] flex items-center">
+    <p className="text-xs text-zinc-400 font-sans leading-relaxed">${escapeText(props.placeholder || "Ask anything, brainstorm code, or paste diff...")}</p>
+  </div>
+  <div className="flex items-center justify-between pt-1 border-t border-zinc-800">
+    <div className="flex items-center gap-2">
+      <span className="px-2 py-1 rounded-xs text-[10px] font-mono flex items-center gap-1 border border-emerald-800 bg-emerald-950/50 text-emerald-300">🌐 Web Search</span>
+      <span className="px-2 py-1 rounded-xs text-[10px] font-mono text-zinc-500">📎 Attach</span>
+    </div>
+    <button className="h-7 px-3 text-xs font-mono font-medium flex items-center gap-1 bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] hover:opacity-90 active:scale-95">
+      <span>Send</span>
+      <span className="font-mono text-[10px]">↑</span>
+    </button>
+  </div>
+</div>`;
+    },
+  },
+
+  "code-diff-viewer": {
+    id: "code-diff-viewer",
+    name: "Interactive Code Diff Viewer",
+    category: "components",
+    description: "Visual git diff comparison block with line numbers, additions/deletions stats, and file path chip.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "filePath", label: "File Path", type: "text", defaultValue: "src/auth/session.ts" },
+      { key: "oldLine", label: "Removed Line", type: "text", defaultValue: "- const token = cookieStore.get('auth_token');" },
+      { key: "newLine", label: "Added Line", type: "text", defaultValue: "+ const session = await auth.verifySessionToken(token);" },
+      { key: "stats", label: "Stats Label", type: "text", defaultValue: "+1 line, -1 line" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "border shadow-xl max-w-md w-full overflow-hidden text-xs font-mono select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "px-3.5 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-[11px]" },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-2 text-zinc-300" },
+            React.createElement("span", { className: "text-zinc-500" }, "📄"),
+            React.createElement("span", { className: "font-semibold" }, props.filePath || "src/auth/session.ts")
+          ),
+          React.createElement(
+            "span",
+            { className: "text-[10px] text-zinc-400 border border-zinc-800 px-1.5 py-0.5 rounded-2xs bg-zinc-900" },
+            props.stats || "+1 line, -1 line"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "p-2 space-y-1 bg-[#09090b] text-[11px] leading-relaxed" },
+          React.createElement(
+            "div",
+            { className: "px-2 py-1 rounded-xs bg-red-950/40 text-red-300 border border-red-900/40 flex items-center gap-2 truncate" },
+            React.createElement("span", { className: "text-red-500 select-none font-bold" }, "-"),
+            React.createElement("span", { className: "truncate" }, props.oldLine || "- const token = cookieStore.get('auth_token');")
+          ),
+          React.createElement(
+            "div",
+            { className: "px-2 py-1 rounded-xs bg-emerald-950/40 text-emerald-300 border border-emerald-900/40 flex items-center gap-2 truncate" },
+            React.createElement("span", { className: "text-emerald-500 select-none font-bold" }, "+"),
+            React.createElement("span", { className: "truncate" }, props.newLine || "+ const session = await auth.verifySessionToken(token);")
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="border border-[${tokens.border}] bg-[${tokens.surface}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full overflow-hidden text-xs font-mono">
+  <div className="px-3.5 py-2 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between text-[11px]">
+    <div className="flex items-center gap-2 text-zinc-300">
+      <span>📄</span>
+      <span className="font-semibold">${escapeText(props.filePath || "src/auth/session.ts")}</span>
+    </div>
+    <span className="text-[10px] text-zinc-400 border border-zinc-800 px-1.5 py-0.5 rounded-xs bg-zinc-900">${escapeText(props.stats || "+1 line, -1 line")}</span>
+  </div>
+  <div className="p-2 space-y-1 bg-[#09090b] text-[11px] leading-relaxed">
+    <div className="px-2 py-1 rounded-xs bg-red-950/40 text-red-300 border border-red-900/40 flex items-center gap-2">
+      <span className="text-red-500 font-bold">-</span>
+      <span className="truncate">${escapeText(props.oldLine || "- const token = cookieStore.get('auth_token');")}</span>
+    </div>
+    <div className="px-2 py-1 rounded-xs bg-emerald-950/40 text-emerald-300 border border-emerald-900/40 flex items-center gap-2">
+      <span className="text-emerald-500 font-bold">+</span>
+      <span className="truncate">${escapeText(props.newLine || "+ const session = await auth.verifySessionToken(token);")}</span>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "usage-quota-meter": {
+    id: "usage-quota-meter",
+    name: "SaaS Quota & Compute Meter",
+    category: "components",
+    description: "Real-time compute and API quota progress card with warning threshold and upgrade CTA.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "title", label: "Metric Title", type: "text", defaultValue: "Monthly Compute Quota" },
+      { key: "usage", label: "Used Units", type: "text", defaultValue: "84,200" },
+      { key: "total", label: "Total Limit", type: "text", defaultValue: "100,000" },
+      { key: "percentage", label: "Percentage %", type: "number", defaultValue: 84 },
+      { key: "resetDays", label: "Reset In", type: "text", defaultValue: "6 days" },
+    ],
+    renderComponent: (props, tokens) => {
+      const pct = Math.min(100, Math.max(0, Number(props.percentage) || 84));
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-sm w-full space-y-3.5 text-white select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", { className: "text-xs font-mono uppercase tracking-wider text-zinc-400" }, props.title || "Monthly Compute Quota"),
+          React.createElement("span", { className: "text-xs font-bold text-white font-mono" }, `${pct}%`)
+        ),
+        React.createElement(
+          "div",
+          { className: "h-2.5 w-full bg-zinc-900 rounded-full overflow-hidden p-0.5 border border-zinc-800" },
+          React.createElement("div", {
+            style: {
+              width: `${pct}%`,
+              backgroundColor: pct > 80 ? "#f59e0b" : tokens.primary,
+            },
+            className: "h-full rounded-full transition-all duration-500",
+          })
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between text-[11px] font-mono text-zinc-400 pt-0.5" },
+          React.createElement("span", null, `${props.usage || "84,200"} / ${props.total || "100,000"} reqs`),
+          React.createElement("span", { className: "text-zinc-500" }, `Resets in ${props.resetDays || "6 days"}`)
+        ),
+        React.createElement(
+          "button",
+          {
+            style: {
+              backgroundColor: tokens.primary,
+              color: tokens.primaryForeground,
+              borderRadius: `${tokens.radius}px`,
+            },
+            className: "w-full py-1.5 px-3 text-xs font-medium cursor-pointer transition-all hover:opacity-90 active:scale-[0.98]",
+          },
+          "Upgrade Quota Limit"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      const pct = Math.min(100, Math.max(0, Number(props.percentage) || 84));
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-3.5 text-white">
+  <div className="flex items-center justify-between">
+    <span className="text-xs font-mono uppercase tracking-wider text-zinc-400">${escapeText(props.title || "Monthly Compute Quota")}</span>
+    <span className="text-xs font-bold text-white font-mono">${pct}%</span>
+  </div>
+  <div className="h-2.5 w-full bg-zinc-900 rounded-full overflow-hidden p-0.5 border border-zinc-800">
+    <div style={{ width: "${pct}%" }} className="h-full rounded-full bg-[${pct > 80 ? '#f59e0b' : tokens.primary}]" />
+  </div>
+  <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+    <span>${escapeText(props.usage || "84,200")} / ${escapeText(props.total || "100,000")} reqs</span>
+    <span className="text-zinc-500">Resets in ${escapeText(props.resetDays || "6 days")}</span>
+  </div>
+  <button className="w-full py-1.5 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] hover:opacity-90">
+    Upgrade Quota Limit
+  </button>
+</div>`;
+    },
+  },
+
+  "kanban-task-card": {
+    id: "kanban-task-card",
+    name: "Agile Kanban Task Card",
+    category: "components",
+    description: "Interactive issue ticket card with priority status tag, branch tag, checklist counter, and assignee avatar.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "issueId", label: "Issue Key", type: "text", defaultValue: "FETCH-1082" },
+      { key: "title", label: "Task Title", type: "text", defaultValue: "Implement PKCE OAuth Security Standard" },
+      { key: "priority", label: "Priority", type: "select", defaultValue: "Urgent", options: ["Urgent", "High", "Normal", "Low"] },
+      { key: "branch", label: "Git Branch", type: "text", defaultValue: "feat/pkce-auth" },
+      { key: "subtasks", label: "Checklist", type: "text", defaultValue: "4/5 subtasks" },
+      { key: "assignee", label: "Assignee Initials", type: "text", defaultValue: "AZ" },
+    ],
+    renderComponent: (props, tokens) => {
+      const priorityColors: Record<string, string> = {
+        Urgent: "bg-red-950/80 text-red-300 border-red-800",
+        High: "bg-amber-950/80 text-amber-300 border-amber-800",
+        Normal: "bg-blue-950/80 text-blue-300 border-blue-800",
+        Low: "bg-zinc-900 text-zinc-400 border-zinc-800",
+      };
+      const pColor = priorityColors[props.priority || "Urgent"] || priorityColors.Urgent;
+
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-lg max-w-sm w-full space-y-3 text-white select-none transition-all hover:border-zinc-700",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", { className: "text-[10px] font-mono font-bold text-zinc-500 tracking-wider" }, props.issueId || "FETCH-1082"),
+          React.createElement(
+            "span",
+            { className: `text-[10px] font-mono px-2 py-0.5 rounded-xs border font-semibold ${pColor}` },
+            props.priority || "Urgent"
+          )
+        ),
+        React.createElement("h4", { className: "text-xs font-semibold text-white leading-snug" }, props.title || "Implement PKCE OAuth Security Standard"),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-2 text-[10px] font-mono text-zinc-400" },
+          React.createElement("span", { className: "px-1.5 py-0.5 rounded-xs bg-zinc-900 border border-zinc-800 flex items-center gap-1" },
+            "🌿",
+            props.branch || "feat/pkce-auth"
+          ),
+          React.createElement("span", { className: "text-zinc-500" }, props.subtasks || "4/5 subtasks")
+        ),
+        React.createElement(
+          "div",
+          { className: "pt-2 border-t border-zinc-800 flex items-center justify-between text-xs" },
+          React.createElement("span", { className: "text-[11px] font-mono text-emerald-400 flex items-center gap-1" },
+            React.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400" }),
+            "In Review"
+          ),
+          React.createElement(
+            "div",
+            {
+              style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+              className: "w-6 h-6 rounded-full font-mono text-[10px] font-bold flex items-center justify-center border border-white/20 shadow-xs",
+            },
+            props.assignee || "AZ"
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-sm w-full space-y-3 text-white">
+  <div className="flex items-center justify-between">
+    <span className="text-[10px] font-mono font-bold text-zinc-500">${escapeText(props.issueId || "FETCH-1082")}</span>
+    <span className="text-[10px] font-mono px-2 py-0.5 rounded-xs border border-red-800 bg-red-950/80 text-red-300 font-semibold">${escapeText(props.priority || "Urgent")}</span>
+  </div>
+  <h4 className="text-xs font-semibold text-white leading-snug">${escapeText(props.title || "Implement PKCE OAuth Security Standard")}</h4>
+  <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
+    <span className="px-1.5 py-0.5 rounded-xs bg-zinc-900 border border-zinc-800">🌿 ${escapeText(props.branch || "feat/pkce-auth")}</span>
+    <span className="text-zinc-500">${escapeText(props.subtasks || "4/5 subtasks")}</span>
+  </div>
+  <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-xs">
+    <span className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+      In Review
+    </span>
+    <div className="w-6 h-6 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] font-mono text-[10px] font-bold flex items-center justify-center">
+      ${escapeText(props.assignee || "AZ")}
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "audio-waveform-player": {
+    id: "audio-waveform-player",
+    name: "Voice Note Waveform Player",
+    category: "elements",
+    description: "Compact voice message audio player with animated waveform bars, play/pause trigger, and duration timer.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "speakerName", label: "Speaker Name", type: "text", defaultValue: "Sarah Jenkins" },
+      { key: "timeElapsed", label: "Time Elapsed", type: "text", defaultValue: "01:24" },
+      { key: "totalDuration", label: "Total Length", type: "text", defaultValue: "02:45" },
+      { key: "speed", label: "Playback Speed", type: "select", defaultValue: "1.5x", options: ["1.0x", "1.25x", "1.5x", "2.0x"] },
+    ],
+    renderComponent: (props, tokens) => {
+      const barHeights = [40, 65, 30, 85, 95, 50, 70, 35, 90, 60, 80, 45, 100, 75, 55, 30, 85, 40, 60, 90];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${Math.max(tokens.radius, 12)}px`,
+          },
+          className: "p-3.5 border shadow-xl max-w-sm w-full flex items-center gap-3.5 text-white select-none",
+        },
+        React.createElement(
+          "button",
+          {
+            style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+            className: "w-9 h-9 rounded-full flex items-center justify-center shrink-0 cursor-pointer shadow-md hover:scale-105 transition-transform",
+          },
+          "▶"
+        ),
+        React.createElement(
+          "div",
+          { className: "flex-1 space-y-1.5 min-w-0" },
+          React.createElement(
+            "div",
+            { className: "flex items-center justify-between text-[11px]" },
+            React.createElement("span", { className: "font-semibold text-zinc-200 truncate" }, props.speakerName || "Sarah Jenkins"),
+            React.createElement("span", { className: "font-mono text-zinc-400 text-[10px]" }, `${props.timeElapsed || "01:24"} / ${props.totalDuration || "02:45"}`)
+          ),
+          React.createElement(
+            "div",
+            { className: "flex items-end gap-[3px] h-6 w-full" },
+            barHeights.map((h, i) =>
+              React.createElement("div", {
+                key: i,
+                style: {
+                  height: `${h}%`,
+                  backgroundColor: i < 11 ? tokens.primary : "#3f3f46",
+                },
+                className: "flex-1 rounded-full transition-all",
+              })
+            )
+          )
+        ),
+        React.createElement(
+          "span",
+          { className: "px-2 py-0.5 rounded-xs border border-zinc-800 bg-zinc-900 text-[10px] font-mono text-zinc-400 shrink-0" },
+          props.speed || "1.5x"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-3.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 12)}px] shadow-xl max-w-sm w-full flex items-center gap-3.5 text-white">
+  <button className="w-9 h-9 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center shrink-0 shadow-md">
+    ▶
+  </button>
+  <div className="flex-1 space-y-1.5 min-w-0">
+    <div className="flex items-center justify-between text-[11px]">
+      <span className="font-semibold text-zinc-200 truncate">${escapeText(props.speakerName || "Sarah Jenkins")}</span>
+      <span className="font-mono text-zinc-400 text-[10px]">${escapeText(props.timeElapsed || "01:24")} / ${escapeText(props.totalDuration || "02:45")}</span>
+    </div>
+    <div className="flex items-end gap-[3px] h-6 w-full">
+      <div className="flex-1 h-[40%] bg-[${tokens.primary}] rounded-full" />
+      <div className="flex-1 h-[70%] bg-[${tokens.primary}] rounded-full" />
+      <div className="flex-1 h-[100%] bg-[${tokens.primary}] rounded-full" />
+      <div className="flex-1 h-[60%] bg-[${tokens.primary}] rounded-full" />
+      <div className="flex-1 h-[30%] bg-zinc-700 rounded-full" />
+      <div className="flex-1 h-[80%] bg-zinc-700 rounded-full" />
+    </div>
+  </div>
+  <span className="px-2 py-0.5 rounded-xs border border-zinc-800 bg-zinc-900 text-[10px] font-mono text-zinc-400 shrink-0">${escapeText(props.speed || "1.5x")}</span>
+</div>`;
+    },
+  },
+
+  "deploy-pipeline-status": {
+    id: "deploy-pipeline-status",
+    name: "CI/CD Pipeline Tracker",
+    category: "components",
+    description: "Multi-stage deployment workflow visualization displaying Build, Lint, Test, and Production steps with status pulses.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "commitSha", label: "Commit Hash", type: "text", defaultValue: "e94b21d" },
+      { key: "branch", label: "Branch", type: "text", defaultValue: "main" },
+      { key: "deployEnv", label: "Target Environment", type: "text", defaultValue: "Production (us-east-1)" },
+      { key: "duration", label: "Elapsed Time", type: "text", defaultValue: "1m 42s" },
+    ],
+    renderComponent: (props, tokens) => {
+      const steps = [
+        { label: "Build", status: "passed", icon: "✓" },
+        { label: "Lint", status: "passed", icon: "✓" },
+        { label: "Test", status: "passed", icon: "✓" },
+        { label: "Deploy", status: "running", icon: "●" },
+      ];
+
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-xl max-w-md w-full space-y-3.5 text-white select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between text-xs" },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-2 font-mono text-[11px]" },
+            React.createElement("span", { className: "text-zinc-500" }, "commit"),
+            React.createElement("span", { className: "text-white font-bold" }, props.commitSha || "e94b21d"),
+            React.createElement("span", { className: "px-1.5 py-0.2 rounded-xs bg-zinc-900 border border-zinc-800 text-zinc-400" }, props.branch || "main")
+          ),
+          React.createElement("span", { className: "text-[10px] font-mono text-zinc-500" }, props.duration || "1m 42s")
+        ),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-4 gap-2 pt-1" },
+          steps.map((st, i) =>
+            React.createElement(
+              "div",
+              {
+                key: i,
+                className: `p-2 rounded-xs border text-center space-y-1 ${
+                  st.status === "passed"
+                    ? "border-emerald-900/60 bg-emerald-950/30 text-emerald-300"
+                    : "border-indigo-800/80 bg-indigo-950/40 text-indigo-300 animate-pulse"
+                }`,
+              },
+              React.createElement("div", { className: "text-xs font-mono font-bold" }, st.icon),
+              React.createElement("div", { className: "text-[10px] font-mono uppercase tracking-wider" }, st.label)
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "text-[10px] font-mono text-zinc-400 pt-1 flex items-center justify-between border-t border-zinc-800" },
+          React.createElement("span", null, `Deploying to ${props.deployEnv || "Production (us-east-1)"}`),
+          React.createElement("span", { className: "text-emerald-400 flex items-center gap-1" },
+            React.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" }),
+            "Healthy"
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-3.5 text-white">
+  <div className="flex items-center justify-between text-xs">
+    <div className="flex items-center gap-2 font-mono text-[11px]">
+      <span className="text-zinc-500">commit</span>
+      <span className="text-white font-bold">${escapeText(props.commitSha || "e94b21d")}</span>
+      <span className="px-1.5 py-0.2 rounded-xs bg-zinc-900 border border-zinc-800 text-zinc-400">${escapeText(props.branch || "main")}</span>
+    </div>
+    <span className="text-[10px] font-mono text-zinc-500">${escapeText(props.duration || "1m 42s")}</span>
+  </div>
+  <div className="grid grid-cols-4 gap-2 pt-1">
+    <div className="p-2 rounded-xs border border-emerald-900/60 bg-emerald-950/30 text-emerald-300 text-center space-y-1">
+      <div className="text-xs font-mono font-bold">✓</div>
+      <div className="text-[10px] font-mono uppercase tracking-wider">Build</div>
+    </div>
+    <div className="p-2 rounded-xs border border-emerald-900/60 bg-emerald-950/30 text-emerald-300 text-center space-y-1">
+      <div className="text-xs font-mono font-bold">✓</div>
+      <div className="text-[10px] font-mono uppercase tracking-wider">Lint</div>
+    </div>
+    <div className="p-2 rounded-xs border border-emerald-900/60 bg-emerald-950/30 text-emerald-300 text-center space-y-1">
+      <div className="text-xs font-mono font-bold">✓</div>
+      <div className="text-[10px] font-mono uppercase tracking-wider">Test</div>
+    </div>
+    <div className="p-2 rounded-xs border border-indigo-800 bg-indigo-950/40 text-indigo-300 text-center space-y-1 animate-pulse">
+      <div className="text-xs font-mono font-bold">●</div>
+      <div className="text-[10px] font-mono uppercase tracking-wider">Deploy</div>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "multi-step-stepper": {
+    id: "multi-step-stepper",
+    name: "Multi-Step Onboarding Stepper",
+    category: "navigation",
+    description: "Horizontal step progress indicator with completed checkmarks, current step spotlight, and step summary.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "step1", label: "Step 1 Label", type: "text", defaultValue: "Workspace" },
+      { key: "step2", label: "Step 2 Label", type: "text", defaultValue: "Integrations" },
+      { key: "step3", label: "Step 3 Label", type: "text", defaultValue: "Team Access" },
+      { key: "currentStep", label: "Current Step (1-3)", type: "select", defaultValue: "2", options: ["1", "2", "3"] },
+    ],
+    renderComponent: (props, tokens) => {
+      const cur = parseInt(props.currentStep || "2", 10);
+      const steps = [
+        { label: props.step1 || "Workspace", num: 1 },
+        { label: props.step2 || "Integrations", num: 2 },
+        { label: props.step3 || "Team Access", num: 3 },
+      ];
+
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-lg max-w-md w-full select-none text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between relative" },
+          steps.map((st, i) => {
+            const isDone = st.num < cur;
+            const isCurrent = st.num === cur;
+            return React.createElement(
+              "div",
+              { key: i, className: "flex-1 flex flex-col items-center relative text-center" },
+              React.createElement(
+                "div",
+                {
+                  style: {
+                    backgroundColor: isDone || isCurrent ? tokens.primary : "#18181b",
+                    color: isDone || isCurrent ? tokens.primaryForeground : "#71717a",
+                    borderColor: isCurrent ? tokens.primary : tokens.border,
+                  },
+                  className: "w-7 h-7 rounded-full border flex items-center justify-center text-xs font-mono font-bold z-10 shadow-xs mb-1.5 transition-colors",
+                },
+                isDone ? "✓" : st.num
+              ),
+              React.createElement(
+                "span",
+                { className: `text-[11px] font-mono ${isCurrent ? "text-white font-bold" : "text-zinc-500"}` },
+                st.label
+              )
+            );
+          })
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-md w-full text-white">
+  <div className="flex items-center justify-between">
+    <div className="flex-1 flex flex-col items-center">
+      <div className="w-7 h-7 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center text-xs font-mono font-bold mb-1.5">✓</div>
+      <span className="text-[11px] font-mono text-zinc-400">${escapeText(props.step1 || "Workspace")}</span>
+    </div>
+    <div className="flex-1 flex flex-col items-center">
+      <div className="w-7 h-7 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] border border-[${tokens.primary}] flex items-center justify-center text-xs font-mono font-bold mb-1.5">2</div>
+      <span className="text-[11px] font-mono text-white font-bold">${escapeText(props.step2 || "Integrations")}</span>
+    </div>
+    <div className="flex-1 flex flex-col items-center">
+      <div className="w-7 h-7 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-500 flex items-center justify-center text-xs font-mono font-bold mb-1.5">3</div>
+      <span className="text-[11px] font-mono text-zinc-500">${escapeText(props.step3 || "Team Access")}</span>
+    </div>
+  </div>
+</div>`;
+    },
+  },
+
+  "activity-heatmap": {
+    id: "activity-heatmap",
+    name: "Activity Heatmap Matrix",
+    category: "components",
+    description: "GitHub-style telemetry contribution matrix with multi-tier density coloring, legend chips, and total count KPI.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "totalEvents", label: "Total Events", type: "text", defaultValue: "2,418 events" },
+      { key: "periodLabel", label: "Period", type: "text", defaultValue: "Last 90 days" },
+    ],
+    renderComponent: (props, tokens) => {
+      const sampleLevels = [
+        0, 1, 2, 0, 3, 1, 0, 2, 4, 1, 0, 3, 2, 0,
+        1, 0, 2, 3, 1, 0, 4, 2, 0, 1, 3, 0, 1, 2,
+        0, 3, 1, 4, 2, 0, 1, 0, 3, 2, 4, 1, 0, 2,
+        2, 1, 0, 3, 0, 4, 2, 1, 0, 3, 1, 2, 0, 4,
+        1, 0, 3, 2, 4, 1, 0, 2, 3, 0, 1, 4, 2, 0,
+        0, 2, 1, 0, 3, 2, 4, 0, 1, 3, 2, 0, 4, 1,
+        3, 1, 0, 4, 2, 0, 1, 3, 2, 4, 0, 1, 2, 3,
+      ];
+
+      const getBg = (level: number) => {
+        if (level === 0) return "#18181b";
+        if (level === 1) return `color-mix(in srgb, ${tokens.primary} 30%, #18181b)`;
+        if (level === 2) return `color-mix(in srgb, ${tokens.primary} 55%, #18181b)`;
+        if (level === 3) return `color-mix(in srgb, ${tokens.primary} 80%, #18181b)`;
+        return tokens.primary;
+      };
+
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-xl max-w-md w-full space-y-3 select-none text-white",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between text-xs" },
+          React.createElement("span", { className: "font-semibold text-white font-mono" }, props.totalEvents || "2,418 events"),
+          React.createElement("span", { className: "text-[10px] font-mono text-zinc-500" }, props.periodLabel || "Last 90 days")
+        ),
+        React.createElement(
+          "div",
+          { className: "grid grid-rows-7 grid-flow-col gap-1 w-full overflow-hidden" },
+          sampleLevels.map((lvl, i) =>
+            React.createElement("div", {
+              key: i,
+              style: { backgroundColor: getBg(lvl) },
+              className: "w-2.5 h-2.5 rounded-2xs transition-transform hover:scale-125 cursor-pointer",
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-end gap-1.5 text-[9px] font-mono text-zinc-500 pt-1" },
+          React.createElement("span", null, "Less"),
+          [0, 1, 2, 3, 4].map((l) =>
+            React.createElement("span", {
+              key: l,
+              style: { backgroundColor: getBg(l) },
+              className: "w-2 h-2 rounded-2xs inline-block",
+            })
+          ),
+          React.createElement("span", null, "More")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-3 text-white">
+  <div className="flex items-center justify-between text-xs font-mono">
+    <span className="font-semibold text-white">${escapeText(props.totalEvents || "2,418 events")}</span>
+    <span className="text-[10px] text-zinc-500">${escapeText(props.periodLabel || "Last 90 days")}</span>
+  </div>
+  <div className="grid grid-rows-7 grid-flow-col gap-1 w-full overflow-hidden">
+    <div className="w-2.5 h-2.5 rounded-2xs bg-zinc-900" />
+    <div className="w-2.5 h-2.5 rounded-2xs bg-[${tokens.primary}]/40" />
+    <div className="w-2.5 h-2.5 rounded-2xs bg-[${tokens.primary}]" />
+  </div>
+  <div className="flex items-center justify-end gap-1.5 text-[9px] font-mono text-zinc-500">
+    <span>Less</span>
+    <span className="w-2 h-2 rounded-2xs bg-zinc-900 inline-block" />
+    <span className="w-2 h-2 rounded-2xs bg-[${tokens.primary}]/40 inline-block" />
+    <span className="w-2 h-2 rounded-2xs bg-[${tokens.primary}] inline-block" />
+    <span>More</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "floating-glass-nav": {
+    id: "floating-glass-nav",
+    name: "Floating Glass Island Navbar",
+    category: "navigation",
+    description: "macOS-style floating island header with frosted glass backdrop blur, active tab indicator, and status chip.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "logo", label: "Logo Text", type: "text", defaultValue: "Fetch OS" },
+      { key: "activeTab", label: "Active Tab", type: "select", defaultValue: "Overview", options: ["Overview", "Metrics", "Deploys", "Settings"] },
+      { key: "status", label: "Status Chip", type: "text", defaultValue: "Online" },
+    ],
+    renderComponent: (props, tokens) => {
+      const tabs = ["Overview", "Metrics", "Deploys", "Settings"];
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: `${tokens.surface}e6`,
+            borderColor: tokens.border,
+            borderRadius: `${Math.max(tokens.radius, 16)}px`,
+          },
+          className: "px-3.5 py-2 border shadow-2xl backdrop-blur-md max-w-md w-full flex items-center justify-between gap-4 text-white select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-2 font-mono font-bold text-xs" },
+          React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-2 h-2 rounded-full shadow-xs" }),
+          React.createElement("span", { className: "tracking-tight" }, props.logo || "Fetch OS")
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center gap-1 text-[11px] font-mono" },
+          tabs.map((tab) => {
+            const isActive = tab === (props.activeTab || "Overview");
+            return React.createElement(
+              "span",
+              {
+                key: tab,
+                style: isActive
+                  ? { backgroundColor: tokens.primary, color: tokens.primaryForeground, borderRadius: `${tokens.radius}px` }
+                  : {},
+                className: `px-2 py-1 transition-all cursor-pointer ${
+                  isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white"
+                }`,
+              },
+              tab
+            );
+          })
+        ),
+        React.createElement(
+          "span",
+          { className: "px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1" },
+          React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
+          props.status || "Online"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="px-3.5 py-2 bg-[${tokens.surface}]/90 border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 16)}px] shadow-2xl backdrop-blur-md max-w-md w-full flex items-center justify-between gap-4 text-white">
+  <div className="flex items-center gap-2 font-mono font-bold text-xs">
+    <span className="w-2 h-2 rounded-full bg-[${tokens.primary}]" />
+    <span>${escapeText(props.logo || "Fetch OS")}</span>
+  </div>
+  <div className="flex items-center gap-1 text-[11px] font-mono">
+    <span className="px-2 py-1 bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] font-semibold">${escapeText(props.activeTab || "Overview")}</span>
+    <span className="px-2 py-1 text-zinc-400">Metrics</span>
+    <span className="px-2 py-1 text-zinc-400">Settings</span>
+  </div>
+  <span className="px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+    <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+    ${escapeText(props.status || "Online")}
+  </span>
+</div>`;
+    },
+  },
+
+  "telemetry-donut-dial": {
+    id: "telemetry-donut-dial",
+    name: "Telemetry Donut KPI Dial",
+    category: "components",
+    description: "Circular telemetry metric dial with multi-color SVG segments, center KPI stat, and categorical breakdown chips.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "metricTitle", label: "Metric Title", type: "text", defaultValue: "Uptime SLA Target" },
+      { key: "kpiValue", label: "KPI Stat", type: "text", defaultValue: "99.98%" },
+      { key: "statusLabel", label: "Status Chip", type: "text", defaultValue: "Optimal" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-5 border shadow-xl max-w-sm w-full space-y-4 text-white select-none",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", { className: "text-xs font-mono uppercase tracking-wider text-zinc-400" }, props.metricTitle || "Uptime SLA Target"),
+          React.createElement(
+            "span",
+            { className: "px-2 py-0.5 rounded-xs border border-emerald-900 bg-emerald-950/80 text-[10px] font-mono text-emerald-400" },
+            props.statusLabel || "Optimal"
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-center py-2" },
+          React.createElement(
+            "div",
+            { className: "relative w-28 h-28 flex items-center justify-center" },
+            React.createElement(
+              "svg",
+              { className: "w-full h-full -rotate-90", viewBox: "0 0 100 100" },
+              React.createElement("circle", { cx: "50", cy: "50", r: "40", stroke: "#27272a", strokeWidth: "8", fill: "none" }),
+              React.createElement("circle", {
+                cx: "50",
+                cy: "50",
+                r: "40",
+                stroke: tokens.primary,
+                strokeWidth: "8",
+                strokeDasharray: "251.2",
+                strokeDashoffset: "30",
+                strokeLinecap: "round",
+                fill: "none",
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "absolute flex flex-col items-center justify-center text-center" },
+              React.createElement("span", { className: "text-base font-bold font-mono tracking-tight" }, props.kpiValue || "99.98%"),
+              React.createElement("span", { className: "text-[9px] font-mono text-zinc-500 uppercase" }, "SLA Rate")
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-3 gap-2 text-center pt-2 border-t border-zinc-850 text-[10px] font-mono" },
+          React.createElement("div", null,
+            React.createElement("div", { className: "text-zinc-500" }, "24h Avg"),
+            React.createElement("div", { className: "font-semibold text-white" }, "99.99%")
+          ),
+          React.createElement("div", null,
+            React.createElement("div", { className: "text-zinc-500" }, "P99 Latency"),
+            React.createElement("div", { className: "font-semibold text-white" }, "14ms")
+          ),
+          React.createElement("div", null,
+            React.createElement("div", { className: "text-zinc-500" }, "Incidents"),
+            React.createElement("div", { className: "font-semibold text-emerald-400" }, "0")
+          )
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-4 text-white">
+  <div className="flex items-center justify-between">
+    <span className="text-xs font-mono uppercase tracking-wider text-zinc-400">${escapeText(props.metricTitle || "Uptime SLA Target")}</span>
+    <span className="px-2 py-0.5 rounded-xs border border-emerald-900 bg-emerald-950/80 text-[10px] font-mono text-emerald-400">${escapeText(props.statusLabel || "Optimal")}</span>
+  </div>
+  <div className="flex items-center justify-center py-2">
+    <div className="relative w-28 h-28 flex items-center justify-center">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" stroke="#27272a" strokeWidth="8" fill="none" />
+        <circle cx="50" cy="50" r="40" stroke="${tokens.primary}" strokeWidth="8" strokeDasharray="251.2" strokeDashoffset="30" strokeLinecap="round" fill="none" />
+      </svg>
+      <div className="absolute flex flex-col items-center justify-center text-center">
+        <span className="text-base font-bold font-mono">${escapeText(props.kpiValue || "99.98%")}</span>
+        <span className="text-[9px] font-mono text-zinc-500 uppercase">SLA Rate</span>
+      </div>
+    </div>
   </div>
 </div>`;
     },

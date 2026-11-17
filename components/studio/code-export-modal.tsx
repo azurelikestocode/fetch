@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Copy, Check, Code2, Download, FileCode, CheckCircle2 } from "lucide-react";
+import { X, Copy, Check, Code2, Download, FileCode, CheckCircle2, Terminal } from "lucide-react";
 import { copyToClipboard } from "../../lib/utils";
 import { useAuth } from "../../context/auth-context";
 
@@ -23,7 +23,7 @@ export function CodeExportModal({
   templateName = "Component",
 }: CodeExportModalProps) {
   const { incrementExportCount } = useAuth();
-  const [activeTab, setActiveTab] = useState<"tailwind" | "html" | "tokens" | "typescript">("tailwind");
+  const [activeTab, setActiveTab] = useState<"cli" | "tailwind" | "html" | "tokens" | "typescript">("cli");
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
@@ -79,8 +79,20 @@ export interface ${componentPascalName}Config {
 }
 `;
 
+  const cliSnippet = `# Add "${templateName}" directly into your project:
+npx fetch-ui add ${templateId}
+
+# Or with pnpm:
+pnpm dlx fetch-ui add ${templateId}
+
+# Or with bun:
+bunx fetch-ui add ${templateId}
+`;
+
   const getCode = () => {
     switch (activeTab) {
+      case "cli":
+        return cliSnippet;
       case "tailwind":
         return fullReactComponent;
       case "html":
@@ -90,7 +102,7 @@ export interface ${componentPascalName}Config {
       case "typescript":
         return typeScriptDef;
       default:
-        return fullReactComponent;
+        return cliSnippet;
     }
   };
 
@@ -150,6 +162,19 @@ export interface ${componentPascalName}Config {
         {/* Tab Switcher & Actions */}
         <div className="border-b border-zinc-800/80 px-4 py-2 flex flex-wrap items-center justify-between gap-2 bg-zinc-900/40 shrink-0">
           <div className="flex items-center gap-1 overflow-x-auto py-0.5" role="tablist">
+            <button
+              role="tab"
+              aria-selected={activeTab === "cli"}
+              onClick={() => setActiveTab("cli")}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "cli"
+                  ? "bg-zinc-800 text-emerald-400 border-zinc-700 font-semibold"
+                  : "border-transparent text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              <Terminal className="w-3 h-3 text-emerald-400" />
+              <span>CLI Add</span>
+            </button>
             <button
               role="tab"
               aria-selected={activeTab === "tailwind"}

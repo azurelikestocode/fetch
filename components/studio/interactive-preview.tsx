@@ -76,11 +76,6 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <ButtonCanvas props={props} tokens={tokens} />;
   }
 
-  // Rating Feedback Widget Interactive Preview
-  if (template.id === "rating-widget") {
-    return <RatingWidgetCanvas props={props} tokens={tokens} />;
-  }
-
   // Segmented Control Pills Interactive Preview
   if (template.id === "segment-picker") {
     return <SegmentPickerCanvas props={props} tokens={tokens} />;
@@ -116,19 +111,9 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <ModalDialogCanvas props={props} tokens={tokens} />;
   }
 
-  // Color Palette Swatch Interactive Preview
-  if (template.id === "color-palette-swatch") {
-    return <ColorPaletteSwatchCanvas props={props} tokens={tokens} />;
-  }
-
   // Empty State Interactive Preview
   if (template.id === "empty-state") {
     return <EmptyStateCanvas props={props} tokens={tokens} />;
-  }
-
-  // Keyboard Shortcut Strip Interactive Preview
-  if (template.id === "kbd-shortcut-strip") {
-    return <KbdShortcutStripCanvas props={props} tokens={tokens} />;
   }
 
   // User Table Row Interactive Preview

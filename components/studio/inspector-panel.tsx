@@ -279,6 +279,47 @@ export function InspectorPanel({
             }
           />
         )}
+
+        {/* Live A11y WCAG Contrast Ratio Meter */}
+        {(() => {
+          const getLuminance = (hex: string) => {
+            const clean = hex.replace("#", "");
+            const r = parseInt(clean.substring(0, 2), 16) / 255;
+            const g = parseInt(clean.substring(2, 4), 16) / 255;
+            const b = parseInt(clean.substring(4, 6), 16) / 255;
+            const a = [r, g, b].map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+            return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+          };
+          try {
+            const l1 = getLuminance(tokens.primary);
+            const l2 = getLuminance(tokens.primaryForeground || "#ffffff");
+            const ratio = Math.round(((Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05)) * 10) / 10;
+            const isAAA = ratio >= 7;
+            const isAA = ratio >= 4.5;
+            return (
+              <div className="p-2 rounded-xs border border-zinc-800/80 bg-zinc-900/40 flex items-center justify-between text-[10px] font-mono">
+                <span className="text-zinc-400 flex items-center gap-1.5">
+                  <Shield className="w-3 h-3 text-zinc-500" />
+                  <span>WCAG Contrast:</span>
+                  <span className="text-white font-bold">{ratio}:1</span>
+                </span>
+                <span
+                  className={`px-1.5 py-0.2 rounded-2xs font-semibold ${
+                    isAAA
+                      ? "border border-emerald-800 bg-emerald-950 text-emerald-400"
+                      : isAA
+                      ? "border border-cyan-800 bg-cyan-950 text-cyan-400"
+                      : "border border-amber-800 bg-amber-950 text-amber-400"
+                  }`}
+                >
+                  {isAAA ? "AAA PASS" : isAA ? "AA PASS" : "AA LARGE"}
+                </span>
+              </div>
+            );
+          } catch {
+            return null;
+          }
+        })()}
       </div>
 
       {/* Surface Tone Presets */}

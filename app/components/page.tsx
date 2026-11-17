@@ -51,6 +51,41 @@ export default function CatalogPage() {
           categoryCounts={categoryCounts}
         />
 
+        {/* Quick Filter Collections */}
+        <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-1 text-xs font-mono text-zinc-400">
+          <span className="text-[11px] text-zinc-500 uppercase tracking-wider shrink-0">Quick Topics:</span>
+          {[
+            { label: "AI & Copilots", query: "ai" },
+            { label: "DevTools & CI/CD", query: "pipeline" },
+            { label: "Metrics & Quota", query: "quota" },
+            { label: "Cards & Bento", query: "card" },
+            { label: "Navigation", query: "nav" },
+          ].map((tag) => (
+            <button
+              key={tag.label}
+              onClick={() => {
+                setSearchQuery(tag.query);
+                setSelectedCategory("all");
+              }}
+              className={`px-2.5 py-1 rounded-xs border text-[11px] shrink-0 transition-colors cursor-pointer ${
+                searchQuery.toLowerCase() === tag.query.toLowerCase()
+                  ? "bg-zinc-800 text-white border-zinc-600 font-semibold"
+                  : "border-zinc-850 hover:border-zinc-700 bg-zinc-950 text-zinc-400 hover:text-white"
+              }`}
+            >
+              {tag.label}
+            </button>
+          ))}
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="px-2 py-1 text-[11px] text-zinc-500 hover:text-red-400 transition-colors cursor-pointer underline"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         {filteredTemplates.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTemplates.map((template) => (
