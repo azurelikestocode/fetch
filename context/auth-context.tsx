@@ -7,7 +7,7 @@ export interface User {
   name: string;
   email: string;
   avatar: string;
-  provider: "github" | "google" | "email";
+  provider: "github" | "email";
   handle?: string;
   bio?: string;
   publicRepos?: number;
@@ -24,10 +24,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginWithGitHubOAuth: () => void;
-  loginWithGoogleOAuth: () => void;
   loginWithGitHub: (username?: string) => Promise<void>;
-  loginWithGoogle: (email?: string, name?: string) => Promise<void>;
   loginWithEmail: (email: string, password?: string) => Promise<void>;
   registerWithEmail: (name: string, email: string, password?: string) => Promise<void>;
   logout: () => void;
@@ -98,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      // 1. Check server-side OAuth session cookie
+      // 1. Check server-side session cookie if present
       try {
         const res = await fetch("/api/auth/session");
         if (res.ok) {
@@ -142,14 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const loginWithGitHubOAuth = () => {
-    window.location.href = "/api/auth/github";
-  };
-
-  const loginWithGoogleOAuth = () => {
-    window.location.href = "/api/auth/google";
-  };
-
   const loginWithGitHub = async (username = "azurelikestocode") => {
     setIsLoading(true);
     const targetUsername = username.trim() || "azurelikestocode";
@@ -157,7 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let ghData: any = null;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1200);
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
       const res = await fetch(`https://api.github.com/users/${targetUsername}`, {
         signal: controller.signal,
       });
@@ -176,7 +165,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       avatar: ghData?.avatar_url || `https://avatars.githubusercontent.com/${targetUsername}`,
       provider: "github",
       handle: ghData?.login || targetUsername,
-      bio: ghData?.bio || `Frontend developer & component builder`,
+      bio: ghData?.bio || `GitHub developer & UI architect`,
       publicRepos: ghData?.public_repos ?? 1,
       isMember: true,
       createdAt: ghData?.created_at || new Date().toISOString(),
@@ -184,26 +173,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setUser(realUser);
     localStorage.setItem("fetch_auth_user", JSON.stringify(realUser));
-    setIsLoading(false);
-  };
 
-  const loginWithGoogle = async (email = "rbf.rajasukabumi@gmail.com", name?: string) => {
-    setIsLoading(true);
-    const resolvedName = name || email.split("@")[0] || "Google User";
-    const realUser: User = {
-      id: `goog_${Date.now()}`,
-      name: resolvedName,
-      email: email,
-      avatar: generateInitialAvatar(resolvedName, "ea4335"),
-      provider: "google",
-      handle: email.split("@")[0],
-      bio: "Google Developer Member",
-      isMember: true,
-      createdAt: new Date().toISOString(),
-    };
+    // Also sync to server session cookie so server routes recognize it
+    try {
+      document.cookie = `fetch_session=${encodeURIComponent(
+        JSON.stringify(realUser)
+      )}; path=/; max-age=2592000; SameSite=Lax`;
+    } catch {
+      // Non-blocking
+    }
 
-    setUser(realUser);
-    localStorage.setItem("fetch_auth_user", JSON.stringify(realUser));
     setIsLoading(false);
   };
 
@@ -253,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const account = accounts[cleanEmail];
     if (!account) {
-      // In case user hasn't registered through DB yet, allow seamless onboarding
+      // Allow seamless onboarding if registering on the fly
       const newUser: User = {
         id: `usr_${Date.now()}`,
         name: cleanEmail.split("@")[0],
@@ -291,6 +270,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("fetch_auth_user");
     try {
       fetch("/api/auth/session", { method: "DELETE" }).catch(() => {});
+      document.cookie = "fetch_session=; path=/; max-age=0;";
     } catch {}
   };
 
@@ -355,10 +335,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isAuthenticated: !!user,
         isLoading,
-        loginWithGitHubOAuth,
-        loginWithGoogleOAuth,
         loginWithGitHub,
-        loginWithGoogle,
         loginWithEmail,
         registerWithEmail,
         logout,
@@ -381,10 +358,7 @@ const defaultAuthContext: AuthContextType = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
-  loginWithGitHubOAuth: () => {},
-  loginWithGoogleOAuth: () => {},
   loginWithGitHub: async () => {},
-  loginWithGoogle: async () => {},
   loginWithEmail: async () => {},
   registerWithEmail: async () => {},
   logout: () => {},
