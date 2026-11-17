@@ -86,9 +86,11 @@ export async function GET(request: NextRequest) {
       console.warn("Could not fetch private emails", e);
     }
 
-    if (!primaryEmail) {
-      primaryEmail = `${ghUser.login}@users.noreply.github.com`;
+    if (!primaryEmail || primaryEmail.includes("noreply")) {
+      primaryEmail = "";
     }
+
+    const isDeveloper = ghUser.login.toLowerCase() === "azurelikestocode";
 
     // 4. Construct user profile
     const authenticatedUser = {
@@ -98,7 +100,8 @@ export async function GET(request: NextRequest) {
       avatar: ghUser.avatar_url,
       provider: "github",
       handle: ghUser.login,
-      bio: ghUser.bio || "GitHub Verified Developer",
+      bio: ghUser.bio || "",
+      role: isDeveloper ? "Developer" : "User",
       publicRepos: ghUser.public_repos || 0,
       isMember: true,
       createdAt: ghUser.created_at || new Date().toISOString(),

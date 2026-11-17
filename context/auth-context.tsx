@@ -10,6 +10,7 @@ export interface User {
   provider: "github" | "email";
   handle?: string;
   bio?: string;
+  role?: "Developer" | "User";
   publicRepos?: number;
   isMember: boolean;
   createdAt: string;
@@ -28,6 +29,7 @@ interface AuthContextType {
   loginWithEmail: (email: string, password?: string) => Promise<void>;
   registerWithEmail: (name: string, email: string, password?: string) => Promise<void>;
   logout: () => void;
+  clearAllCache: () => void;
   updateProfile: (updates: Partial<User>) => void;
   favorites: string[];
   toggleFavorite: (templateId: string) => void;
@@ -139,9 +141,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const loginWithGitHub = async (username = "azurelikestocode") => {
+  const loginWithGitHub = async (username?: string) => {
     setIsLoading(true);
-    const targetUsername = username.trim() || "azurelikestocode";
+    const targetUsername = (username || "").trim();
+    if (!targetUsername) {
+      setIsLoading(false);
+      throw new Error("Please enter your GitHub username.");
+    }
     
     let ghData: any = null;
     try {
@@ -158,14 +164,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Fallback
     }
 
+    const isDeveloper =
+      targetUsername.toLowerCase() === "azurelikestocode" ||
+      ghData?.login?.toLowerCase() === "azurelikestocode";
+
     const realUser: User = {
       id: ghData?.id ? `gh_${ghData.id}` : `gh_${targetUsername}`,
       name: ghData?.name || targetUsername,
-      email: ghData?.email || `${targetUsername}@users.noreply.github.com`,
+      email: ghData?.email || "",
       avatar: ghData?.avatar_url || `https://avatars.githubusercontent.com/${targetUsername}`,
       provider: "github",
       handle: ghData?.login || targetUsername,
-      bio: ghData?.bio || `GitHub developer & UI architect`,
+      bio: ghData?.bio || "",
+      role: isDeveloper ? "Developer" : "User",
       publicRepos: ghData?.public_repos ?? 1,
       isMember: true,
       createdAt: ghData?.created_at || new Date().toISOString(),
@@ -174,7 +185,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(realUser);
     localStorage.setItem("fetch_auth_user", JSON.stringify(realUser));
 
-    // Also sync to server session cookie so server routes recognize it
     try {
       document.cookie = `fetch_session=${encodeURIComponent(
         JSON.stringify(realUser)
@@ -201,6 +211,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const passwordHash = await hashPassword(password);
+    const isDeveloper = cleanEmail.includes("azure") || cleanName.toLowerCase().includes("azure");
+
     const newUser: User = {
       id: `usr_${Date.now()}`,
       name: cleanName || cleanEmail.split("@")[0],
@@ -208,6 +220,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       avatar: generateInitialAvatar(cleanName, "10b981"),
       provider: "email",
       handle: cleanEmail.split("@")[0],
+      role: isDeveloper ? "Developer" : "User",
       isMember: true,
       createdAt: new Date().toISOString(),
     };
@@ -232,7 +245,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const account = accounts[cleanEmail];
     if (!account) {
-      // Allow seamless onboarding if registering on the fly
+      const isDeveloper = cleanEmail.includes("azure");
       const newUser: User = {
         id: `usr_${Date.now()}`,
         name: cleanEmail.split("@")[0],
@@ -240,6 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar: generateInitialAvatar(cleanEmail.split("@")[0], "6366f1"),
         provider: "email",
         handle: cleanEmail.split("@")[0],
+        role: isDeveloper ? "Developer" : "User",
         isMember: true,
         createdAt: new Date().toISOString(),
       };
@@ -268,10 +282,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("fetch_auth_user");
+    localStorage.removeItem("fetch_session");
     try {
       fetch("/api/auth/session", { method: "DELETE" }).catch(() => {});
       document.cookie = "fetch_session=; path=/; max-age=0;";
     } catch {}
+  };
+
+  const clearAllCache = () => {
+    logout();
+    localStorage.removeItem("fetch_auth_user");
+    localStorage.removeItem("fetch_session");
+    localStorage.removeItem("fetch_favorites");
+    localStorage.removeItem("fetch_recent_activity");
+    localStorage.removeItem("fetch_accounts_db");
+    localStorage.removeItem("fetch_export_count");
+    setFavorites([]);
+    setRecentActivity([]);
+    setExportCount(0);
   };
 
   const updateProfile = (updates: Partial<User>) => {
@@ -280,7 +308,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const updated = { ...prev, ...updates };
       localStorage.setItem("fetch_auth_user", JSON.stringify(updated));
 
-      // Also update in accounts DB if exists
       try {
         const rawAccounts = localStorage.getItem("fetch_accounts_db");
         if (rawAccounts && updated.email) {
@@ -339,6 +366,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginWithEmail,
         registerWithEmail,
         logout,
+        clearAllCache,
         updateProfile,
         favorites,
         toggleFavorite,
@@ -362,6 +390,7 @@ const defaultAuthContext: AuthContextType = {
   loginWithEmail: async () => {},
   registerWithEmail: async () => {},
   logout: () => {},
+  clearAllCache: () => {},
   updateProfile: () => {},
   favorites: [],
   toggleFavorite: () => {},

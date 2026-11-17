@@ -80,9 +80,11 @@ export async function POST(request: NextRequest) {
       // Non-blocking
     }
 
-    if (!primaryEmail) {
-      primaryEmail = `${ghUser.login}@users.noreply.github.com`;
+    if (!primaryEmail || primaryEmail.includes("noreply")) {
+      primaryEmail = "";
     }
+
+    const isDeveloper = ghUser.login.toLowerCase() === "azurelikestocode";
 
     const authenticatedUser = {
       id: `gh_${ghUser.id}`,
@@ -91,7 +93,8 @@ export async function POST(request: NextRequest) {
       avatar: ghUser.avatar_url,
       provider: "github",
       handle: ghUser.login,
-      bio: ghUser.bio || "GitHub Verified Developer",
+      bio: ghUser.bio || "",
+      role: isDeveloper ? "Developer" : "User",
       publicRepos: ghUser.public_repos || 0,
       isMember: true,
       createdAt: ghUser.created_at || new Date().toISOString(),

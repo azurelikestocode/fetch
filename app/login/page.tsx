@@ -14,6 +14,7 @@ import {
   ArrowLeft,
   X,
   Loader2,
+  RotateCcw,
 } from "lucide-react";
 import { useAuth } from "../../context/auth-context";
 
@@ -21,29 +22,36 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
+  const isReset = searchParams.get("reset") === "true";
 
-  const { loginWithGitHub, loginWithEmail, isAuthenticated } = useAuth();
+  const { loginWithGitHub, loginWithEmail, isAuthenticated, clearAllCache } = useAuth();
 
-  const [githubHandle, setGithubHandle] = useState("azurelikestocode");
-  const [showCustomHandle, setShowCustomHandle] = useState(false);
-  const [email, setEmail] = useState("rbf.rajasukabumi@gmail.com");
+  const [githubHandle, setGithubHandle] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // If already authenticated, redirect
+  // If already authenticated and not explicitly resetting, redirect
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isReset) {
+      clearAllCache();
+    } else if (isAuthenticated) {
       router.push(redirect);
     }
-  }, [isAuthenticated, redirect, router]);
+  }, [isAuthenticated, isReset, redirect, router, clearAllCache]);
 
   const handleGitHubLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    const handle = githubHandle.trim();
+    if (!handle) {
+      setError("Please enter your GitHub username.");
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
     try {
-      await loginWithGitHub(githubHandle);
+      await loginWithGitHub(handle);
       router.push(redirect);
     } catch (err: any) {
       setError(err?.message || "Failed to authenticate with GitHub.");
@@ -68,6 +76,14 @@ function LoginForm() {
     }
   };
 
+  const handleManualReset = () => {
+    clearAllCache();
+    setError(null);
+    setGithubHandle("");
+    setEmail("");
+    setPassword("");
+  };
+
   return (
     <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex flex-col justify-between selection:bg-zinc-800">
       {/* Top Bar */}
@@ -78,25 +94,35 @@ function LoginForm() {
           </div>
           <span className="font-semibold text-base tracking-tight text-[#fafafa]">Fetch</span>
           <span className="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1.5 py-0.2 rounded-xs">
-            Auth
+            Sign In
           </span>
         </Link>
-        <Link
-          href="/"
-          className="text-xs font-mono text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleManualReset}
+            className="text-xs font-mono text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 px-2.5 py-1 rounded-xs border border-zinc-850 hover:border-zinc-700 bg-zinc-900/40"
+            title="Clear all stored session cache"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Clear Cache</span>
+          </button>
+          <Link
+            href="/"
+            className="text-xs font-mono text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back</span>
+          </Link>
+        </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md border border-zinc-850 bg-zinc-950 p-8 rounded-xs shadow-2xl relative animate-fade-in">
-          {/* Subtle top indicator */}
+          {/* Top Indicator */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
                 GitHub Authentication
               </span>
@@ -108,7 +134,7 @@ function LoginForm() {
             Sign in to Fetch
           </h1>
           <p className="text-xs text-zinc-400 leading-relaxed mb-6">
-            Authenticate using your GitHub account to unlock all 40+ components, save custom tokens, and export code.
+            Connect your GitHub handle to unlock all 40+ components, save custom tokens, and export code.
           </p>
 
           {error && (
@@ -120,80 +146,49 @@ function LoginForm() {
             </div>
           )}
 
-          {/* GitHub 1-Click Fast Real Sign-In */}
-          <div className="mb-6">
-            {!showCustomHandle ? (
-              <div className="space-y-2">
-                <button
-                  type="button"
-                  onClick={() => handleGitHubLogin()}
-                  disabled={isSubmitting}
-                  className="w-full h-11 px-4 border border-zinc-700 hover:border-zinc-500 bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-sm"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
-                      <span>Authenticating as @{githubHandle}...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Github className="w-4 h-4 text-zinc-950" />
-                      <span>Continue with GitHub (@{githubHandle})</span>
-                    </>
-                  )}
-                </button>
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowCustomHandle(true)}
-                    className="text-[11px] font-mono text-zinc-500 hover:text-zinc-300 underline cursor-pointer"
-                  >
-                    Use a different GitHub handle
-                  </button>
-                </div>
+          {/* GitHub Username Input Form */}
+          <form onSubmit={handleGitHubLogin} className="space-y-3 mb-6">
+            <div>
+              <label className="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">
+                GitHub Username
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2.5 text-xs text-zinc-500 font-mono">@</span>
+                <input
+                  type="text"
+                  value={githubHandle}
+                  onChange={(e) => setGithubHandle(e.target.value)}
+                  placeholder="Enter your GitHub username"
+                  className="w-full h-10 pl-7 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs font-mono text-white placeholder-zinc-600 rounded-xs outline-none transition-colors"
+                />
               </div>
-            ) : (
-              <form onSubmit={handleGitHubLogin} className="space-y-2 p-3 bg-zinc-900/60 border border-zinc-800 rounded-xs">
-                <label className="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
-                  Enter GitHub Username
-                </label>
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <span className="absolute left-3 top-2.5 text-xs text-zinc-500 font-mono">@</span>
-                    <input
-                      type="text"
-                      value={githubHandle}
-                      onChange={(e) => setGithubHandle(e.target.value)}
-                      placeholder="github_username"
-                      className="w-full h-9 pl-7 pr-3 bg-zinc-950 border border-zinc-800 focus:border-zinc-500 text-xs font-mono text-white rounded-xs outline-none"
-                      autoFocus
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="h-9 px-3.5 bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-medium rounded-xs font-mono uppercase cursor-pointer"
-                  >
-                    {isSubmitting ? "..." : "Link"}
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowCustomHandle(false)}
-                  className="text-[10px] font-mono text-zinc-500 hover:text-zinc-400"
-                >
-                  Cancel
-                </button>
-              </form>
-            )}
-          </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-10 px-4 border border-zinc-700 hover:border-zinc-500 bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold rounded-xs transition-all flex items-center justify-center gap-2.5 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-sm"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <>
+                  <Github className="w-4 h-4 text-zinc-950" />
+                  <span>Continue with GitHub</span>
+                </>
+              )}
+            </button>
+          </form>
 
           <div className="relative flex py-2 items-center mb-6">
-            <div className="flex-grow border-t border-zinc-800"></div>
+            <div className="flex-grow border-t border-zinc-850"></div>
             <span className="flex-shrink mx-3 text-[10px] font-mono uppercase tracking-widest text-zinc-500">
               or email & password
             </span>
-            <div className="flex-grow border-t border-zinc-800"></div>
+            <div className="flex-grow border-t border-zinc-850"></div>
           </div>
 
           {/* Email / Password Form */}
@@ -208,7 +203,7 @@ function LoginForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="rbf.rajasukabumi@gmail.com"
+                  placeholder="developer@example.com"
                   required
                   className="w-full h-10 pl-9 pr-3 bg-zinc-900 border border-zinc-800 focus:border-zinc-500 text-xs text-white placeholder-zinc-600 rounded-xs outline-none transition-colors"
                 />

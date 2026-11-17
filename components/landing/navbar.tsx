@@ -92,8 +92,14 @@ export function Navbar() {
                   )}
                 </div>
                 <span className="text-xs font-mono text-zinc-300 max-w-[90px] truncate">{user.name.split(" ")[0]}</span>
-                <span className="text-[9px] font-mono uppercase tracking-wider px-1 py-0.2 bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 rounded-2xs">
-                  Pro
+                <span
+                  className={`text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.2 rounded-2xs ${
+                    user.role === "Developer" || user.handle?.toLowerCase() === "azurelikestocode"
+                      ? "bg-indigo-950/80 border border-indigo-800 text-indigo-300"
+                      : "bg-zinc-900 border border-zinc-800 text-zinc-400"
+                  }`}
+                >
+                  {user.role === "Developer" || user.handle?.toLowerCase() === "azurelikestocode" ? "Developer" : "User"}
                 </span>
               </Link>
               <button
