@@ -3249,82 +3249,66 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
       { key: "logo", label: "Logo Text", type: "text", defaultValue: "Fetch OS" },
-      { key: "activeTab", label: "Active Tab", type: "select", defaultValue: "Overview", options: ["Overview", "Metrics", "Deploys", "Settings"] },
+      { key: "activeTab", label: "Active Tab", type: "select", defaultValue: "Overview", options: ["Overview", "Metrics", "Deploys"] },
       { key: "status", label: "Status Chip", type: "text", defaultValue: "Online" },
     ],
     renderComponent: (props, tokens) => {
-      const tabs = ["Overview", "Metrics", "Deploys", "Settings"];
+      const tabs = ["Overview", "Metrics", "Deploys"];
       return React.createElement(
         "div",
-        { className: "w-full flex flex-col items-center justify-center py-2 relative" },
-        React.createElement("div", {
+        {
           style: {
-            background: `radial-gradient(ellipse at center, ${tokens.primary}33 0%, transparent 70%)`,
+            backgroundColor: `${tokens.surface}e6`,
+            borderColor: tokens.border,
+            borderRadius: `${Math.max(tokens.radius, 16)}px`,
+            boxShadow: `0 8px 32px rgba(0, 0, 0, 0.45), 0 0 20px ${tokens.primary}25`,
           },
-          className: "absolute -top-3 w-56 h-16 blur-xl pointer-events-none",
-        }),
+          className: "px-3 py-1.5 border backdrop-blur-xl max-w-sm w-full flex items-center justify-between gap-2.5 text-white select-none",
+        },
         React.createElement(
           "div",
-          {
-            style: {
-              backgroundColor: `${tokens.surface}d9`,
-              borderColor: tokens.border,
-              borderRadius: `${Math.max(tokens.radius, 16)}px`,
-            },
-            className: "px-3.5 py-2 border shadow-2xl backdrop-blur-xl max-w-md w-full flex items-center justify-between gap-3 text-white select-none relative z-10",
-          },
-          React.createElement(
-            "div",
-            { className: "flex items-center gap-2 font-mono font-bold text-xs shrink-0" },
-            React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-2 h-2 rounded-full shadow-xs" }),
-            React.createElement("span", { className: "tracking-tight" }, props.logo || "Fetch OS")
-          ),
-          React.createElement(
-            "div",
-            { className: "flex items-center gap-1 text-[11px] font-mono" },
-            tabs.map((tab) => {
-              const isActive = tab === (props.activeTab || "Overview");
-              return React.createElement(
-                "span",
-                {
-                  key: tab,
-                  style: isActive
-                    ? { backgroundColor: tokens.primary, color: tokens.primaryForeground, borderRadius: `${tokens.radius}px` }
-                    : {},
-                  className: `px-2 py-0.5 transition-all cursor-pointer ${
-                    isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white"
-                  }`,
-                },
-                tab
-              );
-            })
-          ),
-          React.createElement(
-            "span",
-            { className: "px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1 shrink-0" },
-            React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
-            props.status || "Online"
-          )
+          { className: "flex items-center gap-2 font-mono font-bold text-xs shrink-0" },
+          React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-2 h-2 rounded-full shadow-xs" }),
+          React.createElement("span", { className: "tracking-tight" }, props.logo || "Fetch OS")
         ),
         React.createElement(
           "div",
-          { className: "w-full max-w-xs mt-3.5 text-center space-y-1.5 opacity-60 pointer-events-none select-none" },
-          React.createElement("div", { className: "h-1.5 w-24 mx-auto rounded-full bg-zinc-800" }),
-          React.createElement("div", { className: "text-[9px] font-mono text-zinc-500 uppercase tracking-widest" }, "Next-Gen Component System")
+          { className: "flex items-center gap-1 text-[11px] font-mono shrink-0" },
+          tabs.map((tab) => {
+            const isActive = tab === (props.activeTab || "Overview");
+            return React.createElement(
+              "span",
+              {
+                key: tab,
+                style: isActive
+                  ? { backgroundColor: tokens.primary, color: tokens.primaryForeground, borderRadius: `${tokens.radius}px` }
+                  : {},
+                className: `px-2 py-0.5 transition-all cursor-pointer ${
+                  isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white"
+                }`,
+              },
+              tab
+            );
+          })
+        ),
+        React.createElement(
+          "span",
+          { className: "px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1 shrink-0" },
+          React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
+          props.status || "Online"
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="px-3.5 py-2 bg-[${tokens.surface}]/85 border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 16)}px] shadow-2xl backdrop-blur-xl max-w-md w-full flex items-center justify-between gap-3 text-white">
+      return `<div className="px-3 py-1.5 bg-[${tokens.surface}]/90 border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 16)}px] shadow-2xl backdrop-blur-xl max-w-sm w-full flex items-center justify-between gap-2.5 text-white">
   <div className="flex items-center gap-2 font-mono font-bold text-xs shrink-0">
     <span className="w-2 h-2 rounded-full bg-[${tokens.primary}]" />
     <span className="tracking-tight">${escapeText(props.logo || "Fetch OS")}</span>
   </div>
-  <div className="flex items-center gap-1 text-[11px] font-mono">
+  <div className="flex items-center gap-1 text-[11px] font-mono shrink-0">
     <span className="px-2 py-0.5 bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] font-semibold">${escapeText(props.activeTab || "Overview")}</span>
     <span className="px-2 py-0.5 text-zinc-400">Metrics</span>
     <span className="px-2 py-0.5 text-zinc-400">Deploys</span>
-    <span className="px-2 py-0.5 text-zinc-400">Settings</span>
   </div>
   <span className="px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1 shrink-0">
     <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
