@@ -55,6 +55,21 @@ describe('Template Registry', () => {
     expect(aiTemplate).toBeDefined();
     const aiJsx = aiTemplate!.generateJsx({ modelName: 'GPT-4o' }, aiTemplate!.defaultTokens);
     expect(aiJsx).toContain('GPT-4o');
+
+    const waveformTemplate = getTemplateById('audio-waveform-player');
+    expect(waveformTemplate).toBeDefined();
+    const waveformJsx = waveformTemplate!.generateJsx({ speakerName: 'Alex' }, waveformTemplate!.defaultTokens);
+    expect(waveformJsx).toContain('Alex');
+
+    const heatmapTemplate = getTemplateById('activity-heatmap');
+    expect(heatmapTemplate).toBeDefined();
+    const heatmapJsx = heatmapTemplate!.generateJsx({ totalEvents: '9,999' }, heatmapTemplate!.defaultTokens);
+    expect(heatmapJsx).toContain('9,999');
+
+    const glassNavTemplate = getTemplateById('floating-glass-nav');
+    expect(glassNavTemplate).toBeDefined();
+    const glassNavJsx = glassNavTemplate!.generateJsx({ logo: 'HyperOS' }, glassNavTemplate!.defaultTokens);
+    expect(glassNavJsx).toContain('HyperOS');
   });
 });
 

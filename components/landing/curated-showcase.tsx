@@ -7,10 +7,10 @@ import { TEMPLATES } from "../../lib/templates";
 
 const FEATURED_IDS = [
   "action-dock",
-  "pricing-card",
+  "ai-prompt-bar",
   "bento-card",
-  "auth-card",
-  "feature-grid",
+  "deploy-pipeline-status",
+  "usage-quota-meter",
   "stat-ring",
 ];
 
@@ -26,12 +26,14 @@ export function CuratedShowcase() {
 
   const getScaleClass = (id: string) => {
     switch (id) {
-      case "pricing-card":
-        return "scale-[0.52] max-w-[280px]";
+      case "ai-prompt-bar":
+        return "scale-[0.82] max-w-[320px]";
+      case "deploy-pipeline-status":
+        return "scale-[0.76] max-w-[320px]";
+      case "usage-quota-meter":
+        return "scale-[0.80] max-w-[300px]";
       case "bento-card":
-      case "auth-card":
-      case "feature-grid":
-        return "scale-[0.60] max-w-[290px]";
+        return "scale-[0.62] max-w-[290px]";
       case "stat-ring":
         return "scale-[0.72] max-w-[290px]";
       case "action-dock":

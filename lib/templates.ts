@@ -2824,76 +2824,115 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
       { key: "speed", label: "Playback Speed", type: "select", defaultValue: "1.5x", options: ["1.0x", "1.25x", "1.5x", "2.0x"] },
     ],
     renderComponent: (props, tokens) => {
-      const barHeights = [40, 65, 30, 85, 95, 50, 70, 35, 90, 60, 80, 45, 100, 75, 55, 30, 85, 40, 60, 90];
+      const barHeights = [35, 60, 25, 80, 95, 45, 70, 30, 90, 55, 80, 40, 100, 75, 50, 30, 85, 40, 65, 90, 45, 70, 30, 60];
       return React.createElement(
         "div",
         {
           style: {
             backgroundColor: tokens.surface,
             borderColor: tokens.border,
-            borderRadius: `${Math.max(tokens.radius, 12)}px`,
+            borderRadius: `${Math.max(tokens.radius, 14)}px`,
           },
-          className: "p-3.5 border shadow-xl max-w-sm w-full flex items-center gap-3.5 text-white select-none",
+          className: "p-4 border shadow-2xl max-w-sm w-full space-y-3 text-white select-none",
         },
         React.createElement(
-          "button",
-          {
-            style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
-            className: "w-9 h-9 rounded-full flex items-center justify-center shrink-0 cursor-pointer shadow-md hover:scale-105 transition-transform",
-          },
-          "▶"
-        ),
-        React.createElement(
           "div",
-          { className: "flex-1 space-y-1.5 min-w-0" },
+          { className: "flex items-center justify-between" },
           React.createElement(
             "div",
-            { className: "flex items-center justify-between text-[11px]" },
-            React.createElement("span", { className: "font-semibold text-zinc-200 truncate" }, props.speakerName || "Sarah Jenkins"),
-            React.createElement("span", { className: "font-mono text-zinc-400 text-[10px]" }, `${props.timeElapsed || "01:24"} / ${props.totalDuration || "02:45"}`)
+            { className: "flex items-center gap-2.5 min-w-0" },
+            React.createElement(
+              "div",
+              {
+                style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+                className: "w-7 h-7 rounded-full flex items-center justify-center font-mono text-[11px] font-bold shrink-0 shadow-xs",
+              },
+              (props.speakerName || "SJ").slice(0, 2).toUpperCase()
+            ),
+            React.createElement(
+              "div",
+              { className: "min-w-0" },
+              React.createElement("div", { className: "text-xs font-semibold text-zinc-100 truncate" }, props.speakerName || "Sarah Jenkins"),
+              React.createElement("div", { className: "text-[10px] text-zinc-500 font-mono" }, "Voice Note • 48 kHz")
+            )
           ),
           React.createElement(
-            "div",
-            { className: "flex items-end gap-[3px] h-6 w-full" },
-            barHeights.map((h, i) =>
-              React.createElement("div", {
-                key: i,
-                style: {
-                  height: `${h}%`,
-                  backgroundColor: i < 11 ? tokens.primary : "#3f3f46",
-                },
-                className: "flex-1 rounded-full transition-all",
-              })
-            )
+            "span",
+            { className: "px-2 py-0.5 rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-mono text-zinc-400 shrink-0" },
+            props.speed || "1.5x"
           )
         ),
         React.createElement(
-          "span",
-          { className: "px-2 py-0.5 rounded-xs border border-zinc-800 bg-zinc-900 text-[10px] font-mono text-zinc-400 shrink-0" },
-          props.speed || "1.5x"
+          "div",
+          { className: "flex items-center gap-3 pt-0.5" },
+          React.createElement(
+            "button",
+            {
+              style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+              className: "w-8 h-8 rounded-full flex items-center justify-center shrink-0 cursor-pointer shadow-md hover:scale-105 transition-transform text-[11px] pl-0.5",
+            },
+            "▶"
+          ),
+          React.createElement(
+            "div",
+            { className: "flex-1 space-y-1.5 min-w-0" },
+            React.createElement(
+              "div",
+              { className: "flex items-end gap-[2px] h-6 w-full" },
+              barHeights.map((h, i) =>
+                React.createElement("div", {
+                  key: i,
+                  style: {
+                    height: `${h}%`,
+                    backgroundColor: i < 14 ? tokens.primary : "#3f3f46",
+                  },
+                  className: "flex-1 rounded-full transition-all",
+                })
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "flex items-center justify-between text-[10px] font-mono text-zinc-400" },
+              React.createElement("span", { style: { color: tokens.primary } }, props.timeElapsed || "01:24"),
+              React.createElement("span", null, props.totalDuration || "02:45")
+            )
+          )
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="p-3.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 12)}px] shadow-xl max-w-sm w-full flex items-center gap-3.5 text-white">
-  <button className="w-9 h-9 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center shrink-0 shadow-md">
-    ▶
-  </button>
-  <div className="flex-1 space-y-1.5 min-w-0">
-    <div className="flex items-center justify-between text-[11px]">
-      <span className="font-semibold text-zinc-200 truncate">${escapeText(props.speakerName || "Sarah Jenkins")}</span>
-      <span className="font-mono text-zinc-400 text-[10px]">${escapeText(props.timeElapsed || "01:24")} / ${escapeText(props.totalDuration || "02:45")}</span>
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 14)}px] shadow-2xl max-w-sm w-full space-y-3 text-white">
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-2.5 min-w-0">
+      <div className="w-7 h-7 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-mono text-[11px] font-bold shrink-0">
+        ${escapeText((props.speakerName || "SJ").slice(0, 2).toUpperCase())}
+      </div>
+      <div className="min-w-0">
+        <div className="text-xs font-semibold text-zinc-100 truncate">${escapeText(props.speakerName || "Sarah Jenkins")}</div>
+        <div className="text-[10px] text-zinc-500 font-mono">Voice Note • 48 kHz</div>
+      </div>
     </div>
-    <div className="flex items-end gap-[3px] h-6 w-full">
-      <div className="flex-1 h-[40%] bg-[${tokens.primary}] rounded-full" />
-      <div className="flex-1 h-[70%] bg-[${tokens.primary}] rounded-full" />
-      <div className="flex-1 h-[100%] bg-[${tokens.primary}] rounded-full" />
-      <div className="flex-1 h-[60%] bg-[${tokens.primary}] rounded-full" />
-      <div className="flex-1 h-[30%] bg-zinc-700 rounded-full" />
-      <div className="flex-1 h-[80%] bg-zinc-700 rounded-full" />
+    <span className="px-2 py-0.5 rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-mono text-zinc-400">${escapeText(props.speed || "1.5x")}</span>
+  </div>
+  <div className="flex items-center gap-3 pt-0.5">
+    <button className="w-8 h-8 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center shrink-0 shadow-md text-[11px]">
+      ▶
+    </button>
+    <div className="flex-1 space-y-1.5 min-w-0">
+      <div className="flex items-end gap-[2px] h-6 w-full">
+        <div className="flex-1 h-[35%] bg-[${tokens.primary}] rounded-full" />
+        <div className="flex-1 h-[75%] bg-[${tokens.primary}] rounded-full" />
+        <div className="flex-1 h-[100%] bg-[${tokens.primary}] rounded-full" />
+        <div className="flex-1 h-[65%] bg-[${tokens.primary}] rounded-full" />
+        <div className="flex-1 h-[40%] bg-zinc-700 rounded-full" />
+        <div className="flex-1 h-[80%] bg-zinc-700 rounded-full" />
+      </div>
+      <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
+        <span className="text-[${tokens.primary}]">${escapeText(props.timeElapsed || "01:24")}</span>
+        <span>${escapeText(props.totalDuration || "02:45")}</span>
+      </div>
     </div>
   </div>
-  <span className="px-2 py-0.5 rounded-xs border border-zinc-800 bg-zinc-900 text-[10px] font-mono text-zinc-400 shrink-0">${escapeText(props.speed || "1.5x")}</span>
 </div>`;
     },
   },
@@ -3120,7 +3159,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
             borderColor: tokens.border,
             borderRadius: `${tokens.radius}px`,
           },
-          className: "p-4 border shadow-xl max-w-md w-full space-y-3 select-none text-white",
+          className: "p-4 border shadow-xl max-w-md w-full space-y-2.5 select-none text-white",
         },
         React.createElement(
           "div",
@@ -3130,18 +3169,37 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
         ),
         React.createElement(
           "div",
-          { className: "grid grid-rows-7 grid-flow-col gap-1 w-full overflow-hidden" },
-          sampleLevels.map((lvl, i) =>
-            React.createElement("div", {
-              key: i,
-              style: { backgroundColor: getBg(lvl) },
-              className: "w-2.5 h-2.5 rounded-2xs transition-transform hover:scale-125 cursor-pointer",
-            })
+          { className: "flex items-center gap-2 justify-center py-1" },
+          React.createElement(
+            "div",
+            { className: "flex flex-col justify-between text-[8px] font-mono text-zinc-500 h-[92px] py-0.5 select-none shrink-0" },
+            React.createElement("span", null, "Mon"),
+            React.createElement("span", null, "Wed"),
+            React.createElement("span", null, "Fri")
+          ),
+          React.createElement(
+            "div",
+            {
+              style: {
+                display: "grid",
+                gridTemplateRows: "repeat(7, 10px)",
+                gridAutoFlow: "column",
+                gap: "4px",
+              },
+              className: "overflow-hidden",
+            },
+            sampleLevels.map((lvl, i) =>
+              React.createElement("div", {
+                key: i,
+                style: { backgroundColor: getBg(lvl) },
+                className: "w-2.5 h-2.5 rounded-2xs transition-transform hover:scale-125 cursor-pointer",
+              })
+            )
           )
         ),
         React.createElement(
           "div",
-          { className: "flex items-center justify-end gap-1.5 text-[9px] font-mono text-zinc-500 pt-1" },
+          { className: "flex items-center justify-end gap-1.5 text-[9px] font-mono text-zinc-500 pt-0.5" },
           React.createElement("span", null, "Less"),
           [0, 1, 2, 3, 4].map((l) =>
             React.createElement("span", {
@@ -3155,15 +3213,22 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-3 text-white">
+      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-2.5 text-white">
   <div className="flex items-center justify-between text-xs font-mono">
     <span className="font-semibold text-white">${escapeText(props.totalEvents || "2,418 events")}</span>
     <span className="text-[10px] text-zinc-500">${escapeText(props.periodLabel || "Last 90 days")}</span>
   </div>
-  <div className="grid grid-rows-7 grid-flow-col gap-1 w-full overflow-hidden">
-    <div className="w-2.5 h-2.5 rounded-2xs bg-zinc-900" />
-    <div className="w-2.5 h-2.5 rounded-2xs bg-[${tokens.primary}]/40" />
-    <div className="w-2.5 h-2.5 rounded-2xs bg-[${tokens.primary}]" />
+  <div className="flex items-center gap-2 justify-center py-1">
+    <div className="flex flex-col justify-between text-[8px] font-mono text-zinc-500 h-[92px] py-0.5 shrink-0">
+      <span>Mon</span>
+      <span>Wed</span>
+      <span>Fri</span>
+    </div>
+    <div style={{ display: 'grid', gridTemplateRows: 'repeat(7, 10px)', gridAutoFlow: 'column', gap: '4px' }} className="overflow-hidden">
+      <div className="w-2.5 h-2.5 rounded-2xs bg-zinc-900" />
+      <div className="w-2.5 h-2.5 rounded-2xs bg-[${tokens.primary}]/40" />
+      <div className="w-2.5 h-2.5 rounded-2xs bg-[${tokens.primary}]" />
+    </div>
   </div>
   <div className="flex items-center justify-end gap-1.5 text-[9px] font-mono text-zinc-500">
     <span>Less</span>
@@ -3191,60 +3256,77 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
       const tabs = ["Overview", "Metrics", "Deploys", "Settings"];
       return React.createElement(
         "div",
-        {
+        { className: "w-full flex flex-col items-center justify-center py-2 relative" },
+        React.createElement("div", {
           style: {
-            backgroundColor: `${tokens.surface}e6`,
-            borderColor: tokens.border,
-            borderRadius: `${Math.max(tokens.radius, 16)}px`,
+            background: `radial-gradient(ellipse at center, ${tokens.primary}33 0%, transparent 70%)`,
           },
-          className: "px-3.5 py-2 border shadow-2xl backdrop-blur-md max-w-md w-full flex items-center justify-between gap-4 text-white select-none",
-        },
+          className: "absolute -top-3 w-56 h-16 blur-xl pointer-events-none",
+        }),
         React.createElement(
           "div",
-          { className: "flex items-center gap-2 font-mono font-bold text-xs" },
-          React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-2 h-2 rounded-full shadow-xs" }),
-          React.createElement("span", { className: "tracking-tight" }, props.logo || "Fetch OS")
+          {
+            style: {
+              backgroundColor: `${tokens.surface}d9`,
+              borderColor: tokens.border,
+              borderRadius: `${Math.max(tokens.radius, 16)}px`,
+            },
+            className: "px-3.5 py-2 border shadow-2xl backdrop-blur-xl max-w-md w-full flex items-center justify-between gap-3 text-white select-none relative z-10",
+          },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-2 font-mono font-bold text-xs shrink-0" },
+            React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-2 h-2 rounded-full shadow-xs" }),
+            React.createElement("span", { className: "tracking-tight" }, props.logo || "Fetch OS")
+          ),
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-1 text-[11px] font-mono" },
+            tabs.map((tab) => {
+              const isActive = tab === (props.activeTab || "Overview");
+              return React.createElement(
+                "span",
+                {
+                  key: tab,
+                  style: isActive
+                    ? { backgroundColor: tokens.primary, color: tokens.primaryForeground, borderRadius: `${tokens.radius}px` }
+                    : {},
+                  className: `px-2 py-0.5 transition-all cursor-pointer ${
+                    isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white"
+                  }`,
+                },
+                tab
+              );
+            })
+          ),
+          React.createElement(
+            "span",
+            { className: "px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1 shrink-0" },
+            React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
+            props.status || "Online"
+          )
         ),
         React.createElement(
           "div",
-          { className: "flex items-center gap-1 text-[11px] font-mono" },
-          tabs.map((tab) => {
-            const isActive = tab === (props.activeTab || "Overview");
-            return React.createElement(
-              "span",
-              {
-                key: tab,
-                style: isActive
-                  ? { backgroundColor: tokens.primary, color: tokens.primaryForeground, borderRadius: `${tokens.radius}px` }
-                  : {},
-                className: `px-2 py-1 transition-all cursor-pointer ${
-                  isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white"
-                }`,
-              },
-              tab
-            );
-          })
-        ),
-        React.createElement(
-          "span",
-          { className: "px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1" },
-          React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
-          props.status || "Online"
+          { className: "w-full max-w-xs mt-3.5 text-center space-y-1.5 opacity-60 pointer-events-none select-none" },
+          React.createElement("div", { className: "h-1.5 w-24 mx-auto rounded-full bg-zinc-800" }),
+          React.createElement("div", { className: "text-[9px] font-mono text-zinc-500 uppercase tracking-widest" }, "Next-Gen Component System")
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="px-3.5 py-2 bg-[${tokens.surface}]/90 border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 16)}px] shadow-2xl backdrop-blur-md max-w-md w-full flex items-center justify-between gap-4 text-white">
-  <div className="flex items-center gap-2 font-mono font-bold text-xs">
+      return `<div className="px-3.5 py-2 bg-[${tokens.surface}]/85 border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 16)}px] shadow-2xl backdrop-blur-xl max-w-md w-full flex items-center justify-between gap-3 text-white">
+  <div className="flex items-center gap-2 font-mono font-bold text-xs shrink-0">
     <span className="w-2 h-2 rounded-full bg-[${tokens.primary}]" />
-    <span>${escapeText(props.logo || "Fetch OS")}</span>
+    <span className="tracking-tight">${escapeText(props.logo || "Fetch OS")}</span>
   </div>
   <div className="flex items-center gap-1 text-[11px] font-mono">
-    <span className="px-2 py-1 bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] font-semibold">${escapeText(props.activeTab || "Overview")}</span>
-    <span className="px-2 py-1 text-zinc-400">Metrics</span>
-    <span className="px-2 py-1 text-zinc-400">Settings</span>
+    <span className="px-2 py-0.5 bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] font-semibold">${escapeText(props.activeTab || "Overview")}</span>
+    <span className="px-2 py-0.5 text-zinc-400">Metrics</span>
+    <span className="px-2 py-0.5 text-zinc-400">Deploys</span>
+    <span className="px-2 py-0.5 text-zinc-400">Settings</span>
   </div>
-  <span className="px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+  <span className="px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/60 text-[10px] font-mono text-emerald-400 flex items-center gap-1 shrink-0">
     <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
     ${escapeText(props.status || "Online")}
   </span>

@@ -32,13 +32,8 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "changelog-entry":
       case "modal-dialog":
       case "activity-feed":
-      case "code-diff-viewer":
-      case "deploy-pipeline-status":
-      case "kanban-task-card":
         return "scale-[0.60] max-w-[290px]";
       case "newsletter-card":
-      case "ai-prompt-bar":
-      case "usage-quota-meter":
         return "scale-[0.66] w-full max-w-[320px]";
       case "card":
       case "bento-card":
@@ -49,9 +44,15 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "metric-sparkline":
       case "empty-state":
       case "user-table-row":
-      case "telemetry-donut-dial":
-      case "activity-heatmap":
         return "scale-[0.68] max-w-[290px]";
+      case "code-diff-viewer":
+      case "deploy-pipeline-status":
+      case "kanban-task-card":
+        return "scale-[0.74] w-full max-w-[320px]";
+      case "usage-quota-meter":
+      case "ai-prompt-bar":
+      case "telemetry-donut-dial":
+        return "scale-[0.78] w-full max-w-[310px]";
       case "code-terminal":
       case "file-dropzone":
       case "cookie-banner":
@@ -62,10 +63,14 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "segment-picker":
       case "skeleton-loader":
       case "slider-stepper":
-      case "multi-step-stepper":
-      case "floating-glass-nav":
+        return "scale-[0.76] max-w-[300px]";
       case "audio-waveform-player":
-        return "scale-[0.74] max-w-[300px]";
+        return "w-full max-w-[320px] scale-[0.88]";
+      case "floating-glass-nav":
+        return "w-full max-w-[330px] scale-[0.94]";
+      case "activity-heatmap":
+      case "multi-step-stepper":
+        return "w-full max-w-[330px] scale-[0.92]";
       default:
         return "scale-[0.88] max-w-[320px]";
     }

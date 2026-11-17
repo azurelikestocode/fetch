@@ -23,7 +23,12 @@ export function StudioClient({ templateId, template: directTemplate }: StudioCli
   React.useEffect(() => {
     if (template?.id && lastTrackedId.current !== template.id) {
       lastTrackedId.current = template.id;
-      trackActivity(template.id);
+      const timer = setTimeout(() => {
+        try {
+          trackActivity(template.id);
+        } catch {}
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [template?.id, trackActivity]);
 
