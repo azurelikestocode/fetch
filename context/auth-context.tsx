@@ -24,6 +24,8 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  loginWithGitHubOAuth: () => void;
+  loginWithGoogleOAuth: () => void;
   loginWithGitHub: (username?: string) => Promise<void>;
   loginWithGoogle: (email?: string, name?: string) => Promise<void>;
   loginWithEmail: (email: string, password?: string) => Promise<void>;
@@ -95,29 +97,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [exportCount, setExportCount] = useState<number>(0);
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("fetch_auth_user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    const initAuth = async () => {
+      // 1. Check server-side OAuth session cookie
+      try {
+        const res = await fetch("/api/auth/session");
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user) {
+            setUser(data.user);
+            localStorage.setItem("fetch_auth_user", JSON.stringify(data.user));
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // Ignore in tests or when offline
       }
-      const storedFavs = localStorage.getItem("fetch_favorites");
-      if (storedFavs) {
-        setFavorites(JSON.parse(storedFavs));
+
+      // 2. Fall back to local storage
+      try {
+        const storedUser = localStorage.getItem("fetch_auth_user");
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+        const storedFavs = localStorage.getItem("fetch_favorites");
+        if (storedFavs) {
+          setFavorites(JSON.parse(storedFavs));
+        }
+        const storedRecent = localStorage.getItem("fetch_recent_activity");
+        if (storedRecent) {
+          setRecentActivity(JSON.parse(storedRecent));
+        }
+        const storedExports = localStorage.getItem("fetch_export_count");
+        if (storedExports) {
+          setExportCount(parseInt(storedExports, 10) || 0);
+        }
+      } catch (e) {
+        console.error("Failed to load local session", e);
+      } finally {
+        setIsLoading(false);
       }
-      const storedRecent = localStorage.getItem("fetch_recent_activity");
-      if (storedRecent) {
-        setRecentActivity(JSON.parse(storedRecent));
-      }
-      const storedExports = localStorage.getItem("fetch_export_count");
-      if (storedExports) {
-        setExportCount(parseInt(storedExports, 10) || 0);
-      }
-    } catch (e) {
-      console.error("Failed to load local session", e);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    initAuth();
   }, []);
+
+  const loginWithGitHubOAuth = () => {
+    window.location.href = "/api/auth/github";
+  };
+
+  const loginWithGoogleOAuth = () => {
+    window.location.href = "/api/auth/google";
+  };
 
   const loginWithGitHub = async (username = "azurelikestocode") => {
     setIsLoading(true);
@@ -135,7 +166,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ghData = await res.json();
       }
     } catch {
-      // Fallback seamlessly to targetUsername profile
+      // Fallback
     }
 
     const realUser: User = {
@@ -258,6 +289,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("fetch_auth_user");
+    try {
+      fetch("/api/auth/session", { method: "DELETE" }).catch(() => {});
+    } catch {}
   };
 
   const updateProfile = (updates: Partial<User>) => {
@@ -321,6 +355,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isAuthenticated: !!user,
         isLoading,
+        loginWithGitHubOAuth,
+        loginWithGoogleOAuth,
         loginWithGitHub,
         loginWithGoogle,
         loginWithEmail,
@@ -345,6 +381,8 @@ const defaultAuthContext: AuthContextType = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  loginWithGitHubOAuth: () => {},
+  loginWithGoogleOAuth: () => {},
   loginWithGitHub: async () => {},
   loginWithGoogle: async () => {},
   loginWithEmail: async () => {},
