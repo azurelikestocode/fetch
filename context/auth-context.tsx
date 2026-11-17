@@ -351,9 +351,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const isTemplateLocked = (templateId: string): boolean => {
-    if (user) return false;
-    return !FREE_TEMPLATE_IDS.has(templateId);
+  const isTemplateLocked = (_templateId: string): boolean => {
+    // All templates are unlocked and freely accessible
+    return false;
   };
 
   return (
@@ -398,7 +398,7 @@ const defaultAuthContext: AuthContextType = {
   trackActivity: () => {},
   exportCount: 0,
   incrementExportCount: () => {},
-  isTemplateLocked: (templateId: string) => !FREE_TEMPLATE_IDS.has(templateId),
+  isTemplateLocked: (_templateId: string) => false,
 };
 
 export function useAuth() {

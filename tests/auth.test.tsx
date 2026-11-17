@@ -57,7 +57,7 @@ describe("Authentication & Gating Context", () => {
     localStorage.clear();
   });
 
-  it("locks advanced templates when user is not authenticated", () => {
+  it("provides unlocked access to all templates for everyone", () => {
     render(
       <AuthProvider>
         <TestAuthConsumer />
@@ -66,7 +66,7 @@ describe("Authentication & Gating Context", () => {
 
     expect(screen.getByTestId("auth-status").textContent).toBe("logged-out");
     expect(screen.getByTestId("free-status").textContent).toBe("unlocked");
-    expect(screen.getByTestId("locked-status").textContent).toBe("locked");
+    expect(screen.getByTestId("locked-status").textContent).toBe("unlocked");
   });
 
   it("unlocks all templates upon user sign in", async () => {

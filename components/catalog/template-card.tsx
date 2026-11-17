@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Sliders, Lock, Star } from "lucide-react";
+import { ArrowRight, Sliders, Star } from "lucide-react";
 import { ComponentTemplate } from "../../lib/templates";
 import { useAuth } from "../../context/auth-context";
 
@@ -18,8 +18,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export function TemplateCard({ template }: TemplateCardProps) {
-  const { isTemplateLocked, isAuthenticated, favorites, toggleFavorite } = useAuth();
-  const isLocked = isTemplateLocked(template.id);
+  const { favorites, toggleFavorite, isAuthenticated } = useAuth();
   const isFav = favorites.includes(template.id);
 
   // Proportional scale to guarantee zero clipping in thumbnail preview
@@ -68,23 +67,13 @@ export function TemplateCard({ template }: TemplateCardProps) {
   const scaleClass = getScaleClass(template.id);
 
   return (
-    <div className={`border bg-zinc-950 p-6 flex flex-col justify-between hover:border-zinc-700 hover:-translate-y-0.5 transition-all duration-200 group rounded-xs animate-fade-in shadow-xs hover:shadow-xl relative ${
-      isLocked ? "border-zinc-850/80" : "border-zinc-850"
-    }`}>
+    <div className="border border-zinc-850 bg-zinc-950 p-6 flex flex-col justify-between hover:border-zinc-700 hover:-translate-y-0.5 transition-all duration-200 group rounded-xs animate-fade-in shadow-xs hover:shadow-xl relative">
       <div>
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 rounded-xs flex items-center gap-1.5">
-              <span className={`w-1.5 h-1.5 rounded-full ${isLocked ? "bg-zinc-600" : "bg-emerald-500"}`}></span>
-              {CATEGORY_LABELS[template.category] || template.category}
-            </span>
-            {isLocked && (
-              <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800/80 bg-zinc-900/90 px-1.5 py-0.5 rounded-xs flex items-center gap-1">
-                <Lock className="w-2.5 h-2.5 text-zinc-400" />
-                Locked
-              </span>
-            )}
-          </div>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 rounded-xs flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            {CATEGORY_LABELS[template.category] || template.category}
+          </span>
           <div className="flex items-center gap-2">
             {isAuthenticated && (
               <button
@@ -106,27 +95,10 @@ export function TemplateCard({ template }: TemplateCardProps) {
           {/* Subtle dot matrix pattern */}
           <div className="absolute inset-0 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px] opacity-25 pointer-events-none" />
 
-          {/* Centered preview container with stable non-jumping scale */}
-          <div className={`w-full flex items-center justify-center origin-center pointer-events-none select-none ${scaleClass} ${
-            isLocked ? "filter blur-[3px] opacity-40 transition-all group-hover:blur-[2px] group-hover:opacity-50" : ""
-          }`}>
+          {/* Centered preview container */}
+          <div className={`w-full flex items-center justify-center origin-center pointer-events-none select-none ${scaleClass}`}>
             {template.renderComponent({}, template.defaultTokens)}
           </div>
-
-          {/* Frosted Glass Blur Overlay for Locked Templates */}
-          {isLocked && (
-            <div className="absolute inset-0 bg-[#09090b]/80 backdrop-blur-[5px] flex flex-col items-center justify-center p-4 text-center z-10">
-              <div className="w-9 h-9 rounded-full bg-zinc-900/90 border border-zinc-700/80 flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 group-hover:border-zinc-500 transition-all">
-                <Lock className="w-4 h-4 text-zinc-300" />
-              </div>
-              <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-300 font-semibold mb-1">
-                Members Only
-              </span>
-              <p className="text-xs text-zinc-400 font-medium leading-snug max-w-[190px]">
-                Want more? <Link href={`/register?redirect=/studio/${template.id}`} className="text-white underline underline-offset-2 hover:text-zinc-200">Register</Link> to unlock!
-              </p>
-            </div>
-          )}
         </div>
 
         <h3 className="text-sm font-semibold text-[#fafafa] mb-1.5 group-hover:text-white transition-colors flex items-center gap-1.5">
@@ -137,31 +109,16 @@ export function TemplateCard({ template }: TemplateCardProps) {
         </p>
       </div>
 
-      {isLocked ? (
-        <Link
-          href={`/register?redirect=/studio/${template.id}`}
-          className="inline-flex items-center justify-between w-full h-9 px-3.5 border border-zinc-750 hover:border-zinc-600 bg-zinc-900/90 hover:bg-zinc-850 text-xs font-medium text-zinc-200 hover:text-white rounded-xs transition-colors active:scale-[0.98]"
-        >
-          <span className="flex items-center gap-1.5 font-mono text-[11px]">
-            <Lock className="w-3.5 h-3.5 text-zinc-400" />
-            Want more? Register!
-          </span>
-          <span className="text-[11px] font-mono text-zinc-400 group-hover:text-white group-hover:translate-x-0.5 transition-transform">
-            Unlock →
-          </span>
-        </Link>
-      ) : (
-        <Link
-          href={`/studio/${template.id}`}
-          className="inline-flex items-center justify-between w-full h-9 px-3.5 border border-zinc-800 hover:border-zinc-600 bg-zinc-900/60 hover:bg-zinc-850 text-xs font-medium text-zinc-300 hover:text-white rounded-xs transition-colors active:scale-[0.98]"
-        >
-          <span className="flex items-center gap-1.5 font-mono text-[11px]">
-            <Sliders className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-            Customize Template
-          </span>
-          <ArrowRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-transform duration-200" />
-        </Link>
-      )}
+      <Link
+        href={`/studio/${template.id}`}
+        className="inline-flex items-center justify-between w-full h-9 px-3.5 border border-zinc-800 hover:border-zinc-600 bg-zinc-900/60 hover:bg-zinc-850 text-xs font-medium text-zinc-300 hover:text-white rounded-xs transition-colors active:scale-[0.98]"
+      >
+        <span className="flex items-center gap-1.5 font-mono text-[11px]">
+          <Sliders className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+          Customize Template
+        </span>
+        <ArrowRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-white group-hover:translate-x-1 transition-transform duration-200" />
+      </Link>
     </div>
   );
 }
