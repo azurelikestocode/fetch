@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 
 export interface User {
   id: string;
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const loginWithGitHub = async (username?: string) => {
+  const loginWithGitHub = useCallback(async (username?: string) => {
     setIsLoading(true);
     const targetUsername = (username || "").trim();
     if (!targetUsername) {
@@ -194,9 +194,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     setIsLoading(false);
-  };
+  }, []);
 
-  const registerWithEmail = async (name: string, email: string, password = "password123") => {
+  const registerWithEmail = useCallback(async (name: string, email: string, password = "password123") => {
     setIsLoading(true);
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim();
@@ -234,9 +234,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser);
     localStorage.setItem("fetch_auth_user", JSON.stringify(newUser));
     setIsLoading(false);
-  };
+  }, []);
 
-  const loginWithEmail = async (email: string, password?: string) => {
+  const loginWithEmail = useCallback(async (email: string, password?: string) => {
     setIsLoading(true);
     const cleanEmail = email.trim().toLowerCase();
 
@@ -277,38 +277,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(account.user);
     localStorage.setItem("fetch_auth_user", JSON.stringify(account.user));
     setIsLoading(false);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
-    localStorage.removeItem("fetch_auth_user");
-    localStorage.removeItem("fetch_session");
     try {
+      localStorage.removeItem("fetch_auth_user");
+      localStorage.removeItem("fetch_session");
       fetch("/api/auth/session", { method: "DELETE" }).catch(() => {});
       document.cookie = "fetch_session=; path=/; max-age=0;";
     } catch {}
-  };
+  }, []);
 
-  const clearAllCache = () => {
+  const clearAllCache = useCallback(() => {
     logout();
-    localStorage.removeItem("fetch_auth_user");
-    localStorage.removeItem("fetch_session");
-    localStorage.removeItem("fetch_favorites");
-    localStorage.removeItem("fetch_recent_activity");
-    localStorage.removeItem("fetch_accounts_db");
-    localStorage.removeItem("fetch_export_count");
+    try {
+      localStorage.removeItem("fetch_auth_user");
+      localStorage.removeItem("fetch_session");
+      localStorage.removeItem("fetch_favorites");
+      localStorage.removeItem("fetch_recent_activity");
+      localStorage.removeItem("fetch_accounts_db");
+      localStorage.removeItem("fetch_export_count");
+    } catch {}
     setFavorites([]);
     setRecentActivity([]);
     setExportCount(0);
-  };
+  }, [logout]);
 
-  const updateProfile = (updates: Partial<User>) => {
+  const updateProfile = useCallback((updates: Partial<User>) => {
     setUser((prev) => {
       if (!prev) return null;
       const updated = { ...prev, ...updates };
-      localStorage.setItem("fetch_auth_user", JSON.stringify(updated));
-
       try {
+        localStorage.setItem("fetch_auth_user", JSON.stringify(updated));
         const rawAccounts = localStorage.getItem("fetch_accounts_db");
         if (rawAccounts && updated.email) {
           const accounts = JSON.parse(rawAccounts);
@@ -320,63 +321,88 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (e) {
         console.error("Could not sync profile to DB", e);
       }
-
       return updated;
     });
-  };
+  }, []);
 
-  const toggleFavorite = (templateId: string) => {
+  const toggleFavorite = useCallback((templateId: string) => {
     setFavorites((prev) => {
       const next = prev.includes(templateId)
         ? prev.filter((id) => id !== templateId)
         : [...prev, templateId];
-      localStorage.setItem("fetch_favorites", JSON.stringify(next));
+      try {
+        localStorage.setItem("fetch_favorites", JSON.stringify(next));
+      } catch {}
       return next;
     });
-  };
+  }, []);
 
-  const trackActivity = (templateId: string) => {
+  const trackActivity = useCallback((templateId: string) => {
     setRecentActivity((prev) => {
+      if (prev.length > 0 && prev[0] === templateId) return prev;
       const next = [templateId, ...prev.filter((id) => id !== templateId)].slice(0, 8);
-      localStorage.setItem("fetch_recent_activity", JSON.stringify(next));
+      try {
+        localStorage.setItem("fetch_recent_activity", JSON.stringify(next));
+      } catch {}
       return next;
     });
-  };
+  }, []);
 
-  const incrementExportCount = () => {
+  const incrementExportCount = useCallback(() => {
     setExportCount((prev) => {
       const next = prev + 1;
-      localStorage.setItem("fetch_export_count", next.toString());
+      try {
+        localStorage.setItem("fetch_export_count", next.toString());
+      } catch {}
       return next;
     });
-  };
+  }, []);
 
-  const isTemplateLocked = (_templateId: string): boolean => {
+  const isTemplateLocked = useCallback((_templateId: string): boolean => {
     // All templates are unlocked and freely accessible
     return false;
-  };
+  }, []);
+
+  const contextValue = useMemo<AuthContextType>(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading,
+      loginWithGitHub,
+      loginWithEmail,
+      registerWithEmail,
+      logout,
+      clearAllCache,
+      updateProfile,
+      favorites,
+      toggleFavorite,
+      recentActivity,
+      trackActivity,
+      exportCount,
+      incrementExportCount,
+      isTemplateLocked,
+    }),
+    [
+      user,
+      isLoading,
+      loginWithGitHub,
+      loginWithEmail,
+      registerWithEmail,
+      logout,
+      clearAllCache,
+      updateProfile,
+      favorites,
+      toggleFavorite,
+      recentActivity,
+      trackActivity,
+      exportCount,
+      incrementExportCount,
+      isTemplateLocked,
+    ]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        loginWithGitHub,
-        loginWithEmail,
-        registerWithEmail,
-        logout,
-        clearAllCache,
-        updateProfile,
-        favorites,
-        toggleFavorite,
-        recentActivity,
-        trackActivity,
-        exportCount,
-        incrementExportCount,
-        isTemplateLocked,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

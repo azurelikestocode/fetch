@@ -18,9 +18,11 @@ interface StudioClientProps {
 export function StudioClient({ templateId, template: directTemplate }: StudioClientProps) {
   const { trackActivity } = useAuth();
   const template = directTemplate || (templateId ? getTemplateById(templateId) : undefined);
+  const lastTrackedId = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    if (template?.id) {
+    if (template?.id && lastTrackedId.current !== template.id) {
+      lastTrackedId.current = template.id;
       trackActivity(template.id);
     }
   }, [template?.id, trackActivity]);
