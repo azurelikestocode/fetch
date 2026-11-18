@@ -36,6 +36,21 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <WebhookInspectorCanvas props={props} tokens={tokens} />;
   }
 
+  // Database Query Execution Planner Interactive System
+  if (template.id === "query-metrics-analyzer") {
+    return <QueryMetricsCanvas props={props} tokens={tokens} />;
+  }
+
+  // Security Audit Trail Ledger Interactive System
+  if (template.id === "event-audit-trail") {
+    return <AuditTrailCanvas props={props} tokens={tokens} />;
+  }
+
+  // API Token Bucket Rate Limiter Interactive System
+  if (template.id === "rate-limiter-budget") {
+    return <RateLimiterCanvas props={props} tokens={tokens} />;
+  }
+
   // Cookie Consent Banner Interactive Preview
   if (template.id === "cookie-banner") {
     return <CookieBannerCanvas props={props} tokens={tokens} />;
@@ -470,6 +485,228 @@ function WebhookInspectorCanvas({ props, tokens }: { props: Record<string, any>;
           className="font-bold hover:underline cursor-pointer"
         >
           {retrying ? "Retrying..." : retried ? "Dispatched!" : "Resend Webhook"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function QueryMetricsCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [activeQueryIdx, setActiveQueryIdx] = useState(0);
+  const [analyzing, setAnalyzing] = useState(false);
+
+  const sampleQueries = [
+    { name: "SELECT * FROM workspace_audit_events", time: "3.4ms", cache: "98.2%", scan: "0.8ms", join: "1.9ms" },
+    { name: "SELECT * FROM token_usage WHERE tenant_id = $1", time: "1.2ms", cache: "99.7%", scan: "0.3ms", join: "0.6ms" },
+    { name: "INSERT INTO webhook_deliveries (id, event) VALUES ($1, $2)", time: "2.1ms", cache: "94.0%", scan: "0.5ms", join: "1.1ms" },
+  ];
+
+  const current = sampleQueries[activeQueryIdx];
+
+  const handleReanalyze = async () => {
+    if (analyzing) return;
+    setAnalyzing(true);
+    await new Promise((res) => setTimeout(res, 800));
+    setAnalyzing(false);
+  };
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full text-white font-mono select-none space-y-3 animate-fade-in"
+    >
+      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+        <div className="flex items-center gap-1.5">
+          <span className={`w-2 h-2 rounded-full ${analyzing ? "bg-amber-400 animate-ping" : "bg-emerald-500 animate-pulse"}`} />
+          <span className="text-xs font-bold text-white">Query Plan Inspector</span>
+        </div>
+        <button
+          type="button"
+          onClick={handleReanalyze}
+          style={{ color: tokens.primary }}
+          className="text-[11px] font-bold hover:underline cursor-pointer"
+        >
+          {analyzing ? "Tracing..." : current.time}
+        </button>
+      </div>
+
+      <div className="space-y-1">
+        <div className="flex items-center justify-between text-[10px] text-zinc-400">
+          <span>Query Sample:</span>
+          <div className="flex gap-1">
+            {[0, 1, 2].map((idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveQueryIdx(idx)}
+                className={`px-1.5 py-0.2 rounded-xs text-[10px] cursor-pointer ${
+                  activeQueryIdx === idx ? "bg-zinc-800 text-white font-bold" : "text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Q{idx + 1}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="p-2 rounded-xs bg-zinc-950 border border-zinc-850 text-[11px] truncate text-zinc-300">
+          {current.name}
+        </div>
+      </div>
+
+      <div className="space-y-1.5 text-[10px]">
+        <div className="flex items-center justify-between text-zinc-400">
+          <span>1. Index Scan on idx_tenant_id</span>
+          <span className="text-emerald-400 font-semibold">{current.scan}</span>
+        </div>
+        <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+          <div style={{ width: "30%", backgroundColor: tokens.primary }} className="h-full transition-all duration-300" />
+        </div>
+        <div className="flex items-center justify-between text-zinc-400 pt-0.5">
+          <span>2. Hash Join on users.id</span>
+          <span className="text-emerald-400 font-semibold">{current.join}</span>
+        </div>
+        <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+          <div style={{ width: "65%", backgroundColor: tokens.primary }} className="h-full transition-all duration-300" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800/80 text-[10px]">
+        <div className="p-1.5 rounded bg-zinc-950/60 border border-zinc-850">
+          <div className="text-zinc-500">Cache Hit Ratio</div>
+          <div className="font-bold text-emerald-400 mt-0.5">{current.cache}</div>
+        </div>
+        <div className="p-1.5 rounded bg-zinc-950/60 border border-zinc-850">
+          <div className="text-zinc-500">Plan Accuracy</div>
+          <div className="font-bold text-white mt-0.5">100% Costed</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AuditTrailCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [showDiff, setShowDiff] = useState(false);
+  const [verified, setVerified] = useState(true);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full text-white font-mono select-none space-y-2.5 animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-xs border ${
+          verified ? "text-emerald-400 bg-emerald-950/60 border-emerald-800" : "text-amber-400 bg-amber-950/60 border-amber-800"
+        }`}>
+          {verified ? "VERIFIED LEDGER" : "AUDIT PENDING"}
+        </span>
+        <span className="text-[10px] text-zinc-500">Immutable Block</span>
+      </div>
+
+      <div>
+        <div className="text-xs font-bold text-white truncate">{props.actionType || "ROLE_PERMISSION_ELEVATION"}</div>
+        <div className="text-[10px] text-zinc-400 mt-0.5 truncate">Actor: {props.actorName || "alex.engineer@acme.corp"}</div>
+      </div>
+
+      <div className="p-2 rounded bg-zinc-950 border border-zinc-850 space-y-1 text-[10px]">
+        <div className="flex justify-between text-zinc-400">
+          <span>Client IP:</span>
+          <span className="text-zinc-200">{props.ipAddress || "192.0.2.45 (US-West)"}</span>
+        </div>
+        <div className="flex justify-between text-zinc-400">
+          <span>SHA-256:</span>
+          <span className="text-zinc-500 truncate max-w-[130px]">7f8a9e2d4c1b0...</span>
+        </div>
+      </div>
+
+      {showDiff && (
+        <div className="p-2 rounded bg-black/60 border border-zinc-800 text-[10px] space-y-1 animate-in fade-in">
+          <div className="text-rose-400">- role: "developer"</div>
+          <div className="text-emerald-400">+ role: "security_admin"</div>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setShowDiff(!showDiff)}
+        style={{
+          backgroundColor: tokens.primary,
+          color: tokens.primaryForeground,
+          borderRadius: `${tokens.radius}px`,
+        }}
+        className="w-full py-1.5 px-3 text-xs font-semibold hover:opacity-90 transition-all cursor-pointer"
+      >
+        {showDiff ? "Hide Changeset Diff" : "Inspect Changeset Diff"}
+      </button>
+    </div>
+  );
+}
+
+function RateLimiterCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [remaining, setRemaining] = useState(props.remainingTokens ?? 8420);
+  const total = props.totalBucketCapacity ?? 10000;
+  const pct = Math.min(100, Math.round((remaining / total) * 100));
+
+  const handleBurst = () => {
+    setRemaining((prev: number) => Math.max(0, prev - 450));
+  };
+
+  const handleRefill = () => {
+    setRemaining(total);
+  };
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full text-white font-mono select-none space-y-3 animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded-xs font-semibold">
+          Token Bucket
+        </span>
+        <span className="text-[10px] text-zinc-500">Reset in {props.resetInSeconds || "14s"}</span>
+      </div>
+
+      <div>
+        <div className="text-xs font-bold text-white truncate">{props.tierName || "Scale Tier (10,000 req/min)"}</div>
+        <div className="flex items-baseline justify-between mt-2">
+          <span className="text-lg font-bold text-white">{remaining.toLocaleString()}</span>
+          <span className="text-xs text-zinc-500">/ {total.toLocaleString()} reqs</span>
+        </div>
+        <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden mt-1 border border-zinc-800">
+          <div
+            style={{ width: `${pct}%`, backgroundColor: pct < 15 ? "#f43f5e" : tokens.primary }}
+            className="h-full transition-all duration-300"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-1 border-t border-zinc-800/80 text-[10px]">
+        <button
+          type="button"
+          onClick={handleBurst}
+          className="text-zinc-300 hover:text-white font-semibold cursor-pointer underline"
+        >
+          Burst -450 Reqs
+        </button>
+        <button
+          type="button"
+          onClick={handleRefill}
+          style={{ color: tokens.primary }}
+          className="font-bold cursor-pointer hover:underline"
+        >
+          Instant Refill
         </button>
       </div>
     </div>

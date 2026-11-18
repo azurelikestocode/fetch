@@ -44,18 +44,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Free tier allowed templates when NOT logged in (12 foundation systems)
 export const FREE_TEMPLATE_IDS = new Set([
-  "button",
-  "card",
-  "input",
-  "badge",
-  "stat-card",
-  "action-dock",
   "audio-waveform-player",
+  "deploy-pipeline-status",
   "telemetry-donut-dial",
-  "floating-glass-nav",
   "multiplayer-presence",
   "virtual-card",
-  "deploy-pipeline-status",
+  "floating-glass-nav",
+  "system-incident-banner",
+  "feature-grid",
+  "code-diff-viewer",
+  "kanban-task-card",
+  "usage-quota-meter",
+  "ai-prompt-bar",
+  "action-dock",
+  "api-key-vault",
 ]);
 
 async function hashPassword(str: string): Promise<string> {

@@ -8,7 +8,7 @@ describe('Component Catalog', () => {
     render(<CatalogPage />);
     expect(screen.getByPlaceholderText(/search components/i)).toBeDefined();
     expect(screen.getByRole('button', { name: /^all$/i })).toBeDefined();
-    expect(screen.getByText(/primary action button/i)).toBeDefined();
+    expect(screen.getByText(/voice note waveform player/i)).toBeDefined();
   });
 
   it('filters templates when search query is entered', () => {
@@ -16,7 +16,7 @@ describe('Component Catalog', () => {
     const input = screen.getByPlaceholderText(/search components/i);
     fireEvent.change(input, { target: { value: 'Auth' } });
     expect(screen.getByText(/authentication card/i)).toBeDefined();
-    expect(screen.queryByText(/primary action button/i)).toBeNull();
+    expect(screen.queryByText(/voice note waveform player/i)).toBeNull();
   });
 
   it('handles search queries with leading/trailing whitespace', () => {
@@ -24,7 +24,6 @@ describe('Component Catalog', () => {
     const input = screen.getByPlaceholderText(/search components/i);
     fireEvent.change(input, { target: { value: '  Auth   ' } });
     expect(screen.getByText(/authentication card/i)).toBeDefined();
-    expect(screen.queryByText(/primary action button/i)).toBeNull();
+    expect(screen.queryByText(/voice note waveform player/i)).toBeNull();
   });
 });
-
