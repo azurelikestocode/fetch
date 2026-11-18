@@ -95,7 +95,7 @@ export default function DashboardPage() {
     TEMPLATES["action-dock"],
     TEMPLATES["metric-sparkline"],
     TEMPLATES["pricing-card"],
-    TEMPLATES["bento-card"],
+    TEMPLATES["telemetry-donut-dial"],
   ].filter(Boolean);
 
   const currentTheme: PresetTheme = THEME_PRESETS[activeThemeId] || THEME_PRESETS.default;

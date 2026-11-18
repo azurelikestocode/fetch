@@ -56,9 +56,10 @@ export default function CatalogPage() {
           <span className="text-[11px] text-zinc-500 uppercase tracking-wider shrink-0">Quick Topics:</span>
           {[
             { label: "AI & Copilots", query: "ai" },
-            { label: "DevTools & CI/CD", query: "pipeline" },
-            { label: "Metrics & Quota", query: "quota" },
-            { label: "Cards & Bento", query: "card" },
+            { label: "CI/CD & DevOps", query: "pipeline" },
+            { label: "Telemetry & SLA", query: "telemetry" },
+            { label: "Security & Vault", query: "vault" },
+            { label: "Multiplayer", query: "multiplayer" },
             { label: "Navigation", query: "nav" },
           ].map((tag) => (
             <button

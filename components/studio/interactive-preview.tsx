@@ -16,34 +16,24 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <ActionDockCanvas props={props} tokens={tokens} />;
   }
 
-  // Tabs Interactive Preview
-  if (template.id === "tabs") {
-    return <TabsCanvas props={props} tokens={tokens} />;
+  // Automated Secret & Key Rotation Interactive System
+  if (template.id === "secret-rotation-modal") {
+    return <SecretRotationCanvas props={props} tokens={tokens} />;
   }
 
-  // Toggle Switch Interactive Preview
-  if (template.id === "switch") {
-    return <SwitchCanvas props={props} tokens={tokens} />;
+  // Serverless Log Streamer Interactive System
+  if (template.id === "log-stream-console") {
+    return <LogStreamCanvas props={props} tokens={tokens} />;
   }
 
-  // FAQ Accordion Interactive Preview
-  if (template.id === "accordion") {
-    return <AccordionCanvas props={props} tokens={tokens} />;
+  // Runtime Feature Flag Controller Interactive System
+  if (template.id === "feature-flag-matrix") {
+    return <FeatureFlagCanvas props={props} tokens={tokens} />;
   }
 
-  // Segmented Radio Group Interactive Preview
-  if (template.id === "radio-group") {
-    return <RadioGroupCanvas props={props} tokens={tokens} />;
-  }
-
-  // Newsletter Card Interactive Preview with No Overflow
-  if (template.id === "newsletter-card") {
-    return <NewsletterCanvas props={props} tokens={tokens} />;
-  }
-
-  // Avatar Stack with Custom Image Support and Tooltips
-  if (template.id === "avatar-stack") {
-    return <AvatarStackCanvas props={props} tokens={tokens} />;
+  // Webhook Event Delivery Inspector Interactive System
+  if (template.id === "webhook-event-inspector") {
+    return <WebhookInspectorCanvas props={props} tokens={tokens} />;
   }
 
   // Cookie Consent Banner Interactive Preview
@@ -213,9 +203,19 @@ function ActionDockCanvas({ props, tokens }: { props: Record<string, any>; token
   );
 }
 
-function TabsCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
-  const [activeTab, setActiveTab] = useState(0);
-  const tabs = [props.tab1 || "Overview", props.tab2 || "Analytics", props.tab3 || "Deployments"];
+function SecretRotationCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [cycle, setCycle] = useState(props.rotationCycleDays || "90");
+  const [isRotating, setIsRotating] = useState(false);
+  const [rotated, setRotated] = useState(false);
+
+  const handleRotate = async () => {
+    if (isRotating) return;
+    setIsRotating(true);
+    await new Promise((res) => setTimeout(res, 1200));
+    setIsRotating(false);
+    setRotated(true);
+    setTimeout(() => setRotated(false), 3000);
+  };
 
   return (
     <div
@@ -224,287 +224,253 @@ function TabsCanvas({ props, tokens }: { props: Record<string, any>; tokens: The
         borderColor: tokens.border,
         borderRadius: `${tokens.radius}px`,
       }}
-      className="p-1 border inline-flex items-center gap-1 shadow-xs select-none"
+      className="p-5 border shadow-2xl max-w-sm w-full text-white select-none space-y-4 animate-fade-in"
     >
-      {tabs.map((tab, idx) => {
-        const isActive = idx === activeTab;
-        return (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActiveTab(idx)}
-            style={
-              isActive
-                ? {
-                  backgroundColor: tokens.primary,
-                  color: tokens.primaryForeground,
-                  borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
-                }
-                : {
-                  borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
-                }
-            }
-            className={`px-3 py-1.5 text-xs font-medium font-mono transition-all cursor-pointer ${isActive ? "shadow-xs font-semibold" : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
-              }`}
-          >
-            {tab}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function SwitchCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
-  const [isChecked, setIsChecked] = useState(props.checked ?? true);
-
-  return (
-    <div
-      onClick={() => setIsChecked(!isChecked)}
-      style={{
-        backgroundColor: tokens.surface,
-        borderColor: tokens.border,
-        borderRadius: `${tokens.radius}px`,
-      }}
-      className="p-4 border shadow-xs max-w-sm w-full flex items-center justify-between gap-4 transition-all hover:border-zinc-700 cursor-pointer select-none"
-    >
-      <div className="space-y-0.5 min-w-0">
-        <div className="text-xs font-semibold text-white font-mono truncate">
-          {props.label || "Automatic Token Synchronization"}
-        </div>
-        <div className="text-[11px] text-zinc-400 leading-tight truncate">
-          {props.description || "Propagate changes instantly across active workspaces."}
-        </div>
-      </div>
-      <div
-        style={{
-          backgroundColor: isChecked ? tokens.primary : "#27272a",
-          borderRadius: "9999px",
-        }}
-        className="w-10 h-5.5 p-0.5 transition-colors duration-200 ease-in-out shrink-0 cursor-pointer relative"
-      >
-        <div
-          className={`w-4.5 h-4.5 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${isChecked ? "translate-x-4.5" : "translate-x-0"
-            }`}
-        />
-      </div>
-    </div>
-  );
-}
-
-function AccordionCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <div
-      style={{
-        backgroundColor: tokens.surface,
-        borderColor: tokens.border,
-        borderRadius: `${tokens.radius}px`,
-      }}
-      className="p-4 border shadow-xs max-w-sm w-full space-y-2 text-[#fafafa] select-none transition-all"
-    >
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between cursor-pointer hover:opacity-90"
-      >
-        <h4 className="text-xs font-semibold tracking-tight">
-          {props.question || "How does real-time token synchronization work?"}
-        </h4>
-        <span
-          style={{ color: tokens.primary }}
-          className={`text-xs font-mono font-bold ml-2 transition-transform duration-200 ${isOpen ? "rotate-0" : "rotate-180"
-            }`}
-        >
-          ▲
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 bg-amber-950/60 border border-amber-800/80 px-2 py-0.5 rounded-xs font-semibold">
+          Security Policy
         </span>
+        <span className="text-[10px] font-mono text-zinc-500">{props.currentVersion || "v3.1.0"}</span>
       </div>
-      {isOpen && (
-        <p className="text-[11px] text-zinc-400 leading-relaxed border-t border-zinc-800/80 pt-2 animate-in fade-in">
-          {props.answer ||
-            "CSS custom variables are injected directly into the component scope, updating immediately without re-rendering or bundle reloads."}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function RadioGroupCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
-  const [selectedIdx, setSelectedIdx] = useState(0);
-  const items = [
-    { title: props.opt1 || "Serverless Edge", sub: "Global sub-15ms execution" },
-    { title: props.opt2 || "Dedicated Cluster", sub: "Isolated VPC & reserved CPU" },
-  ];
-
-  return (
-    <div className="space-y-2 max-w-sm w-full select-none">
-      {items.map((item, idx) => {
-        const isSelected = idx === selectedIdx;
-        return (
-          <div
-            key={idx}
-            onClick={() => setSelectedIdx(idx)}
-            style={{
-              backgroundColor: tokens.surface,
-              borderColor: isSelected ? tokens.primary : tokens.border,
-              borderRadius: `${tokens.radius}px`,
-            }}
-            className={`p-3.5 border flex items-center justify-between cursor-pointer transition-colors ${isSelected ? "ring-1 ring-offset-0" : ""
-              }`}
-          >
-            <div className="space-y-0.5">
-              <div className="text-xs font-semibold text-white font-mono">{item.title}</div>
-              <div className="text-[11px] text-zinc-400">{item.sub}</div>
-            </div>
-            <div
-              style={isSelected ? { borderColor: tokens.primary } : { borderColor: "#3f3f46" }}
-              className="w-4 h-4 rounded-full border flex items-center justify-center shrink-0"
-            >
-              {isSelected && (
-                <div style={{ backgroundColor: tokens.primary }} className="w-2 h-2 rounded-full" />
-              )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function NewsletterCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  return (
-    <div
-      style={{
-        backgroundColor: tokens.surface,
-        borderColor: tokens.border,
-        borderRadius: `${tokens.radius}px`,
-      }}
-      className="p-5 border shadow-xl w-full max-w-[340px] space-y-3.5 box-border"
-    >
       <div>
-        <div className="text-sm font-semibold text-white tracking-tight">
-          {props.title || "Engineering Dispatch"}
-        </div>
-        <p className="text-xs text-zinc-400 leading-relaxed mt-1">
-          Monthly deep dives into design token engines and low-level web performance.
+        <h4 className="text-sm font-mono font-bold text-white truncate">{props.secretName || "PROD_PAYMENT_PRIVATE_KEY"}</h4>
+        <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+          Automated zero-downtime key rotation with dual-key grace periods.
         </p>
       </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (email.trim()) setSubmitted(true);
-        }}
-        className="flex items-center gap-2 w-full min-w-0"
-      >
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="developer@fetch.dev"
-          style={{
-            borderRadius: `${tokens.radius}px`,
-            borderColor: tokens.border,
-            backgroundColor: tokens.background,
-          }}
-          className="min-w-0 flex-1 h-8 px-2.5 text-xs border text-white placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 transition-colors"
-        />
-        <button
-          type="submit"
-          style={{
-            backgroundColor: tokens.primary,
-            color: tokens.primaryForeground,
-            borderRadius: `${tokens.radius}px`,
-          }}
-          className="h-8 px-3 text-xs font-medium cursor-pointer shrink-0 transition-opacity hover:opacity-90 active:scale-95 whitespace-nowrap"
-        >
-          {submitted ? "Subscribed!" : props.buttonText || "Subscribe"}
-        </button>
-      </form>
-      {submitted && (
-        <p className="text-[11px] text-emerald-400 font-mono">✓ Check your inbox to confirm.</p>
-      )}
-    </div>
-  );
-}
 
-function AvatarStackCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
-  const [activeHover, setActiveHover] = useState<string | null>(null);
-  const isImageMode = props.avatarMode !== "initials";
-  const avatarList = [
-    {
-      url: props.avatar1 || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&crop=face",
-      initials: "AZ",
-      name: "Alex Zhang",
-    },
-    {
-      url: props.avatar2 || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face",
-      initials: "RX",
-      name: "Rachel Xia",
-    },
-    {
-      url: props.avatar3 || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=face",
-      initials: "FL",
-      name: "Felix Lin",
-    },
-  ];
-
-  return (
-    <div
-      style={{
-        backgroundColor: tokens.surface,
-        borderColor: tokens.border,
-        borderRadius: `${tokens.radius}px`,
-      }}
-      className="p-4 border shadow-xs max-w-sm w-full flex items-center justify-between gap-4 select-none"
-    >
-      <div className="space-y-0.5 min-w-0">
-        <div className="text-xs font-semibold text-white font-mono truncate">
-          {props.teamName || "Core Architecture Team"}
+      <div className="space-y-1.5">
+        <label className="text-[11px] font-mono text-zinc-400">Rotation Schedule</label>
+        <div className="grid grid-cols-4 gap-1 text-xs font-mono">
+          {["30", "60", "90", "180"].map((days) => (
+            <button
+              key={days}
+              type="button"
+              onClick={() => setCycle(days)}
+              style={cycle === days ? { backgroundColor: tokens.primary, color: tokens.primaryForeground } : {}}
+              className={`py-1 rounded-xs border text-center transition-all cursor-pointer ${
+                cycle === days ? "border-transparent font-bold" : "border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white"
+              }`}
+            >
+              {days}d
+            </button>
+          ))}
         </div>
-        <div className="text-[11px] text-zinc-400 flex items-center gap-1.5">
-          <span style={{ backgroundColor: tokens.primary }} className="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse" />
-          <span className="truncate">
-            {activeHover ? `Member: ${activeHover}` : props.memberCount || "4 active contributors"}
+      </div>
+
+      <div className="p-2.5 rounded-xs bg-zinc-950/80 border border-zinc-800 space-y-1.5 font-mono text-[11px]">
+        <div className="flex justify-between text-zinc-400">
+          <span>Dual-Key Grace:</span>
+          <span className="text-emerald-400 font-bold">24 Hours Active</span>
+        </div>
+        <div className="flex justify-between text-zinc-400">
+          <span>Status:</span>
+          <span className={rotated ? "text-emerald-400 font-bold" : "text-zinc-200"}>
+            {rotated ? "New Key Deployed" : "In Sync"}
           </span>
         </div>
       </div>
-      <div className="flex items-center -space-x-2 shrink-0">
-        {avatarList.map((m, i) => {
-          const isUrl = isImageMode && (m.url.startsWith("http") || m.url.startsWith("/"));
-          return (
-            <div
-              key={i}
-              onMouseEnter={() => setActiveHover(m.name)}
-              onMouseLeave={() => setActiveHover(null)}
-              className="relative group/avatar cursor-pointer"
-            >
-              {isUrl ? (
-                <img
-                  src={m.url}
-                  alt={m.name}
-                  className="w-7 h-7 rounded-full border-2 border-zinc-950 object-cover shrink-0 hover:scale-115 hover:z-20 transition-transform shadow-xs"
-                />
-              ) : (
-                <div
-                  style={
-                    i === 0
-                      ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
-                      : { backgroundColor: "#27272a", color: "#e4e4e7" }
-                  }
-                  className="w-7 h-7 rounded-full border-2 border-zinc-950 flex items-center justify-center text-[10px] font-mono font-bold shrink-0 hover:scale-115 hover:z-20 transition-transform"
-                >
-                  {m.initials}
-                </div>
-              )}
-            </div>
-          );
-        })}
-        <div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-200 flex items-center justify-center text-[10px] font-mono font-bold shrink-0">
-          {props.extraBadge || "+3"}
+
+      <button
+        type="button"
+        onClick={handleRotate}
+        disabled={isRotating}
+        style={{
+          backgroundColor: rotated ? "#10b981" : tokens.primary,
+          color: tokens.primaryForeground,
+          borderRadius: `${tokens.radius}px`,
+        }}
+        className="w-full py-2 px-3 text-xs font-mono font-semibold transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+      >
+        {isRotating && (
+          <svg className="animate-spin w-3.5 h-3.5 text-current" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+          </svg>
+        )}
+        <span>{isRotating ? "Generating New Key Pair..." : rotated ? "Secret Rotated Successfully" : "Rotate Secret Immediately"}</span>
+      </button>
+    </div>
+  );
+}
+
+function LogStreamCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [level, setLevel] = useState(props.logLevel || "all");
+  const [isPaused, setIsPaused] = useState(false);
+  const [eventCount, setEventCount] = useState(148);
+
+  const logs = [
+    { time: "14:22:01", lvl: "INFO", text: "HTTP 200 GET /v1/tokens 18ms", color: "text-emerald-400" },
+    { time: "14:22:04", lvl: "WARN", text: "High heap allocation 78% limit", color: "text-amber-400" },
+    { time: "14:22:09", lvl: "INFO", text: "Worker thread pool scaled to 12", color: "text-emerald-400" },
+    { time: "14:22:12", lvl: "ERROR", text: "Connection timeout on db-replica-02", color: "text-rose-400" },
+  ];
+
+  const filteredLogs = level === "all" ? logs : logs.filter((l) => l.lvl.toLowerCase() === level.toLowerCase());
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full text-white font-mono select-none space-y-3 animate-fade-in"
+    >
+      <div className="flex items-center justify-between border-b border-zinc-850 pb-2.5">
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${isPaused ? "bg-amber-500" : "bg-emerald-500 animate-pulse"}`} />
+          <span className="text-xs font-bold text-white">{props.serviceName || "api-gateway-edge"}</span>
         </div>
+        <div className="flex items-center gap-1.5 text-[10px]">
+          {["all", "info", "warn", "error"].map((lvl) => (
+            <button
+              key={lvl}
+              type="button"
+              onClick={() => setLevel(lvl)}
+              className={`px-1.5 py-0.5 rounded-xs uppercase font-semibold cursor-pointer transition-colors ${
+                level === lvl ? "bg-zinc-800 text-white border border-zinc-700" : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              {lvl}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-1.5 text-[11px] bg-zinc-950 p-2.5 rounded-xs border border-zinc-850 min-h-[96px]">
+        {filteredLogs.map((l, i) => (
+          <div key={i} className="flex gap-2 text-zinc-400 leading-tight">
+            <span className="text-zinc-600 shrink-0">{l.time}</span>
+            <span className={`${l.color} shrink-0 font-bold`}>{l.lvl}</span>
+            <span className="truncate text-zinc-300">{l.text}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-1">
+        <button
+          type="button"
+          onClick={() => {
+            setIsPaused(!isPaused);
+            if (isPaused) setEventCount((c) => c + 3);
+          }}
+          className="text-xs font-mono font-medium hover:text-white cursor-pointer"
+        >
+          {isPaused ? "▶ Resume Stream" : "⏸ Pause Stream"}
+        </button>
+        <span className="text-emerald-400 font-semibold">{isPaused ? "Paused" : `${eventCount} events/sec`}</span>
+      </div>
+    </div>
+  );
+}
+
+function FeatureFlagCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [pct, setPct] = useState(props.rolloutPercentage ?? 45);
+  const [isKilled, setIsKilled] = useState(false);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: isKilled ? "#7f1d1d" : tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full text-white select-none space-y-3.5 animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-xs font-semibold border ${
+          isKilled ? "text-rose-400 bg-rose-950/60 border-rose-800" : "text-emerald-400 bg-emerald-950/60 border-emerald-800/80"
+        }`}>
+          {isKilled ? "Emergency Killed" : props.environment || "production"}
+        </span>
+        <span className="text-xs font-mono font-bold text-white">{isKilled ? "0% Traffic" : `${pct}% Live`}</span>
+      </div>
+
+      <div>
+        <h4 className="text-xs font-mono font-bold text-white truncate">{props.flagKey || "enable_vector_rag_pipeline"}</h4>
+        <div className="mt-2.5 space-y-1.5">
+          <input
+            type="range"
+            min={0}
+            max={100}
+            value={isKilled ? 0 : pct}
+            disabled={isKilled}
+            onChange={(e) => setPct(Number(e.target.value))}
+            className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-[11px] font-mono">
+        <span className="text-zinc-400">Targeting: Internal Beta</span>
+        <button
+          type="button"
+          onClick={() => setIsKilled(!isKilled)}
+          className={`px-2 py-0.5 rounded-xs border text-[11px] font-bold cursor-pointer transition-colors ${
+            isKilled
+              ? "border-emerald-800 bg-emerald-950 text-emerald-400"
+              : "border-red-900 bg-red-950/80 text-red-400 hover:bg-red-900 hover:text-white"
+          }`}
+        >
+          {isKilled ? "Restore Flag" : "Kill Switch"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function WebhookInspectorCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [status, setStatus] = useState(props.httpStatus || "200");
+  const [retrying, setRetrying] = useState(false);
+  const [retried, setRetried] = useState(false);
+
+  const handleRetry = async () => {
+    if (retrying) return;
+    setRetrying(true);
+    await new Promise((res) => setTimeout(res, 1000));
+    setRetrying(false);
+    setRetried(true);
+    setStatus("200");
+    setTimeout(() => setRetried(false), 2500);
+  };
+
+  const isSuccess = status === "200";
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full text-white font-mono select-none space-y-3 animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-xs border ${
+          isSuccess ? "text-emerald-400 bg-emerald-950/60 border-emerald-800" : "text-rose-400 bg-rose-950/60 border-rose-800"
+        }`}>
+          {status} {isSuccess ? "OK" : "ERR"}
+        </span>
+        <span className="text-[11px] text-zinc-500">{props.latencyMs || "142ms"}</span>
+      </div>
+
+      <div>
+        <div className="text-xs font-bold text-white truncate">{props.eventName || "checkout.session.completed"}</div>
+        <div className="text-[10px] text-zinc-500 mt-0.5">Signature: sha256_e4f9b2... verified</div>
+      </div>
+
+      <div className="p-2.5 rounded-xs bg-zinc-950 border border-zinc-850 text-[11px] text-zinc-400 flex items-center justify-between">
+        <span>Payload: 1.84 KB JSON</span>
+        <button
+          type="button"
+          onClick={handleRetry}
+          disabled={retrying}
+          style={{ color: tokens.primary }}
+          className="font-bold hover:underline cursor-pointer"
+        >
+          {retrying ? "Retrying..." : retried ? "Dispatched!" : "Resend Webhook"}
+        </button>
       </div>
     </div>
   );

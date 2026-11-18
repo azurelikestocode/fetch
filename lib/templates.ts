@@ -42,52 +42,113 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     id: "button",
     name: "Primary Action Button",
     category: "elements",
-    description: "High-contrast action button with configurable label, padding, and corner radius.",
+    description: "High-contrast action controller with idle, loading spinner, success checkmark, and keyboard shortcut pill.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
       { key: "label", label: "Button Text", type: "text", defaultValue: "Get Started" },
       { key: "size", label: "Size", type: "select", defaultValue: "md", options: ["sm", "md", "lg"] },
       { key: "disabled", label: "Disabled", type: "boolean", defaultValue: false },
+      { key: "state", label: "Action State", type: "select", defaultValue: "idle", options: ["idle", "loading", "success"] },
+      { key: "shortcut", label: "Shortcut Chip", type: "text", defaultValue: "⌘S" },
     ],
     renderComponent: (props, tokens) => {
       const sizeClasses = {
-        sm: "px-3 py-1.5 text-xs",
-        md: "px-4 py-2 text-sm",
-        lg: "px-6 py-3 text-base",
-      }[props.size as "sm" | "md" | "lg"] || "px-4 py-2 text-sm";
+        sm: "px-3 py-1.5 text-xs gap-1.5",
+        md: "px-4 py-2 text-sm gap-2",
+        lg: "px-6 py-3 text-base gap-2.5",
+      }[props.size as "sm" | "md" | "lg"] || "px-4 py-2 text-sm gap-2";
+
+      const state = props.state || "idle";
 
       return React.createElement(
         "button",
         {
-          disabled: props.disabled,
+          disabled: props.disabled || state === "loading",
           style: {
-            backgroundColor: tokens.primary,
+            backgroundColor: state === "success" ? "#10b981" : tokens.primary,
             color: tokens.primaryForeground,
             borderRadius: `${tokens.radius}px`,
           },
-          className: `inline-flex items-center justify-center font-medium transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer ${sizeClasses}`,
+          className: `inline-flex items-center justify-center font-medium transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer shadow-sm select-none ${sizeClasses}`,
         },
-        props.label || "Get Started"
+        state === "loading" && React.createElement(
+          "svg",
+          { className: "animate-spin w-3.5 h-3.5 text-current shrink-0", viewBox: "0 0 24 24", fill: "none" },
+          React.createElement("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }),
+          React.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8v8H4z" })
+        ),
+        state === "success" && React.createElement(
+          "svg",
+          { className: "w-3.5 h-3.5 text-current shrink-0", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "3", strokeLinecap: "round", strokeLinejoin: "round" },
+          React.createElement("polyline", { points: "20 6 9 17 4 12" })
+        ),
+        React.createElement("span", { className: "tracking-tight" }, state === "loading" ? "Processing..." : state === "success" ? "Saved" : (props.label || "Get Started")),
+        props.shortcut && state === "idle" && React.createElement(
+          "span",
+          {
+            style: { borderRadius: `${Math.max(2, tokens.radius - 2)}px` },
+            className: "ml-1.5 px-1.5 py-0.2 text-[10px] font-mono font-semibold bg-black/20 text-white/80 border border-white/10 shrink-0",
+          },
+          props.shortcut
+        )
       );
     },
     generateJsx: (props, tokens) => {
       const sizeClasses = {
-        sm: "px-3 py-1.5 text-xs",
-        md: "px-4 py-2 text-sm",
-        lg: "px-6 py-3 text-base",
-      }[props.size as "sm" | "md" | "lg"] || "px-4 py-2 text-sm";
+        sm: "px-3 py-1.5 text-xs gap-1.5",
+        md: "px-4 py-2 text-sm gap-2",
+        lg: "px-6 py-3 text-base gap-2.5",
+      }[props.size as "sm" | "md" | "lg"] || "px-4 py-2 text-sm gap-2";
 
-      return `<button className="bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] ${sizeClasses} inline-flex items-center justify-center font-medium transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50">
-  ${escapeText(props.label || "Get Started")}
-</button>`;
+      return `"use client";
+
+import React, { useState } from "react";
+
+export function ActionButton() {
+  const [state, setState] = useState<"idle" | "loading" | "success">("${props.state || "idle"}");
+
+  const handleClick = async () => {
+    if (state !== "idle") return;
+    setState("loading");
+    await new Promise((res) => setTimeout(res, 1200));
+    setState("success");
+    setTimeout(() => setState("idle"), 2400);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={${Boolean(props.disabled)} || state === "loading"}
+      className="bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] ${sizeClasses} inline-flex items-center justify-center font-medium transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer shadow-sm select-none"
+    >
+      {state === "loading" && (
+        <svg className="animate-spin w-3.5 h-3.5 text-current shrink-0" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+        </svg>
+      )}
+      {state === "success" && (
+        <svg className="w-3.5 h-3.5 text-current shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+      <span className="tracking-tight">
+        {state === "loading" ? "Processing..." : state === "success" ? "Saved" : "${escapeText(props.label || "Get Started")}"}
+      </span>
+      ${props.shortcut ? `<span className="ml-1.5 px-1.5 py-0.2 text-[10px] font-mono font-semibold bg-black/20 text-white/80 border border-white/10 rounded-[${Math.max(2, tokens.radius - 2)}px] shrink-0">
+        ${escapeText(props.shortcut)}
+      </span>` : ""}
+    </button>
+  );
+}`;
     },
   },
 
   card: {
     id: "card",
     name: "Elevated Content Card",
-    category: "elements",
-    description: "Architectural content container with surface contrast, title, description, and action footer.",
+    category: "components",
+    description: "Architectural node container with live status ping, latency readout, throughput metrics, and inspect drawer.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
       { key: "title", label: "Card Title", type: "text", defaultValue: "System Architecture" },
@@ -104,11 +165,11 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
             borderColor: tokens.border,
             borderRadius: `${tokens.radius}px`,
           },
-          className: "p-6 border shadow-sm max-w-sm w-full text-[#fafafa] min-w-0 break-words",
+          className: "p-5 border shadow-xl max-w-sm w-full text-[#fafafa] min-w-0 break-words select-none space-y-4",
         },
         React.createElement(
           "div",
-          { className: "flex items-center justify-between mb-4" },
+          { className: "flex items-center justify-between" },
           React.createElement(
             "span",
             {
@@ -118,13 +179,31 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
                 borderColor: `color-mix(in srgb, ${tokens.primary} 30%, transparent)`,
                 backgroundColor: `color-mix(in srgb, ${tokens.primary} 12%, transparent)`,
               },
-              className: "text-[11px] font-mono px-2 py-0.5 border font-semibold",
+              className: "text-[11px] font-mono px-2 py-0.5 border font-semibold flex items-center gap-1.5",
             },
+            React.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }),
             props.badgeText || "v1.0 Ready"
+          ),
+          React.createElement("span", { className: "text-[10px] font-mono text-zinc-500" }, "12ms • US-East")
+        ),
+        React.createElement(
+          "div",
+          null,
+          React.createElement("h3", { className: "text-base font-semibold tracking-tight mb-1 text-white break-words" }, props.title || "System Architecture"),
+          React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed break-words" }, props.description || "Modular primitives engineered for high performance.")
+        ),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-2 gap-2 pt-1 border-t border-zinc-800/80 text-xs font-mono" },
+          React.createElement("div", { className: "p-2 rounded-xs bg-zinc-950/60 border border-zinc-850" },
+            React.createElement("div", { className: "text-[10px] text-zinc-500" }, "Throughput"),
+            React.createElement("div", { className: "font-semibold text-white mt-0.5" }, "1.42 GB/s")
+          ),
+          React.createElement("div", { className: "p-2 rounded-xs bg-zinc-950/60 border border-zinc-850" },
+            React.createElement("div", { className: "text-[10px] text-zinc-500" }, "Availability"),
+            React.createElement("div", { className: "font-semibold text-emerald-400 mt-0.5" }, "99.99%")
           )
         ),
-        React.createElement("h3", { className: "text-lg font-semibold tracking-tight mb-1.5 break-words" }, props.title || "System Architecture"),
-        React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed mb-6 break-words" }, props.description || "Modular primitives engineered for high performance."),
         React.createElement(
           "button",
           {
@@ -133,22 +212,36 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
               color: tokens.primaryForeground,
               borderRadius: `${tokens.radius}px`,
             },
-            className: "w-full py-2 px-3 text-xs font-medium hover:opacity-90 transition-all cursor-pointer",
+            className: "w-full py-2 px-3 text-xs font-medium hover:opacity-90 transition-all cursor-pointer font-mono shadow-xs active:scale-[0.98]",
           },
           props.buttonText || "Explore Docs"
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-6 shadow-sm max-w-sm w-full text-[#fafafa] min-w-0 break-words">
-  <div className="flex items-center justify-between mb-4">
-    <span className="text-[11px] font-mono px-2 py-0.5 border border-[${tokens.primary}]/30 bg-[${tokens.primary}]/10 text-[${tokens.primary}] font-semibold rounded-[${tokens.radius}px]">
+      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-5 shadow-xl max-w-sm w-full text-[#fafafa] min-w-0 break-words select-none space-y-4">
+  <div className="flex items-center justify-between">
+    <span className="text-[11px] font-mono px-2 py-0.5 border border-[${tokens.primary}]/30 bg-[${tokens.primary}]/10 text-[${tokens.primary}] font-semibold rounded-[${tokens.radius}px] flex items-center gap-1.5">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
       ${escapeText(props.badgeText || "v1.0 Ready")}
     </span>
+    <span className="text-[10px] font-mono text-zinc-500">12ms • US-East</span>
   </div>
-  <h3 className="text-lg font-semibold tracking-tight mb-1.5 break-words">${escapeText(props.title || "System Architecture")}</h3>
-  <p className="text-xs text-zinc-400 leading-relaxed mb-6 break-words">${escapeText(props.description || "Modular primitives engineered for high performance.")}</p>
-  <button className="w-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] py-2 px-3 text-xs font-medium hover:opacity-90 transition-all">
+  <div>
+    <h3 className="text-base font-semibold tracking-tight mb-1 text-white break-words">${escapeText(props.title || "System Architecture")}</h3>
+    <p className="text-xs text-zinc-400 leading-relaxed break-words">${escapeText(props.description || "Modular primitives engineered for high performance.")}</p>
+  </div>
+  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-zinc-800/80 text-xs font-mono">
+    <div className="p-2 rounded bg-zinc-950/60 border border-zinc-850">
+      <div className="text-[10px] text-zinc-500">Throughput</div>
+      <div className="font-semibold text-white mt-0.5">1.42 GB/s</div>
+    </div>
+    <div className="p-2 rounded bg-zinc-950/60 border border-zinc-850">
+      <div className="text-[10px] text-zinc-500">Availability</div>
+      <div className="font-semibold text-emerald-400 mt-0.5">99.99%</div>
+    </div>
+  </div>
+  <button className="w-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] py-2 px-3 text-xs font-medium hover:opacity-90 transition-all font-mono shadow-xs active:scale-[0.98]">
     ${escapeText(props.buttonText || "Explore Docs")}
   </button>
 </div>`;
@@ -159,7 +252,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     id: "input",
     name: "Form Input Field",
     category: "forms",
-    description: "Clean input field with label, placeholder, and focus highlight.",
+    description: "Search and command input field with prefix icon, clear trigger, and keyboard shortcut badge.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
       { key: "label", label: "Field Label", type: "text", defaultValue: "Deployment Domain" },
@@ -169,30 +262,65 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     renderComponent: (props, tokens) => {
       return React.createElement(
         "div",
-        { className: "space-y-1.5 w-full max-w-sm min-w-0" },
-        React.createElement("label", { className: "text-xs font-medium text-zinc-300 break-words" }, props.label || "Deployment Domain"),
-        React.createElement("input", {
-          type: "text",
-          placeholder: props.placeholder || "app.fetch.dev",
-          readOnly: true,
-          style: {
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-            backgroundColor: `${tokens.background}`,
-          },
-          className: "w-full h-9 px-3 text-xs text-[#fafafa] border focus:outline-none focus:ring-1",
-        }),
+        { className: "space-y-1.5 w-full max-w-sm min-w-0 select-none" },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("label", { className: "text-xs font-medium text-zinc-300 break-words" }, props.label || "Deployment Domain"),
+          React.createElement("span", { className: "text-[10px] font-mono text-zinc-500" }, "Required")
+        ),
+        React.createElement(
+          "div",
+          { className: "relative flex items-center" },
+          React.createElement(
+            "svg",
+            { className: "w-4 h-4 text-zinc-500 absolute left-3 pointer-events-none", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2" },
+            React.createElement("circle", { cx: "11", cy: "11", r: "8" }),
+            React.createElement("line", { x1: "21", y1: "21", x2: "16.65", y2: "16.65" })
+          ),
+          React.createElement("input", {
+            type: "text",
+            placeholder: props.placeholder || "app.fetch.dev",
+            readOnly: true,
+            style: {
+              borderColor: tokens.border,
+              borderRadius: `${tokens.radius}px`,
+              backgroundColor: tokens.background,
+            },
+            className: "w-full h-9 pl-9 pr-8 text-xs text-[#fafafa] border focus:outline-none focus:ring-1",
+          }),
+          React.createElement(
+            "span",
+            {
+              style: { borderRadius: `${Math.max(2, tokens.radius - 2)}px` },
+              className: "absolute right-2 px-1.5 py-0.2 text-[10px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800",
+            },
+            "/"
+          )
+        ),
         props.helperText && React.createElement("p", { className: "text-[11px] text-zinc-500 break-words" }, props.helperText)
       );
     },
     generateJsx: (props, tokens) => {
       return `<div className="space-y-1.5 w-full max-w-sm min-w-0">
-  <label className="text-xs font-medium text-zinc-300 break-words">${escapeText(props.label || "Deployment Domain")}</label>
-  <input
-    type="text"
-    placeholder="${escapeAttr(props.placeholder || "app.fetch.dev")}"
-    className="w-full h-9 px-3 text-xs text-[#fafafa] bg-[${tokens.background}] border border-[${tokens.border}] rounded-[${tokens.radius}px] focus:outline-none focus:ring-2 focus:ring-[${tokens.primary}]"
-  />
+  <div className="flex items-center justify-between">
+    <label className="text-xs font-medium text-zinc-300 break-words">${escapeText(props.label || "Deployment Domain")}</label>
+    <span className="text-[10px] font-mono text-zinc-500">Required</span>
+  </div>
+  <div className="relative flex items-center">
+    <svg className="w-4 h-4 text-zinc-500 absolute left-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+    <input
+      type="text"
+      placeholder="${escapeAttr(props.placeholder || "app.fetch.dev")}"
+      className="w-full h-9 pl-9 pr-8 text-xs text-[#fafafa] bg-[${tokens.background}] border border-[${tokens.border}] rounded-[${tokens.radius}px] focus:outline-none focus:ring-2 focus:ring-[${tokens.primary}]"
+    />
+    <span className="absolute right-2 px-1.5 py-0.2 text-[10px] font-mono text-zinc-500 bg-zinc-900 border border-zinc-800 rounded-[${Math.max(2, tokens.radius - 2)}px]">
+      /
+    </span>
+  </div>
   <p className="text-[11px] text-zinc-500 break-words">${escapeText(props.helperText || "")}</p>
 </div>`;
     },
@@ -202,7 +330,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     id: "badge",
     name: "Status Indicator Badge",
     category: "elements",
-    description: "Compact tag for status indicators, categories, and version chips.",
+    description: "Compact status pill with live ping animation, operational indicator, and high contrast typography.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
       { key: "label", label: "Badge Label", type: "text", defaultValue: "Operational" },
@@ -228,8 +356,9 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
         "span",
         {
           style,
-          className: "inline-flex items-center px-2.5 py-0.5 text-xs font-semibold border select-none break-words",
+          className: "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold border select-none break-words",
         },
+        React.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }),
         props.label || "Operational"
       );
     },
@@ -243,13 +372,14 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
         variantClasses = `bg-transparent text-[#e4e4e7] border border-[${tokens.border}]`;
       }
 
-      return `<span className="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-[${tokens.radius}px] ${variantClasses} select-none">
+      return `<span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-[${tokens.radius}px] ${variantClasses} select-none">
+  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
   ${escapeText(props.label || "Operational")}
 </span>`;
     },
   },
 
-  "auth-card": {
+"auth-card": {
     id: "auth-card",
     name: "Authentication Card",
     category: "components",
@@ -342,7 +472,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "stat-card": {
+"stat-card": {
     id: "stat-card",
     name: "Metric KPI Card",
     category: "components",
@@ -395,82 +525,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "bento-card": {
-    id: "bento-card",
-    name: "Architectural Bento Card",
-    category: "components",
-    description: "Multi-layered feature spotlight container with sub-metrics, status chip, and subtle gradient border.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "tag", label: "Category Tag", type: "text", defaultValue: "Edge Infrastructure" },
-      { key: "title", label: "Title", type: "text", defaultValue: "Autonomous CDN Rebalancing" },
-      { key: "description", label: "Description", type: "text", defaultValue: "Real-time traffic orchestration routing queries to regional nodes within 12ms." },
-      { key: "stat", label: "Stat Highlight", type: "text", defaultValue: "99.99%" },
-      { key: "statLabel", label: "Stat Label", type: "text", defaultValue: "Target SLA Uptime" },
-    ],
-    renderComponent: (props, tokens) => {
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-6 border shadow-lg max-w-sm w-full text-[#fafafa] flex flex-col justify-between space-y-5 transition-all duration-300 hover:border-zinc-700 hover:-translate-y-0.5 group",
-        },
-        React.createElement(
-          "div",
-          { className: "space-y-3" },
-          React.createElement(
-            "span",
-            {
-              style: {
-                borderRadius: `${tokens.radius}px`,
-                color: tokens.primary,
-                backgroundColor: `color-mix(in srgb, ${tokens.primary} 12%, transparent)`,
-                borderColor: `color-mix(in srgb, ${tokens.primary} 25%, transparent)`,
-              },
-              className: "inline-block text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border font-semibold",
-            },
-            props.tag || "Edge Infrastructure"
-          ),
-          React.createElement("h3", { className: "text-base font-semibold tracking-tight text-white group-hover:text-zinc-100" }, props.title || "Autonomous CDN Rebalancing"),
-          React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed font-normal" }, props.description || "Real-time traffic orchestration routing queries to regional nodes within 12ms.")
-        ),
-        React.createElement(
-          "div",
-          { className: "pt-4 border-t border-zinc-800/80 flex items-baseline justify-between" },
-          React.createElement("span", { className: "text-[11px] font-mono text-zinc-500 uppercase tracking-wider" }, props.statLabel || "Target SLA Uptime"),
-          React.createElement(
-            "span",
-            {
-              style: { color: tokens.primary },
-              className: "text-xl font-bold font-mono tracking-tight",
-            },
-            props.stat || "99.99%"
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-6 shadow-lg max-w-sm w-full text-[#fafafa] flex flex-col justify-between space-y-5 transition-all duration-300 hover:border-zinc-700 hover:-translate-y-0.5">
-  <div className="space-y-3">
-    <span className="inline-block text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 border border-[${tokens.primary}]/25 bg-[${tokens.primary}]/10 text-[${tokens.primary}] font-semibold rounded-[${tokens.radius}px]">
-      ${escapeText(props.tag || "Edge Infrastructure")}
-    </span>
-    <h3 className="text-base font-semibold tracking-tight text-white">${escapeText(props.title || "Autonomous CDN Rebalancing")}</h3>
-    <p className="text-xs text-zinc-400 leading-relaxed font-normal">${escapeText(props.description || "Real-time traffic orchestration routing queries to regional nodes within 12ms.")}</p>
-  </div>
-  <div className="pt-4 border-t border-zinc-800/80 flex items-baseline justify-between">
-    <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">${escapeText(props.statLabel || "Target SLA Uptime")}</span>
-    <span className="text-xl font-bold font-mono tracking-tight text-[${tokens.primary}]">${escapeText(props.stat || "99.99%")}</span>
-  </div>
-</div>`;
-    },
-  },
-
-  "pricing-card": {
+"pricing-card": {
     id: "pricing-card",
     name: "Tiered Pricing Card",
     category: "components",
@@ -571,52 +626,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "notification": {
-    id: "notification",
-    name: "Interactive Notification Toast",
-    category: "elements",
-    description: "Compact floating status toast with active indicator dot, message, and action link.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "message", label: "Toast Message", type: "text", defaultValue: "Deployment successful. Edge nodes synced." },
-      { key: "actionLabel", label: "Action Link", type: "text", defaultValue: "View Logs" },
-    ],
-    renderComponent: (props, tokens) => {
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "inline-flex items-center gap-3 px-4 py-2.5 border shadow-lg text-xs font-medium text-[#fafafa] max-w-md transition-all duration-200 hover:border-zinc-700",
-        },
-        React.createElement("span", {
-          style: { backgroundColor: tokens.primary },
-          className: "w-2 h-2 rounded-full animate-pulse shrink-0",
-        }),
-        React.createElement("span", { className: "text-zinc-300 font-normal truncate" }, props.message || "Deployment successful. Edge nodes synced."),
-        React.createElement(
-          "span",
-          {
-            style: { color: tokens.primary },
-            className: "text-[11px] font-mono font-semibold hover:underline shrink-0 cursor-pointer ml-auto",
-          },
-          props.actionLabel || "View Logs"
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="inline-flex items-center gap-3 px-4 py-2.5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg text-xs font-medium text-[#fafafa] max-w-md">
-  <span className="w-2 h-2 rounded-full bg-[${tokens.primary}] animate-pulse shrink-0"></span>
-  <span className="text-zinc-300 font-normal truncate">${escapeText(props.message || "Deployment successful. Edge nodes synced.")}</span>
-  <a href="#" className="text-[11px] font-mono font-semibold text-[${tokens.primary}] hover:underline shrink-0 ml-auto">${escapeText(props.actionLabel || "View Logs")}</a>
-</div>`;
-    },
-  },
-
-  "command-menu": {
+"command-menu": {
     id: "command-menu",
     name: "Command Palette Trigger",
     category: "forms",
@@ -666,336 +676,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "switch": {
-    id: "switch",
-    name: "Tactile Toggle Switch",
-    category: "elements",
-    description: "Fluid state toggle with tactile thumb transition and accompanying label/subtext.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "label", label: "Setting Title", type: "text", defaultValue: "Automatic Token Synchronization" },
-      { key: "description", label: "Subtext", type: "text", defaultValue: "Propagate changes instantly across active workspaces." },
-      { key: "checked", label: "Initial State (Active)", type: "boolean", defaultValue: true },
-    ],
-    renderComponent: (props, tokens) => {
-      const isChecked = props.checked ?? true;
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-4 border shadow-xs max-w-sm w-full flex items-center justify-between gap-4 transition-all hover:border-zinc-700",
-        },
-        React.createElement(
-          "div",
-          { className: "space-y-0.5" },
-          React.createElement("div", { className: "text-xs font-semibold text-white font-mono" }, props.label || "Automatic Token Synchronization"),
-          React.createElement("div", { className: "text-[11px] text-zinc-400 leading-tight" }, props.description || "Propagate changes instantly across active workspaces.")
-        ),
-        React.createElement(
-          "div",
-          {
-            style: {
-              backgroundColor: isChecked ? tokens.primary : "#27272a",
-              borderRadius: "9999px",
-            },
-            className: "w-10 h-5.5 p-0.5 transition-colors duration-200 ease-in-out shrink-0 cursor-pointer relative",
-          },
-          React.createElement("div", {
-            className: `w-4.5 h-4.5 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-              isChecked ? "translate-x-4.5" : "translate-x-0"
-            }`,
-          })
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      const isChecked = props.checked ?? true;
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] max-w-sm w-full flex items-center justify-between gap-4">
-  <div className="space-y-0.5">
-    <div className="text-xs font-semibold text-white font-mono">${escapeText(props.label || "Automatic Token Synchronization")}</div>
-    <div className="text-[11px] text-zinc-400 leading-tight">${escapeText(props.description || "Propagate changes instantly across active workspaces.")}</div>
-  </div>
-  <button role="switch" aria-checked="${isChecked}" className="w-10 h-5.5 p-0.5 rounded-full ${isChecked ? `bg-[${tokens.primary}]` : 'bg-zinc-800'} transition-colors duration-200 ease-in-out shrink-0 relative">
-    <span className="block w-4.5 h-4.5 bg-white rounded-full shadow-md transform transition-transform duration-200 ${isChecked ? 'translate-x-4.5' : 'translate-x-0'}"></span>
-  </button>
-</div>`;
-    },
-  },
-
-  "tabs": {
-    id: "tabs",
-    name: "Segmented Tab Bar",
-    category: "navigation",
-    description: "Tactile pill-based navigation tabs with high-contrast active state and smooth transitions.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "tab1", label: "Tab 1 Label", type: "text", defaultValue: "Overview" },
-      { key: "tab2", label: "Tab 2 Label", type: "text", defaultValue: "Analytics" },
-      { key: "tab3", label: "Tab 3 Label", type: "text", defaultValue: "Deployments" },
-    ],
-    renderComponent: (props, tokens) => {
-      const tabs = [props.tab1 || "Overview", props.tab2 || "Analytics", props.tab3 || "Deployments"];
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-1 border inline-flex items-center gap-1 shadow-xs",
-        },
-        tabs.map((tab, idx) => {
-          const isActive = idx === 0;
-          return React.createElement(
-            "button",
-            {
-              key: tab,
-              style: isActive
-                ? {
-                    backgroundColor: tokens.primary,
-                    color: tokens.primaryForeground,
-                    borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
-                  }
-                : {
-                    borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
-                  },
-              className: `px-3 py-1.5 text-xs font-medium font-mono transition-all cursor-pointer ${
-                isActive ? "shadow-xs" : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
-              }`,
-            },
-            tab
-          );
-        })
-      );
-    },
-    generateJsx: (props, tokens) => {
-      const tabs = [props.tab1 || "Overview", props.tab2 || "Analytics", props.tab3 || "Deployments"];
-      return `<div className="p-1 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] inline-flex items-center gap-1 shadow-xs">
-  <button className="px-3 py-1.5 text-xs font-medium font-mono rounded-[${Math.max(2, tokens.radius - 2)}px] bg-[${tokens.primary}] text-[${tokens.primaryForeground}] shadow-xs">
-    ${escapeText(tabs[0])}
-  </button>
-  <button className="px-3 py-1.5 text-xs font-medium font-mono rounded-[${Math.max(2, tokens.radius - 2)}px] text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all">
-    ${escapeText(tabs[1])}
-  </button>
-  <button className="px-3 py-1.5 text-xs font-medium font-mono rounded-[${Math.max(2, tokens.radius - 2)}px] text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all">
-    ${escapeText(tabs[2])}
-  </button>
-</div>`;
-    },
-  },
-
-  "avatar-stack": {
-    id: "avatar-stack",
-    name: "Collaborative Avatar Stack",
-    category: "elements",
-    description: "Overlapping team member avatars with online presence pulse indicator.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "teamName", label: "Team Label", type: "text", defaultValue: "Core Architecture Team" },
-      { key: "memberCount", label: "Status Text", type: "text", defaultValue: "4 active contributors" },
-      { key: "avatarMode", label: "Avatar Display", type: "select", defaultValue: "images", options: ["images", "initials"] },
-      { key: "avatar1", label: "Avatar 1 Image / Initials", type: "text", defaultValue: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&crop=face" },
-      { key: "avatar2", label: "Avatar 2 Image / Initials", type: "text", defaultValue: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face" },
-      { key: "avatar3", label: "Avatar 3 Image / Initials", type: "text", defaultValue: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=face" },
-      { key: "extraBadge", label: "Overflow Badge", type: "text", defaultValue: "+3" },
-    ],
-    renderComponent: (props, tokens) => {
-      const isImg = props.avatarMode !== "initials";
-      const avatars = [
-        { url: props.avatar1 || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&crop=face", initials: "AZ" },
-        { url: props.avatar2 || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face", initials: "RX" },
-        { url: props.avatar3 || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=face", initials: "FL" },
-      ];
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-4 border shadow-xs max-w-sm w-full flex items-center justify-between gap-4",
-        },
-        React.createElement(
-          "div",
-          { className: "space-y-0.5" },
-          React.createElement("div", { className: "text-xs font-semibold text-white font-mono" }, props.teamName || "Core Architecture Team"),
-          React.createElement("div", { className: "text-[11px] text-zinc-400 flex items-center gap-1.5" },
-            React.createElement("span", { style: { backgroundColor: tokens.primary }, className: "w-1.5 h-1.5 rounded-full" }),
-            props.memberCount || "4 active contributors"
-          )
-        ),
-        React.createElement(
-          "div",
-          { className: "flex items-center -space-x-2" },
-          avatars.map((item, i) =>
-            isImg
-              ? React.createElement("img", {
-                  key: i,
-                  src: item.url,
-                  alt: "Avatar",
-                  className: "w-7 h-7 rounded-full border-2 border-zinc-950 object-cover shrink-0",
-                })
-              : React.createElement(
-                  "div",
-                  {
-                    key: i,
-                    style: i === 0 ? { backgroundColor: tokens.primary, color: tokens.primaryForeground } : { backgroundColor: "#27272a", color: "#e4e4e7" },
-                    className: "w-7 h-7 rounded-full border-2 border-zinc-950 flex items-center justify-center text-[10px] font-mono font-bold shrink-0",
-                  },
-                  item.initials
-                )
-          ),
-          React.createElement(
-            "div",
-            {
-              className: "w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-200 flex items-center justify-center text-[10px] font-mono font-bold shrink-0",
-            },
-            props.extraBadge || "+3"
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      const isImg = props.avatarMode !== "initials";
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] max-w-sm w-full flex items-center justify-between gap-4">
-  <div className="space-y-0.5">
-    <div className="text-xs font-semibold text-white font-mono">${escapeText(props.teamName || "Core Architecture Team")}</div>
-    <div className="text-[11px] text-zinc-400 flex items-center gap-1.5">
-      <span className="w-1.5 h-1.5 rounded-full bg-[${tokens.primary}]"></span>
-      ${escapeText(props.memberCount || "4 active contributors")}
-    </div>
-  </div>
-  <div className="flex items-center -space-x-2">
-    ${isImg ? `<img src="${escapeAttr(props.avatar1 || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&crop=face")}" alt="Member 1" className="w-7 h-7 rounded-full border-2 border-zinc-950 object-cover" />` : `<div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center text-[10px] font-mono font-bold">AZ</div>`}
-    ${isImg ? `<img src="${escapeAttr(props.avatar2 || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face")}" alt="Member 2" className="w-7 h-7 rounded-full border-2 border-zinc-950 object-cover" />` : `<div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-200 flex items-center justify-center text-[10px] font-mono font-bold">RX</div>`}
-    ${isImg ? `<img src="${escapeAttr(props.avatar3 || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop&crop=face")}" alt="Member 3" className="w-7 h-7 rounded-full border-2 border-zinc-950 object-cover" />` : `<div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-200 flex items-center justify-center text-[10px] font-mono font-bold">FL</div>`}
-    <div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-200 flex items-center justify-center text-[10px] font-mono font-bold">${escapeText(props.extraBadge || "+3")}</div>
-  </div>
-</div>`;
-    },
-  },
-
-  "accordion": {
-    id: "accordion",
-    name: "Interactive FAQ Accordion",
-    category: "components",
-    description: "Expandable content section with chevron rotation and surface accent highlight.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "question", label: "Question Header", type: "text", defaultValue: "How does real-time token synchronization work?" },
-      { key: "answer", label: "Expanded Answer", type: "text", defaultValue: "CSS custom variables are injected directly into the component scope, updating immediately without re-rendering or bundle reloads." },
-    ],
-    renderComponent: (props, tokens) => {
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-4 border shadow-xs max-w-sm w-full space-y-2 text-[#fafafa]",
-        },
-        React.createElement(
-          "div",
-          { className: "flex items-center justify-between cursor-pointer" },
-          React.createElement("h4", { className: "text-xs font-semibold tracking-tight" }, props.question || "How does real-time token synchronization work?"),
-          React.createElement("span", { style: { color: tokens.primary }, className: "text-xs font-mono font-bold ml-2" }, "▲")
-        ),
-        React.createElement(
-          "p",
-          { className: "text-[11px] text-zinc-400 leading-relaxed border-t border-zinc-800/80 pt-2" },
-          props.answer || "CSS custom variables are injected directly into the component scope, updating immediately without re-rendering or bundle reloads."
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] max-w-sm w-full space-y-2 text-[#fafafa]">
-  <div className="flex items-center justify-between cursor-pointer">
-    <h4 className="text-xs font-semibold tracking-tight">${escapeText(props.question || "How does real-time token synchronization work?")}</h4>
-    <span className="text-[${tokens.primary}] text-xs font-mono font-bold ml-2">▲</span>
-  </div>
-  <p className="text-[11px] text-zinc-400 leading-relaxed border-t border-zinc-800/80 pt-2">
-    ${escapeText(props.answer || "CSS custom variables are injected directly into the component scope, updating immediately.")}
-  </p>
-</div>`;
-    },
-  },
-
-  "stat-ring": {
-    id: "stat-ring",
-    name: "Radial Progress Dial",
-    category: "components",
-    description: "Circular completion indicator with KPI percentage, status chip, and glowing border.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "metric", label: "Metric Name", type: "text", defaultValue: "Core Web Vitals" },
-      { key: "score", label: "Performance Score", type: "text", defaultValue: "98%" },
-      { key: "status", label: "Status Badge", type: "text", defaultValue: "Optimal" },
-    ],
-    renderComponent: (props, tokens) => {
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-5 border shadow-md max-w-sm w-full flex items-center justify-between gap-4 text-[#fafafa]",
-        },
-        React.createElement(
-          "div",
-          { className: "space-y-1" },
-          React.createElement("div", { className: "text-xs font-semibold" }, props.metric || "Core Web Vitals"),
-          React.createElement(
-            "span",
-            {
-              style: {
-                borderRadius: `${tokens.radius}px`,
-                color: tokens.primary,
-                backgroundColor: `color-mix(in srgb, ${tokens.primary} 15%, transparent)`,
-              },
-              className: "text-[10px] font-mono px-2 py-0.5 font-semibold",
-            },
-            props.status || "Optimal"
-          )
-        ),
-        React.createElement(
-          "div",
-          {
-            style: {
-              borderColor: tokens.primary,
-              borderRadius: "9999px",
-            },
-            className: "w-12 h-12 rounded-full border-3 flex items-center justify-center font-mono font-extrabold text-sm shadow-xs shrink-0",
-          },
-          props.score || "98%"
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] max-w-sm w-full flex items-center justify-between gap-4 text-[#fafafa]">
-  <div className="space-y-1">
-    <div className="text-xs font-semibold">${escapeText(props.metric || "Core Web Vitals")}</div>
-    <span className="text-[10px] font-mono px-2 py-0.5 font-semibold rounded-[${tokens.radius}px] bg-[${tokens.primary}]/15 text-[${tokens.primary}]">
-      ${escapeText(props.status || "Optimal")}
-    </span>
-  </div>
-  <div className="w-12 h-12 rounded-full border-2 border-[${tokens.primary}] flex items-center justify-center font-mono font-extrabold text-sm shrink-0">
-    ${escapeText(props.score || "98%")}
-  </div>
-</div>`;
-    },
-  },
-
-  "code-terminal": {
+"code-terminal": {
     id: "code-terminal",
     name: "Developer Terminal Window",
     category: "components",
@@ -1052,7 +733,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "cookie-banner": {
+"cookie-banner": {
     id: "cookie-banner",
     name: "Privacy & Cookie Consent",
     category: "elements",
@@ -1116,7 +797,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "testimonial-card": {
+"testimonial-card": {
     id: "testimonial-card",
     name: "Editorial Quote Testimonial",
     category: "components",
@@ -1172,205 +853,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "timeline-stepper": {
-    id: "timeline-stepper",
-    name: "Step-by-Step Timeline",
-    category: "components",
-    description: "Vertical chronological progression tracker with verified checkmarks and active pulse.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "step1", label: "Step 1", type: "text", defaultValue: "System Initialization" },
-      { key: "step2", label: "Step 2", type: "text", defaultValue: "Reactive Token Propagation" },
-      { key: "step3", label: "Step 3", type: "text", defaultValue: "Multi-Zone CDN Sync" },
-    ],
-    renderComponent: (props, tokens) => {
-      const steps = [
-        { label: props.step1 || "System Initialization", done: true },
-        { label: props.step2 || "Reactive Token Propagation", done: true },
-        { label: props.step3 || "Multi-Zone CDN Sync", done: false },
-      ];
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-5 border shadow-sm max-w-sm w-full space-y-4",
-        },
-        steps.map((st, i) =>
-          React.createElement(
-            "div",
-            { key: i, className: "flex items-center gap-3 text-xs" },
-            React.createElement(
-              "div",
-              {
-                style: st.done
-                  ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
-                  : { backgroundColor: "#27272a", color: "#71717a" },
-                className: "w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] font-bold shrink-0",
-              },
-              st.done ? "✓" : String(i + 1)
-            ),
-            React.createElement("span", { className: st.done ? "text-zinc-200 font-medium" : "text-zinc-500" }, st.label)
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-sm max-w-sm w-full space-y-4">
-  <div className="flex items-center gap-3 text-xs">
-    <div className="w-5 h-5 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-mono text-[10px] font-bold shrink-0">✓</div>
-    <span className="text-zinc-200 font-medium">${escapeText(props.step1 || "System Initialization")}</span>
-  </div>
-  <div className="flex items-center gap-3 text-xs">
-    <div className="w-5 h-5 rounded-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] flex items-center justify-center font-mono text-[10px] font-bold shrink-0">✓</div>
-    <span className="text-zinc-200 font-medium">${escapeText(props.step2 || "Reactive Token Propagation")}</span>
-  </div>
-  <div className="flex items-center gap-3 text-xs">
-    <div className="w-5 h-5 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-mono text-[10px] font-bold shrink-0">3</div>
-    <span className="text-zinc-500">${escapeText(props.step3 || "Multi-Zone CDN Sync")}</span>
-  </div>
-</div>`;
-    },
-  },
-
-  "newsletter-card": {
-    id: "newsletter-card",
-    name: "Architectural Newsletter Box",
-    category: "forms",
-    description: "High-craft inline email subscribe unit with integrated input and submit button.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "title", label: "Header Title", type: "text", defaultValue: "Engineering Dispatch" },
-      { key: "buttonText", label: "Button Label", type: "text", defaultValue: "Subscribe" },
-    ],
-    renderComponent: (props, tokens) => {
-      return React.createElement(
-        "div",
-        {
-          style: {
-            backgroundColor: tokens.surface,
-            borderColor: tokens.border,
-            borderRadius: `${tokens.radius}px`,
-          },
-          className: "p-5 border shadow-lg max-w-[340px] w-full space-y-3.5",
-        },
-        React.createElement("div", { className: "text-sm font-semibold text-white tracking-tight" }, props.title || "Engineering Dispatch"),
-        React.createElement("p", { className: "text-xs text-zinc-400 leading-relaxed" }, "Monthly deep dives into design token engines and low-level web performance."),
-        React.createElement(
-          "div",
-          { className: "flex items-center gap-1.5 w-full min-w-0" },
-          React.createElement("input", {
-            type: "email",
-            placeholder: "developer@fetch.dev",
-            readOnly: true,
-            style: {
-              borderRadius: `${tokens.radius}px`,
-              borderColor: tokens.border,
-              backgroundColor: tokens.background,
-            },
-            className: "min-w-0 flex-1 h-8 px-2.5 text-xs border text-white focus:outline-none",
-          }),
-          React.createElement(
-            "button",
-            {
-              style: {
-                backgroundColor: tokens.primary,
-                color: tokens.primaryForeground,
-                borderRadius: `${tokens.radius}px`,
-              },
-              className: "h-8 px-3 text-xs font-medium cursor-pointer shrink-0 whitespace-nowrap",
-            },
-            props.buttonText || "Subscribe"
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="p-6 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-sm w-full space-y-4">
-  <div className="text-sm font-semibold text-white tracking-tight">${escapeText(props.title || "Engineering Dispatch")}</div>
-  <p className="text-xs text-zinc-400 leading-relaxed">Monthly deep dives into design token engines and low-level web performance.</p>
-  <div className="flex items-center gap-1.5">
-    <input type="email" placeholder="developer@fetch.dev" className="flex-1 h-8 px-2.5 text-xs bg-[${tokens.background}] border border-[${tokens.border}] rounded-[${tokens.radius}px] text-white" />
-    <button className="h-8 px-3 text-xs font-medium bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] shrink-0">${escapeText(props.buttonText || "Subscribe")}</button>
-  </div>
-</div>`;
-    },
-  },
-
-  "radio-group": {
-    id: "radio-group",
-    name: "Segmented Radio Tiles",
-    category: "forms",
-    description: "Clickable option cards with radio selection indicator and badge highlights.",
-    defaultTokens: { ...THEME_PRESETS.default.tokens },
-    configurableProps: [
-      { key: "opt1", label: "Option 1 Title", type: "text", defaultValue: "Serverless Edge" },
-      { key: "opt2", label: "Option 2 Title", type: "text", defaultValue: "Dedicated Cluster" },
-    ],
-    renderComponent: (props, tokens) => {
-      return React.createElement(
-        "div",
-        { className: "space-y-2 max-w-sm w-full" },
-        [
-          { title: props.opt1 || "Serverless Edge", sub: "Global sub-15ms execution", active: true },
-          { title: props.opt2 || "Dedicated Cluster", sub: "Isolated VPC & reserved CPU", active: false },
-        ].map((item, idx) =>
-          React.createElement(
-            "div",
-            {
-              key: idx,
-              style: {
-                backgroundColor: tokens.surface,
-                borderColor: item.active ? tokens.primary : tokens.border,
-                borderRadius: `${tokens.radius}px`,
-              },
-              className: `p-3.5 border flex items-center justify-between cursor-pointer transition-colors ${
-                item.active ? "ring-1 ring-offset-0" : ""
-              }`,
-            },
-            React.createElement(
-              "div",
-              { className: "space-y-0.5" },
-              React.createElement("div", { className: "text-xs font-semibold text-white font-mono" }, item.title),
-              React.createElement("div", { className: "text-[11px] text-zinc-400" }, item.sub)
-            ),
-            React.createElement(
-              "div",
-              {
-                style: item.active
-                  ? { borderColor: tokens.primary }
-                  : { borderColor: "#3f3f46" },
-                className: "w-4 h-4 rounded-full border flex items-center justify-center shrink-0",
-              },
-              item.active &&
-                React.createElement("div", {
-                  style: { backgroundColor: tokens.primary },
-                  className: "w-2 h-2 rounded-full",
-                })
-            )
-          )
-        )
-      );
-    },
-    generateJsx: (props, tokens) => {
-      return `<div className="space-y-2 max-w-sm w-full">
-  <div className="p-3.5 bg-[${tokens.surface}] border border-[${tokens.primary}] rounded-[${tokens.radius}px] flex items-center justify-between ring-1 ring-[${tokens.primary}]">
-    <div>
-      <div className="text-xs font-semibold text-white font-mono">${escapeText(props.opt1 || "Serverless Edge")}</div>
-      <div className="text-[11px] text-zinc-400">Global sub-15ms execution</div>
-    </div>
-    <div className="w-4 h-4 rounded-full border border-[${tokens.primary}] flex items-center justify-center shrink-0">
-      <div className="w-2 h-2 rounded-full bg-[${tokens.primary}]"></div>
-    </div>
-  </div>
-</div>`;
-    },
-  },
-
-  "file-dropzone": {
+"file-dropzone": {
     id: "file-dropzone",
     name: "Interactive File Dropzone",
     category: "forms",
@@ -1408,7 +891,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "action-dock": {
+"action-dock": {
     id: "action-dock",
     name: "Floating Action Dock",
     category: "navigation",
@@ -1462,7 +945,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "api-key-vault": {
+"api-key-vault": {
     id: "api-key-vault",
     name: "Secure API Key Vault",
     category: "components",
@@ -1542,7 +1025,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "profile-card": {
+"profile-card": {
     id: "profile-card",
     name: "Developer Profile Badge",
     category: "components",
@@ -1611,7 +1094,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     },
   },
 
-  "feature-grid": {
+"feature-grid": {
     id: "feature-grid",
     name: "Feature Highlights Grid",
     category: "components",
@@ -1762,7 +1245,7 @@ export default FeatureGrid;`;
     },
   },
 
-  "search-bar-popover": {
+"search-bar-popover": {
     id: "search-bar-popover",
     name: "Spotlight Search Bar",
     category: "navigation",
@@ -1837,7 +1320,7 @@ export default FeatureGrid;`;
     },
   },
 
-  "ai-chat-bubble": {
+"ai-chat-bubble": {
     id: "ai-chat-bubble",
     name: "AI Copilot Response Bubble",
     category: "components",
@@ -1922,7 +1405,7 @@ export default FeatureGrid;`;
     },
   },
 
-  "changelog-entry": {
+"changelog-entry": {
     id: "changelog-entry",
     name: "Changelog Release Card",
     category: "components",
@@ -2006,7 +1489,7 @@ export default FeatureGrid;`;
     },
   },
 
-  "virtual-card": {
+"virtual-card": {
     id: "virtual-card",
     name: "Fintech Virtual Debit Card",
     category: "components",
@@ -2239,7 +1722,7 @@ export default VirtualCard;`;
     },
   },
 
-  "metric-sparkline": {
+"metric-sparkline": {
     id: "metric-sparkline",
     name: "Metric KPI Sparkline Card",
     category: "components",
@@ -2319,7 +1802,7 @@ export default VirtualCard;`;
     },
   },
 
-  "system-incident-banner": {
+"system-incident-banner": {
     id: "system-incident-banner",
     name: "Real-Time System Incident Alert",
     category: "components",
@@ -2494,7 +1977,7 @@ export default IncidentAlert;`;
     },
   },
 
-  "model-picker-popover": {
+"model-picker-popover": {
     id: "model-picker-popover",
     name: "LLM Model & Provider Selector",
     category: "forms",
@@ -2574,7 +2057,7 @@ export default IncidentAlert;`;
     },
   },
 
-  "activity-feed": {
+"activity-feed": {
     id: "activity-feed",
     name: "Audit Activity Stream",
     category: "components",
@@ -2648,7 +2131,7 @@ export default IncidentAlert;`;
     },
   },
 
-  "multiplayer-presence": {
+"multiplayer-presence": {
     id: "multiplayer-presence",
     name: "Collaborative Multiplayer Presence",
     category: "elements",
@@ -2894,7 +2377,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "modal-dialog": {
+"modal-dialog": {
     id: "modal-dialog",
     name: "Confirmation Action Dialog",
     category: "components",
@@ -2965,7 +2448,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "otp-code-input": {
+"otp-code-input": {
     id: "otp-code-input",
     name: "6-Digit MFA Verification Code",
     category: "forms",
@@ -3040,7 +2523,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "ai-prompt-bar": {
+"ai-prompt-bar": {
     id: "ai-prompt-bar",
     name: "AI Copilot Prompt Bar",
     category: "forms",
@@ -3155,7 +2638,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "code-diff-viewer": {
+"code-diff-viewer": {
     id: "code-diff-viewer",
     name: "Interactive Code Diff Viewer",
     category: "components",
@@ -3234,7 +2717,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "usage-quota-meter": {
+"usage-quota-meter": {
     id: "usage-quota-meter",
     name: "SaaS Quota & Compute Meter",
     category: "components",
@@ -3317,7 +2800,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "kanban-task-card": {
+"kanban-task-card": {
     id: "kanban-task-card",
     name: "Agile Kanban Task Card",
     category: "components",
@@ -3412,7 +2895,7 @@ export default MultiplayerPresence;`;
     },
   },
 
-  "audio-waveform-player": {
+"audio-waveform-player": {
     id: "audio-waveform-player",
     name: "Voice Note Waveform Player",
     category: "elements",
@@ -3629,7 +3112,7 @@ export default VoiceNotePlayer;`;
     },
   },
 
-  "deploy-pipeline-status": {
+"deploy-pipeline-status": {
     id: "deploy-pipeline-status",
     name: "CI/CD Pipeline Tracker",
     category: "components",
@@ -3733,7 +3216,7 @@ export default VoiceNotePlayer;`;
     },
   },
 
-  "multi-step-stepper": {
+"multi-step-stepper": {
     id: "multi-step-stepper",
     name: "Multi-Step Onboarding Stepper",
     category: "navigation",
@@ -3814,7 +3297,7 @@ export default VoiceNotePlayer;`;
     },
   },
 
-  "activity-heatmap": {
+"activity-heatmap": {
     id: "activity-heatmap",
     name: "Activity Heatmap Matrix",
     category: "components",
@@ -3933,7 +3416,7 @@ export default VoiceNotePlayer;`;
     },
   },
 
-  "floating-glass-nav": {
+"floating-glass-nav": {
     id: "floating-glass-nav",
     name: "Floating Glass Island Navbar",
     category: "navigation",
@@ -4096,7 +3579,7 @@ export default FloatingIslandNav;`;
     },
   },
 
-  "telemetry-donut-dial": {
+"telemetry-donut-dial": {
     id: "telemetry-donut-dial",
     name: "Telemetry Donut KPI Dial",
     category: "components",
@@ -4315,6 +3798,333 @@ export function TelemetryDonutDial({
 export default TelemetryDonutDial;`;
     },
   },
+
+  "secret-rotation-modal": {
+    id: "secret-rotation-modal",
+    name: "Automated Secret & Key Rotation",
+    category: "forms",
+    description: "Automated encryption key and secret rotation manager with dual-key grace periods, rotation schedules, and instant dry-run triggers.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "secretName", label: "Secret Identifier", type: "text", defaultValue: "PROD_PAYMENT_PRIVATE_KEY" },
+      { key: "currentVersion", label: "Active Version", type: "text", defaultValue: "v3.1.0" },
+      { key: "rotationCycleDays", label: "Rotation Cycle", type: "select", defaultValue: "90", options: ["30", "60", "90", "180"] },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-2xl max-w-[290px] w-full text-white select-none space-y-3",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", { className: "text-[10px] font-mono uppercase tracking-wider text-amber-400 bg-amber-950/60 border border-amber-800/80 px-2 py-0.5 rounded-xs font-semibold" }, "Security Policy"),
+          React.createElement("span", { className: "text-[10px] font-mono text-zinc-500" }, props.currentVersion || "v3.1.0")
+        ),
+        React.createElement(
+          "div",
+          null,
+          React.createElement("h4", { className: "text-xs font-mono font-bold text-white truncate" }, props.secretName || "PROD_PAYMENT_PRIVATE_KEY"),
+          React.createElement("p", { className: "text-[11px] text-zinc-400 mt-1 leading-snug" }, "Automatic rotation runs every " + (props.rotationCycleDays || "90") + " days with zero downtime dual-key overlap.")
+        ),
+        React.createElement(
+          "div",
+          { className: "p-2 rounded-xs bg-zinc-950/80 border border-zinc-800 space-y-1 font-mono text-[10px]" },
+          React.createElement("div", { className: "flex justify-between text-zinc-400" },
+            React.createElement("span", null, "Dual-Key Grace:"),
+            React.createElement("span", { className: "text-emerald-400 font-bold" }, "24 Hours Active")
+          ),
+          React.createElement("div", { className: "flex justify-between text-zinc-400" },
+            React.createElement("span", null, "Next Scheduled:"),
+            React.createElement("span", { className: "text-zinc-200" }, "In 14 Days")
+          )
+        ),
+        React.createElement(
+          "button",
+          {
+            style: {
+              backgroundColor: tokens.primary,
+              color: tokens.primaryForeground,
+              borderRadius: `${tokens.radius}px`,
+            },
+            className: "w-full py-1.5 px-3 text-xs font-mono font-semibold transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer",
+          },
+          "Rotate Secret Immediately"
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-4 shadow-2xl max-w-[290px] w-full text-white select-none space-y-3">
+  <div className="flex items-center justify-between">
+    <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 bg-amber-950/60 border border-amber-800/80 px-2 py-0.5 rounded-xs font-semibold">
+      Security Policy
+    </span>
+    <span className="text-[10px] font-mono text-zinc-500">${escapeText(props.currentVersion || "v3.1.0")}</span>
+  </div>
+  <div>
+    <h4 className="text-xs font-mono font-bold text-white truncate">${escapeText(props.secretName || "PROD_PAYMENT_PRIVATE_KEY")}</h4>
+    <p className="text-[11px] text-zinc-400 mt-1 leading-snug">
+      Automatic rotation runs every ${escapeText(props.rotationCycleDays || "90")} days with zero downtime dual-key overlap.
+    </p>
+  </div>
+  <div className="p-2 rounded bg-zinc-950/80 border border-zinc-800 space-y-1 font-mono text-[10px]">
+    <div className="flex justify-between text-zinc-400">
+      <span>Dual-Key Grace:</span>
+      <span className="text-emerald-400 font-bold">24 Hours Active</span>
+    </div>
+    <div className="flex justify-between text-zinc-400">
+      <span>Next Scheduled:</span>
+      <span className="text-zinc-200">In 14 Days</span>
+    </div>
+  </div>
+  <button className="w-full bg-[${tokens.primary}] text-[${tokens.primaryForeground}] rounded-[${tokens.radius}px] py-1.5 px-3 text-xs font-mono font-semibold transition-all hover:opacity-90 active:scale-[0.98]">
+    Rotate Secret Immediately
+  </button>
+</div>`;
+    },
+  },
+
+  "log-stream-console": {
+    id: "log-stream-console",
+    name: "Serverless Live Log Streamer",
+    category: "components",
+    description: "Streaming serverless logs console with real-time log level filtering (INFO, WARN, ERROR), timestamp formatting, and auto-scroll control.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "serviceName", label: "Service Name", type: "text", defaultValue: "api-gateway-edge" },
+      { key: "logLevel", label: "Filter Level", type: "select", defaultValue: "all", options: ["all", "info", "warn", "error"] },
+      { key: "clusterRegion", label: "Region", type: "text", defaultValue: "us-east-va" },
+    ],
+    renderComponent: (props, tokens) => {
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-3.5 border shadow-2xl max-w-[320px] w-full text-white font-mono select-none space-y-2.5",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between border-b border-zinc-800/80 pb-2" },
+          React.createElement("div", { className: "flex items-center gap-1.5" },
+            React.createElement("span", { className: "w-2 h-2 rounded-full bg-emerald-500 animate-pulse" }),
+            React.createElement("span", { className: "text-xs font-bold text-white" }, props.serviceName || "api-gateway-edge")
+          ),
+          React.createElement("span", { className: "text-[10px] text-zinc-500" }, props.clusterRegion || "us-east-va")
+        ),
+        React.createElement(
+          "div",
+          { className: "space-y-1 text-[10px] bg-zinc-950 p-2 rounded-xs border border-zinc-850/80" },
+          React.createElement("div", { className: "flex gap-1.5 text-zinc-400" },
+            React.createElement("span", { className: "text-zinc-600 shrink-0" }, "14:22:01"),
+            React.createElement("span", { className: "text-emerald-400 shrink-0 font-bold" }, "INFO"),
+            React.createElement("span", { className: "truncate text-zinc-300" }, "HTTP 200 GET /v1/tokens 18ms")
+          ),
+          React.createElement("div", { className: "flex gap-1.5 text-zinc-400" },
+            React.createElement("span", { className: "text-zinc-600 shrink-0" }, "14:22:04"),
+            React.createElement("span", { className: "text-amber-400 shrink-0 font-bold" }, "WARN"),
+            React.createElement("span", { className: "truncate text-zinc-300" }, "High heap allocation 78% limit")
+          ),
+          React.createElement("div", { className: "flex gap-1.5 text-zinc-400" },
+            React.createElement("span", { className: "text-zinc-600 shrink-0" }, "14:22:09"),
+            React.createElement("span", { className: "text-emerald-400 shrink-0 font-bold" }, "INFO"),
+            React.createElement("span", { className: "truncate text-zinc-300" }, "Worker thread pool scaled to 12")
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between text-[10px] text-zinc-500 pt-1" },
+          React.createElement("span", null, "Auto-scroll: Active"),
+          React.createElement("span", { className: "text-emerald-400 font-semibold" }, "3 events/sec")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-3.5 shadow-2xl max-w-[320px] w-full text-white font-mono select-none space-y-2.5">
+  <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+    <div className="flex items-center gap-1.5">
+      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+      <span className="text-xs font-bold text-white">${escapeText(props.serviceName || "api-gateway-edge")}</span>
+    </div>
+    <span className="text-[10px] text-zinc-500">${escapeText(props.clusterRegion || "us-east-va")}</span>
+  </div>
+  <div className="space-y-1 text-[10px] bg-zinc-950 p-2 rounded border border-zinc-850/80">
+    <div className="flex gap-1.5 text-zinc-400">
+      <span className="text-zinc-600 shrink-0">14:22:01</span>
+      <span className="text-emerald-400 shrink-0 font-bold">INFO</span>
+      <span className="truncate text-zinc-300">HTTP 200 GET /v1/tokens 18ms</span>
+    </div>
+    <div className="flex gap-1.5 text-zinc-400">
+      <span className="text-zinc-600 shrink-0">14:22:04</span>
+      <span className="text-amber-400 shrink-0 font-bold">WARN</span>
+      <span className="truncate text-zinc-300">High heap allocation 78% limit</span>
+    </div>
+    <div className="flex gap-1.5 text-zinc-400">
+      <span className="text-zinc-600 shrink-0">14:22:09</span>
+      <span className="text-emerald-400 shrink-0 font-bold">INFO</span>
+      <span className="truncate text-zinc-300">Worker thread pool scaled to 12</span>
+    </div>
+  </div>
+  <div className="flex items-center justify-between text-[10px] text-zinc-500 pt-1">
+    <span>Auto-scroll: Active</span>
+    <span className="text-emerald-400 font-semibold">3 events/sec</span>
+  </div>
+</div>`;
+    },
+  },
+
+  "feature-flag-matrix": {
+    id: "feature-flag-matrix",
+    name: "Runtime Feature Flag Controller",
+    category: "components",
+    description: "Runtime feature flag and graduated rollout controller with percentage-based sliders, environment isolation, and emergency kill-switches.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "flagKey", label: "Flag Identifier", type: "text", defaultValue: "enable_vector_rag_pipeline" },
+      { key: "rolloutPercentage", label: "Rollout Percentage", type: "number", defaultValue: 45, min: 0, max: 100 },
+      { key: "environment", label: "Target Environment", type: "select", defaultValue: "production", options: ["production", "staging", "development"] },
+    ],
+    renderComponent: (props, tokens) => {
+      const pct = props.rolloutPercentage ?? 45;
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-4 border shadow-2xl max-w-[290px] w-full text-white select-none space-y-3",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", { className: "text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded-xs font-semibold" }, props.environment || "production"),
+          React.createElement("span", { className: "text-[11px] font-mono font-bold text-white" }, pct + "% Live")
+        ),
+        React.createElement(
+          "div",
+          null,
+          React.createElement("h4", { className: "text-xs font-mono font-bold text-white truncate" }, props.flagKey || "enable_vector_rag_pipeline"),
+          React.createElement("div", { className: "w-full bg-zinc-900 h-2 rounded-full overflow-hidden mt-2.5 border border-zinc-800" },
+            React.createElement("div", {
+              style: { width: `${pct}%`, backgroundColor: tokens.primary },
+              className: "h-full transition-all duration-300",
+            })
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between pt-1 border-t border-zinc-800/80 text-[10px] font-mono" },
+          React.createElement("span", { className: "text-zinc-400" }, "Target Segments: Beta Users"),
+          React.createElement("button", { className: "text-red-400 hover:text-red-300 font-bold cursor-pointer" }, "Kill Switch")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      const pct = props.rolloutPercentage ?? 45;
+      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-4 shadow-2xl max-w-[290px] w-full text-white select-none space-y-3">
+  <div className="flex items-center justify-between">
+    <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded-xs font-semibold">
+      ${escapeText(props.environment || "production")}
+    </span>
+    <span className="text-[11px] font-mono font-bold text-white">${pct}% Live</span>
+  </div>
+  <div>
+    <h4 className="text-xs font-mono font-bold text-white truncate">${escapeText(props.flagKey || "enable_vector_rag_pipeline")}</h4>
+    <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden mt-2.5 border border-zinc-800">
+      <div style={{ width: "${pct}%" }} className="h-full bg-[${tokens.primary}] transition-all duration-300" />
+    </div>
+  </div>
+  <div className="flex items-center justify-between pt-1 border-t border-zinc-800/80 text-[10px] font-mono">
+    <span className="text-zinc-400">Target Segments: Beta Users</span>
+    <button className="text-red-400 hover:text-red-300 font-bold">Kill Switch</button>
+  </div>
+</div>`;
+    },
+  },
+
+  "webhook-event-inspector": {
+    id: "webhook-event-inspector",
+    name: "Webhook Delivery & Retry Inspector",
+    category: "components",
+    description: "Webhook event delivery observer with HTTP status badges, payload verification checks, latency timers, and retry controls.",
+    defaultTokens: { ...THEME_PRESETS.default.tokens },
+    configurableProps: [
+      { key: "eventName", label: "Event Type", type: "text", defaultValue: "checkout.session.completed" },
+      { key: "httpStatus", label: "HTTP Status", type: "select", defaultValue: "200", options: ["200", "504", "400", "429"] },
+      { key: "latencyMs", label: "Delivery Latency", type: "text", defaultValue: "142ms" },
+    ],
+    renderComponent: (props, tokens) => {
+      const isSuccess = (props.httpStatus || "200") === "200";
+      return React.createElement(
+        "div",
+        {
+          style: {
+            backgroundColor: tokens.surface,
+            borderColor: tokens.border,
+            borderRadius: `${tokens.radius}px`,
+          },
+          className: "p-3.5 border shadow-2xl max-w-[320px] w-full text-white font-mono select-none space-y-2.5",
+        },
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement("span", {
+            className: `text-[10px] font-bold px-2 py-0.5 rounded-xs border ${
+              isSuccess ? "text-emerald-400 bg-emerald-950/60 border-emerald-800" : "text-rose-400 bg-rose-950/60 border-rose-800"
+            }`
+          }, (props.httpStatus || "200") + (isSuccess ? " OK" : " ERR")),
+          React.createElement("span", { className: "text-[10px] text-zinc-500" }, props.latencyMs || "142ms")
+        ),
+        React.createElement(
+          "div",
+          null,
+          React.createElement("div", { className: "text-xs font-bold text-white truncate" }, props.eventName || "checkout.session.completed"),
+          React.createElement("div", { className: "text-[10px] text-zinc-500 mt-0.5" }, "Signature: sha256_e4f9b2... verified")
+        ),
+        React.createElement(
+          "div",
+          { className: "p-2 rounded-xs bg-zinc-950 border border-zinc-850 text-[10px] text-zinc-400 flex items-center justify-between" },
+          React.createElement("span", null, "Payload: 1.84 KB JSON"),
+          React.createElement("button", {
+            style: { color: tokens.primary },
+            className: "font-bold hover:underline cursor-pointer",
+          }, "Resend Webhook")
+        )
+      );
+    },
+    generateJsx: (props, tokens) => {
+      const isSuccess = (props.httpStatus || "200") === "200";
+      return `<div className="bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] p-3.5 shadow-2xl max-w-[320px] w-full text-white font-mono select-none space-y-2.5">
+  <div className="flex items-center justify-between">
+    <span className="text-[10px] font-bold px-2 py-0.5 rounded ${
+      isSuccess ? "text-emerald-400 bg-emerald-950/60 border border-emerald-800" : "text-rose-400 bg-rose-950/60 border border-rose-800"
+    }">
+      ${escapeText(props.httpStatus || "200")}${isSuccess ? " OK" : " ERR"}
+    </span>
+    <span className="text-[10px] text-zinc-500">${escapeText(props.latencyMs || "142ms")}</span>
+  </div>
+  <div>
+    <div className="text-xs font-bold text-white truncate">${escapeText(props.eventName || "checkout.session.completed")}</div>
+    <div className="text-[10px] text-zinc-500 mt-0.5">Signature: sha256_e4f9b2... verified</div>
+  </div>
+  <div className="p-2 rounded bg-zinc-950 border border-zinc-850 text-[10px] text-zinc-400 flex items-center justify-between">
+    <span>Payload: 1.84 KB JSON</span>
+    <button className="font-bold text-[${tokens.primary}] hover:underline">Resend Webhook</button>
+  </div>
+</div>`;
+    },
+  }
 };
 
 export function getTemplateById(id: string): ComponentTemplate | undefined {

@@ -32,21 +32,19 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "modal-dialog":
       case "activity-feed":
         return "scale-[0.60] max-w-[290px]";
-      case "newsletter-card":
-        return "scale-[0.66] w-full max-w-[320px]";
       case "card":
-      case "bento-card":
-      case "accordion":
-      case "timeline-stepper":
-      case "radio-group":
       case "profile-card":
       case "metric-sparkline":
       case "model-picker-popover":
+      case "feature-flag-matrix":
+      case "secret-rotation-modal":
         return "scale-[0.68] max-w-[290px]";
       case "code-diff-viewer":
       case "deploy-pipeline-status":
       case "kanban-task-card":
       case "ai-chat-bubble":
+      case "log-stream-console":
+      case "webhook-event-inspector":
         return "scale-[0.74] w-full max-w-[320px]";
       case "usage-quota-meter":
       case "ai-prompt-bar":
@@ -66,7 +64,6 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "file-dropzone":
       case "cookie-banner":
       case "stat-card":
-      case "stat-ring":
       case "search-bar-popover":
       case "otp-code-input":
         return "scale-[0.76] max-w-[300px]";

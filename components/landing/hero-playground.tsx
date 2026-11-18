@@ -139,7 +139,7 @@ export function HeroPlayground() {
                 </div>
                 <CardTitle>Configurable Card</CardTitle>
                 <CardDescription>
-                  Visually tweak tokens above and watch every element update seamlessly.
+                  Visually tweak tokens above and watch every element update in real time.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

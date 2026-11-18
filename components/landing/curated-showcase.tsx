@@ -8,10 +8,10 @@ import { TEMPLATES } from "../../lib/templates";
 const FEATURED_IDS = [
   "action-dock",
   "ai-prompt-bar",
-  "bento-card",
+  "telemetry-donut-dial",
   "deploy-pipeline-status",
   "usage-quota-meter",
-  "stat-ring",
+  "audio-waveform-player",
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -32,10 +32,10 @@ export function CuratedShowcase() {
         return "scale-[0.76] max-w-[320px]";
       case "usage-quota-meter":
         return "scale-[0.80] max-w-[300px]";
-      case "bento-card":
-        return "scale-[0.62] max-w-[290px]";
-      case "stat-ring":
-        return "scale-[0.72] max-w-[290px]";
+      case "telemetry-donut-dial":
+        return "scale-[0.88] max-w-[300px]";
+      case "audio-waveform-player":
+        return "scale-[0.88] max-w-[285px]";
       case "action-dock":
         return "scale-[0.80] max-w-[320px]";
       default:

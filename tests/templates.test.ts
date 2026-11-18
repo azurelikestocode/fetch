@@ -70,6 +70,16 @@ describe('Template Registry', () => {
     expect(glassNavTemplate).toBeDefined();
     const glassNavJsx = glassNavTemplate!.generateJsx({ logo: 'HyperOS' }, glassNavTemplate!.defaultTokens);
     expect(glassNavJsx).toContain('HyperOS');
+
+    expect(TEMPLATES).toHaveProperty('secret-rotation-modal');
+    expect(TEMPLATES).toHaveProperty('log-stream-console');
+    expect(TEMPLATES).toHaveProperty('feature-flag-matrix');
+    expect(TEMPLATES).toHaveProperty('webhook-event-inspector');
+
+    const secretTemplate = getTemplateById('secret-rotation-modal');
+    expect(secretTemplate).toBeDefined();
+    const secretJsx = secretTemplate!.generateJsx({ secretName: 'VAULT_MASTER_KEY' }, secretTemplate!.defaultTokens);
+    expect(secretJsx).toContain('VAULT_MASTER_KEY');
   });
 });
 
