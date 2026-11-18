@@ -1615,7 +1615,7 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     id: "feature-grid",
     name: "Feature Highlights Grid",
     category: "components",
-    description: "Responsive 3-card architectural feature grid with badge, header, and icon accents.",
+    description: "Responsive 3-card architectural feature grid with badge, header, interactive card focus, and icon accents.",
     defaultTokens: { ...THEME_PRESETS.default.tokens },
     configurableProps: [
       { key: "heading", label: "Section Heading", type: "text", defaultValue: "Architectural Precision" },
@@ -1628,17 +1628,30 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     ],
     renderComponent: (props, tokens) => {
       const cards = [
-        { title: props.card1Title || "Type Safe", desc: props.card1Desc || "100% strict TypeScript types.", tag: "01" },
-        { title: props.card2Title || "Zero Runtime", desc: props.card2Desc || "Self-contained Tailwind JSX.", tag: "02" },
-        { title: props.card3Title || "Deep Theming", desc: props.card3Desc || "Live token adjustments.", tag: "03" },
+        { title: props.card1Title || "Type Safe", desc: "Strict TS types & zero ambient overhead.", tag: "01", stat: "100% Strict" },
+        { title: props.card2Title || "Zero Runtime", desc: "Self-contained Tailwind JSX with zero bloat.", tag: "02", stat: "0kb Extra" },
+        { title: props.card3Title || "Deep Theming", desc: "Real-time token adjustments & HSV palettes.", tag: "03", stat: "Live Sync" },
       ];
       return React.createElement(
         "div",
-        { className: "w-full max-w-xl space-y-4 text-white" },
-        React.createElement("div", { className: "text-sm font-bold tracking-tight text-white mb-2" }, props.heading || "Architectural Precision"),
+        { className: "w-full max-w-[340px] space-y-3 text-white select-none" },
         React.createElement(
           "div",
-          { className: "grid grid-cols-1 sm:grid-cols-3 gap-3" },
+          { className: "flex items-center justify-between" },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-1.5" },
+            React.createElement("span", {
+              style: { backgroundColor: tokens.primary },
+              className: "w-1.5 h-1.5 rounded-full shadow-xs",
+            }),
+            React.createElement("span", { className: "text-xs font-bold tracking-tight text-white font-mono" }, props.heading || "Architectural Precision")
+          ),
+          React.createElement("span", { className: "text-[9px] font-mono text-zinc-500 uppercase tracking-widest" }, "Features")
+        ),
+        React.createElement(
+          "div",
+          { className: "grid grid-cols-3 gap-2" },
           cards.map((c, i) =>
             React.createElement(
               "div",
@@ -1649,44 +1662,112 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
                   borderColor: tokens.border,
                   borderRadius: `${tokens.radius}px`,
                 },
-                className: "p-4 border shadow-sm space-y-2 hover:border-zinc-700 transition-colors",
+                className: "p-2.5 border shadow-sm flex flex-col justify-between hover:border-zinc-700 transition-colors group",
               },
               React.createElement(
                 "div",
-                {
-                  style: { color: tokens.primary },
-                  className: "text-[11px] font-mono font-bold",
-                },
-                c.tag
-              ),
-              React.createElement("div", { className: "text-xs font-semibold text-white" }, c.title),
-              React.createElement("p", { className: "text-[11px] text-zinc-400 leading-relaxed font-normal" }, c.desc)
+                { className: "space-y-1.5" },
+                React.createElement(
+                  "div",
+                  { className: "flex items-center justify-between" },
+                  React.createElement(
+                    "span",
+                    {
+                      style: { color: tokens.primary },
+                      className: "text-[9px] font-mono font-bold",
+                    },
+                    c.tag
+                  ),
+                  React.createElement(
+                    "span",
+                    { className: "text-[8px] font-mono text-zinc-500 px-1 py-0.2 rounded bg-zinc-900 border border-zinc-800" },
+                    c.stat
+                  )
+                ),
+                React.createElement("div", { className: "text-[11px] font-semibold text-white leading-tight" }, c.title),
+                React.createElement("p", { className: "text-[9px] text-zinc-400 leading-tight font-normal line-clamp-2" }, c.desc)
+              )
             )
           )
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="w-full max-w-xl space-y-4 text-white">
-  <div className="text-sm font-bold tracking-tight text-white">${escapeText(props.heading || "Architectural Precision")}</div>
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-    <div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] space-y-2">
-      <div className="text-[11px] font-mono font-bold text-[${tokens.primary}]">01</div>
-      <div className="text-xs font-semibold text-white">${escapeText(props.card1Title || "Type Safe")}</div>
-      <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.card1Desc || "100% strict TypeScript types.")}</p>
-    </div>
-    <div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] space-y-2">
-      <div className="text-[11px] font-mono font-bold text-[${tokens.primary}]">02</div>
-      <div className="text-xs font-semibold text-white">${escapeText(props.card2Title || "Zero Runtime")}</div>
-      <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.card2Desc || "Self-contained Tailwind JSX.")}</p>
-    </div>
-    <div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] space-y-2">
-      <div className="text-[11px] font-mono font-bold text-[${tokens.primary}]">03</div>
-      <div className="text-xs font-semibold text-white">${escapeText(props.card3Title || "Deep Theming")}</div>
-      <p className="text-[11px] text-zinc-400 leading-relaxed">${escapeText(props.card3Desc || "Live token adjustments.")}</p>
-    </div>
-  </div>
-</div>`;
+      return `"use client";
+
+import React, { useState } from "react";
+import { Check, ShieldCheck, Zap, Sliders } from "lucide-react";
+
+export interface FeatureItem {
+  tag: string;
+  title: string;
+  desc: string;
+  stat: string;
+}
+
+export interface FeatureGridProps {
+  heading?: string;
+  features?: FeatureItem[];
+  className?: string;
+}
+
+export function FeatureGrid({
+  heading = "${escapeText(props.heading || "Architectural Precision")}",
+  features = [
+    { tag: "01", title: "${escapeText(props.card1Title || "Type Safe")}", desc: "${escapeText(props.card1Desc || "100% strict TypeScript types with zero ambient overhead.")}", stat: "100% Strict" },
+    { tag: "02", title: "${escapeText(props.card2Title || "Zero Runtime")}", desc: "${escapeText(props.card2Desc || "Self-contained Tailwind JSX with zero extra npm packages.")}", stat: "0kb Extra" },
+    { tag: "03", title: "${escapeText(props.card3Title || "Deep Theming")}", desc: "${escapeText(props.card3Desc || "Live token adjustments with 28+ Google Fonts and HSV palette.")}", stat: "Live Sync" },
+  ],
+  className = "",
+}: FeatureGridProps) {
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+
+  return (
+    <section className={\`w-full max-w-2xl space-y-4 text-white select-none \${className}\`}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[${tokens.primary}] shadow-[0_0_8px_${tokens.primary}]" />
+          <h3 className="text-sm font-bold tracking-tight text-white font-mono">{heading}</h3>
+        </div>
+        <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Capabilities</span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {features.map((item, idx) => {
+          const isSelected = selectedIdx === idx;
+          return (
+            <div
+              key={item.tag}
+              onClick={() => setSelectedIdx(isSelected ? null : idx)}
+              className={\`p-4 bg-[${tokens.surface}] border rounded-[${tokens.radius}px] shadow-sm flex flex-col justify-between space-y-3 cursor-pointer transition-all duration-200 \${
+                isSelected
+                  ? "border-[${tokens.primary}] ring-1 ring-[${tokens.primary}]/40 -translate-y-0.5"
+                  : "border-[${tokens.border}] hover:border-zinc-700 hover:-translate-y-0.5"
+              }\`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[${tokens.primary}]">{item.tag}</span>
+                <span className="text-[10px] font-mono text-zinc-400 px-1.5 py-0.5 rounded border border-zinc-800 bg-zinc-900/80">
+                  {item.stat}
+                </span>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-white mb-1">{item.title}</h4>
+                <p className="text-xs text-zinc-400 leading-relaxed">{item.desc}</p>
+              </div>
+              <div className="pt-2 border-t border-zinc-850 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                <span>{isSelected ? "Active Focus" : "Click to Inspect"}</span>
+                <span className="text-[${tokens.primary}]">→</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+export default FeatureGrid;`;
     },
   },
 
@@ -1954,67 +2035,216 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
             backgroundColor: tokens.surface,
             borderColor: tokens.border,
             borderRadius: `${Math.max(tokens.radius, 14)}px`,
-            background: `linear-gradient(135deg, ${tokens.surface} 0%, color-mix(in srgb, ${tokens.primary} 20%, #09090b) 100%)`,
+            background: `linear-gradient(135deg, ${tokens.surface} 0%, color-mix(in srgb, ${tokens.primary} 22%, #09090b) 60%, #000 100%)`,
+            boxShadow: `0 16px 36px -8px rgba(0,0,0,0.7), 0 0 24px ${tokens.primary}18`,
           },
-          className: "p-5 border shadow-2xl max-w-sm w-full space-y-5 text-white select-none relative overflow-hidden",
+          className: "p-4 border max-w-[290px] w-full space-y-3.5 text-white select-none relative overflow-hidden",
         },
+        /* Diagonal holographic specular sheen */
+        React.createElement("div", {
+          className: "absolute -inset-full bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-12 pointer-events-none",
+        }),
         React.createElement(
           "div",
-          { className: "flex items-center justify-between" },
-          React.createElement("span", { className: "text-[10px] font-mono uppercase tracking-widest text-zinc-400" }, props.cardTier || "Platinum Fleet"),
+          { className: "flex items-center justify-between relative z-10" },
           React.createElement(
             "span",
-            { style: { color: tokens.primary }, className: "font-mono font-bold text-sm tracking-tighter" },
-            "FETCH"
+            { className: "text-[9px] font-mono uppercase tracking-widest text-zinc-400 font-semibold flex items-center gap-1.5" },
+            React.createElement("span", {
+              style: { backgroundColor: tokens.primary },
+              className: "w-1.5 h-1.5 rounded-full shadow-xs",
+            }),
+            props.cardTier || "Platinum Fleet"
+          ),
+          React.createElement(
+            "div",
+            { className: "flex items-center -space-x-1" },
+            React.createElement("div", {
+              style: { backgroundColor: tokens.primary },
+              className: "w-4 h-4 rounded-full opacity-90 shadow-xs",
+            }),
+            React.createElement("div", {
+              className: "w-4 h-4 rounded-full bg-zinc-400/60 opacity-80 backdrop-blur-xs",
+            })
           )
         ),
         React.createElement(
           "div",
-          { className: "flex items-center gap-3" },
-          React.createElement("div", { className: "w-8 h-6 rounded-xs bg-amber-400/80 border border-amber-300 flex items-center justify-center text-[9px] font-bold text-zinc-950" }, "CHIP"),
-          React.createElement("span", { className: "text-zinc-500 font-mono text-xs" }, "))))")
+          { className: "flex items-center justify-between pt-1 relative z-10" },
+          /* Realistic EMV Chip */
+          React.createElement(
+            "div",
+            { className: "w-8 h-6 rounded-xs bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-200/60 p-1 flex flex-col justify-between shadow-xs" },
+            React.createElement("div", { className: "border-b border-amber-700/60 h-1.5 w-full" }),
+            React.createElement("div", { className: "border-t border-amber-700/60 h-1.5 w-full" })
+          ),
+          /* Contactless Waves SVG */
+          React.createElement(
+            "svg",
+            { className: "w-4 h-4 text-zinc-400", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2" },
+            React.createElement("path", { d: "M8.5 4.5a14 14 0 0 1 0 15" }),
+            React.createElement("path", { d: "M12.5 7.5a9 9 0 0 1 0 9" }),
+            React.createElement("path", { d: "M16.5 10.5a4 4 0 0 1 0 3" })
+          )
         ),
         React.createElement(
           "div",
-          { className: "font-mono text-sm tracking-widest text-zinc-200" },
+          { className: "font-mono text-[13px] tracking-[0.22em] text-zinc-100 font-bold relative z-10 drop-shadow-sm" },
           `•••• •••• •••• ${props.lastFour || "8842"}`
         ),
         React.createElement(
           "div",
-          { className: "flex items-center justify-between text-[10px] font-mono pt-1 text-zinc-400" },
+          { className: "flex items-center justify-between text-[9px] font-mono pt-1 border-t border-white/10 relative z-10 text-zinc-400" },
           React.createElement("div", null,
-            React.createElement("div", { className: "text-[8px] text-zinc-500 uppercase" }, "Cardholder"),
-            React.createElement("div", { className: "font-semibold text-zinc-200" }, props.cardHolder || "AZURE ARCHITECT")
+            React.createElement("div", { className: "text-[7px] text-zinc-500 uppercase tracking-wider" }, "Cardholder"),
+            React.createElement("div", { className: "font-semibold text-zinc-100 tracking-wider" }, props.cardHolder || "AZURE ARCHITECT")
           ),
           React.createElement("div", { className: "text-right" },
-            React.createElement("div", { className: "text-[8px] text-zinc-500 uppercase" }, "Expires"),
-            React.createElement("div", { className: "font-semibold text-zinc-200" }, props.expiry || "09/29")
+            React.createElement("div", { className: "text-[7px] text-zinc-500 uppercase tracking-wider" }, "Valid Thru"),
+            React.createElement("div", { className: "font-semibold text-zinc-100" }, props.expiry || "09/29")
           )
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${Math.max(tokens.radius, 14)}px] shadow-2xl max-w-sm w-full space-y-5 text-white">
-  <div className="flex items-center justify-between">
-    <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">${escapeText(props.cardTier || "Platinum Fleet")}</span>
-    <span className="font-mono font-bold text-sm text-[${tokens.primary}]">FETCH</span>
-  </div>
-  <div className="flex items-center gap-3">
-    <div className="w-8 h-6 rounded-xs bg-amber-400/80 border border-amber-300 text-[9px] font-bold text-zinc-950 flex items-center justify-center">CHIP</div>
-    <span className="text-zinc-500 font-mono text-xs">))))</span>
-  </div>
-  <div className="font-mono text-sm tracking-widest text-zinc-200">• • • •  • • • •  • • • •  ${escapeText(props.lastFour || "8842")}</div>
-  <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
-    <div>
-      <div className="text-[8px] text-zinc-500 uppercase">Cardholder</div>
-      <div className="font-semibold text-zinc-200">${escapeText(props.cardHolder || "AZURE ARCHITECT")}</div>
+      return `"use client";
+
+import React, { useState } from "react";
+import { Lock, Unlock, Copy, Check, Eye, EyeOff } from "lucide-react";
+
+export interface VirtualCardProps {
+  cardHolder?: string;
+  cardTier?: string;
+  lastFour?: string;
+  expiry?: string;
+  balance?: string;
+  spendingLimit?: string;
+  className?: string;
+}
+
+export function VirtualCard({
+  cardHolder = "${escapeText(props.cardHolder || "AZURE ARCHITECT")}",
+  cardTier = "${escapeText(props.cardTier || "Platinum Fleet")}",
+  lastFour = "${escapeText(props.lastFour || "8842")}",
+  expiry = "${escapeText(props.expiry || "09/29")}",
+  balance = "$4,850.00",
+  spendingLimit = "$10,000.00",
+  className = "",
+}: VirtualCardProps) {
+  const [isFrozen, setIsFrozen] = useState(false);
+  const [showCvv, setShowCvv] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const fullCardNumber = \`4242 •••• •••• \${lastFour}\`;
+
+  const copyCard = () => {
+    navigator.clipboard?.writeText(\`424242424242\${lastFour}\`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className={\`w-full max-w-sm space-y-3 select-none \${className}\`}>
+      {/* Physical-Feel Virtual Card Container */}
+      <div
+        className={\`p-5 border rounded-[${Math.max(tokens.radius, 16)}px] shadow-2xl space-y-5 text-white relative overflow-hidden transition-all duration-300 \${
+          isFrozen ? "opacity-60 saturate-50 border-red-900/50" : "border-[${tokens.border}]"
+        }\`}
+        style={{
+          backgroundColor: "${tokens.surface}",
+          background: \`linear-gradient(135deg, ${tokens.surface} 0%, color-mix(in srgb, ${tokens.primary} 24%, #09090b) 60%, #000 100%)\`,
+          boxShadow: "0 20px 40px -10px rgba(0,0,0,0.8), 0 0 24px ${tokens.primary}20",
+        }}
+      >
+        {/* Holographic Specular Highlight */}
+        <div className="absolute -inset-full bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-12 pointer-events-none" />
+
+        {/* Top Header */}
+        <div className="flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[${tokens.primary}] shadow-[0_0_8px_${tokens.primary}]" />
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-300">{cardTier}</span>
+          </div>
+          <div className="flex items-center -space-x-1.5">
+            <div className="w-5 h-5 rounded-full bg-[${tokens.primary}] opacity-90 shadow-xs" />
+            <div className="w-5 h-5 rounded-full bg-zinc-400/60 backdrop-blur-xs" />
+          </div>
+        </div>
+
+        {/* EMV Microchip & Contactless Waves */}
+        <div className="flex items-center justify-between pt-1 relative z-10">
+          <div className="w-10 h-7 rounded bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-200/80 p-1 flex flex-col justify-between shadow-md">
+            <div className="border-b border-amber-700/60 h-2 w-full" />
+            <div className="border-t border-amber-700/60 h-2 w-full" />
+          </div>
+          <svg className="w-5 h-5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8.5 4.5a14 14 0 0 1 0 15" />
+            <path d="M12.5 7.5a9 9 0 0 1 0 9" />
+            <path d="M16.5 10.5a4 4 0 0 1 0 3" />
+          </svg>
+        </div>
+
+        {/* Card Number */}
+        <div className="font-mono text-base tracking-[0.25em] text-zinc-100 font-bold relative z-10 drop-shadow-sm flex items-center justify-between">
+          <span>{fullCardNumber}</span>
+          <button
+            onClick={copyCard}
+            className="text-zinc-400 hover:text-white transition-colors p-1 rounded hover:bg-white/10"
+            title="Copy card number"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+
+        {/* Footer Details */}
+        <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-white/10 relative z-10 text-zinc-300">
+          <div>
+            <div className="text-[9px] text-zinc-500 uppercase tracking-widest">Cardholder</div>
+            <div className="font-semibold text-white tracking-wider">{cardHolder}</div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div>
+              <div className="text-[9px] text-zinc-500 uppercase tracking-widest">CVV</div>
+              <div className="font-semibold text-white flex items-center gap-1">
+                <span>{showCvv ? "742" : "•••"}</span>
+                <button onClick={() => setShowCvv(!showCvv)} className="text-zinc-500 hover:text-white">
+                  {showCvv ? <EyeOff className="w-2.5 h-2.5" /> : <Eye className="w-2.5 h-2.5" />}
+                </button>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-[9px] text-zinc-500 uppercase tracking-widest">Expires</div>
+              <div className="font-semibold text-white">{expiry}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Controls Strip */}
+      <div className="flex items-center justify-between px-2 text-xs font-mono text-zinc-400">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-zinc-500">Spend:</span>
+          <span className="text-white font-semibold">{balance}</span>
+          <span className="text-zinc-600">/</span>
+          <span className="text-zinc-500">{spendingLimit}</span>
+        </div>
+        <button
+          onClick={() => setIsFrozen(!isFrozen)}
+          className={\`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono border transition-all cursor-pointer \${
+            isFrozen
+              ? "border-red-900 bg-red-950/80 text-red-400 font-bold"
+              : "border-zinc-800 bg-zinc-900 hover:text-white"
+          }\`}
+        >
+          {isFrozen ? <Lock className="w-3 h-3 text-red-400" /> : <Unlock className="w-3 h-3 text-zinc-400" />}
+          <span>{isFrozen ? "Card Frozen" : "Freeze Card"}</span>
+        </button>
+      </div>
     </div>
-    <div className="text-right">
-      <div className="text-[8px] text-zinc-500 uppercase">Expires</div>
-      <div className="font-semibold text-zinc-200">${escapeText(props.expiry || "09/29")}</div>
-    </div>
-  </div>
-</div>`;
+  );
+}
+
+export default VirtualCard;`;
     },
   },
 
@@ -2118,52 +2348,146 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
             backgroundColor: tokens.surface,
             borderColor: tokens.border,
             borderRadius: `${tokens.radius}px`,
+            borderLeft: "4px solid #f59e0b",
           },
-          className: "p-4 border shadow-xl max-w-md w-full space-y-2.5 text-white select-none",
+          className: "p-3.5 border shadow-xl max-w-[310px] w-full space-y-2.5 text-white select-none",
         },
         React.createElement(
           "div",
           { className: "flex items-center justify-between" },
           React.createElement(
             "div",
-            { className: "flex items-center gap-2" },
-            React.createElement("span", { className: "w-2 h-2 rounded-full bg-amber-400 animate-pulse" }),
-            React.createElement("span", { className: "text-xs font-semibold text-white font-mono" }, props.serviceName || "Edge Compute & CDN")
+            { className: "flex items-center gap-1.5 min-w-0" },
+            React.createElement("span", { className: "w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" }),
+            React.createElement("span", { className: "text-xs font-semibold text-white font-mono truncate" }, props.serviceName || "Edge Compute & CDN")
           ),
           React.createElement(
             "span",
-            { className: "px-2 py-0.5 text-[9px] font-mono rounded-full border border-amber-900 bg-amber-950/60 text-amber-400 font-bold" },
-            props.statusText || "Partial Degradation"
+            { className: "px-2 py-0.5 text-[9px] font-mono rounded-full border border-amber-900 bg-amber-950/70 text-amber-400 font-bold shrink-0 shadow-xs" },
+            props.statusText || "Degraded"
           )
         ),
         React.createElement(
           "p",
-          { className: "text-xs text-zinc-300 font-normal leading-relaxed" },
-          "Engineering team is investigating elevated latency across US-East edge nodes. Auto-failover routes deployed."
+          { className: "text-[11px] text-zinc-300 font-normal leading-relaxed line-clamp-2" },
+          "Elevated latency and gateway retries on US-East edge nodes. Traffic auto-failover in progress."
+        ),
+        /* Incident Progress Steps */
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between text-[8px] font-mono text-zinc-500 pt-1 pb-0.5 border-t border-zinc-850" },
+          React.createElement("span", { className: "text-zinc-400 font-semibold" }, "1. Investigate ✓"),
+          React.createElement("span", { className: "text-zinc-400 font-semibold" }, "2. Identify ✓"),
+          React.createElement("span", { className: "text-amber-400 font-bold flex items-center gap-0.5" },
+            React.createElement("span", { className: "w-1 h-1 rounded-full bg-amber-400 animate-pulse" }),
+            "3. Monitor"
+          ),
+          React.createElement("span", { className: "text-zinc-600" }, "4. Resolve")
         ),
         React.createElement(
           "div",
-          { className: "flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-1 border-t border-zinc-850" },
-          React.createElement("span", null, `Ticket: ${props.incidentId || "INC-4091"} • ${props.updateTime || "4 mins ago"}`),
-          React.createElement("span", { style: { color: tokens.primary }, className: "hover:underline cursor-pointer" }, "Status Page →")
+          { className: "flex items-center justify-between text-[9px] font-mono text-zinc-500 pt-1 border-t border-zinc-850" },
+          React.createElement("span", null, `${props.incidentId || "INC-4091"} • ${props.updateTime || "4m ago"}`),
+          React.createElement("span", { style: { color: tokens.primary }, className: "hover:underline cursor-pointer font-medium" }, "Status Page →")
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-md w-full space-y-2.5 text-white">
-  <div className="flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-      <span className="text-xs font-semibold text-white font-mono">${escapeText(props.serviceName || "Edge Compute & CDN")}</span>
+      return `"use client";
+
+import React, { useState } from "react";
+import { AlertTriangle, Bell, BellOff, ExternalLink, RefreshCw } from "lucide-react";
+
+export interface IncidentAlertProps {
+  serviceName?: string;
+  statusText?: string;
+  incidentId?: string;
+  updateTime?: string;
+  description?: string;
+  statusPageUrl?: string;
+  className?: string;
+}
+
+export function IncidentAlert({
+  serviceName = "${escapeText(props.serviceName || "Edge Compute & CDN")}",
+  statusText = "${escapeText(props.statusText || "Partial Degradation")}",
+  incidentId = "${escapeText(props.incidentId || "INC-4091")}",
+  updateTime = "${escapeText(props.updateTime || "4 mins ago")}",
+  description = "Elevated latency and 502 gateway timeouts observed in US-East-1 edge points of presence. Traffic auto-failover is actively running.",
+  statusPageUrl = "#",
+  className = "",
+}: IncidentAlertProps) {
+  const [subscribed, setSubscribed] = useState(false);
+  const [activeStage, setActiveStage] = useState(2); // 0: Investigating, 1: Identified, 2: Monitoring, 3: Resolved
+
+  const stages = [
+    { label: "Investigate", done: true },
+    { label: "Identify", done: true },
+    { label: "Monitoring", active: true },
+    { label: "Resolved", pending: true },
+  ];
+
+  return (
+    <div
+      className={\`p-4 bg-[${tokens.surface}] border border-[${tokens.border}] border-l-4 border-l-amber-500 rounded-[${tokens.radius}px] shadow-2xl max-w-md w-full space-y-3 text-white select-none \${className}\`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+          <span className="text-xs font-semibold text-white font-mono truncate">{serviceName}</span>
+        </div>
+        <span className="px-2 py-0.5 text-[10px] font-mono rounded-full border border-amber-900 bg-amber-950/70 text-amber-400 font-bold shrink-0">
+          {statusText}
+        </span>
+      </div>
+
+      <p className="text-xs text-zinc-300 leading-relaxed font-normal">{description}</p>
+
+      {/* Real-Time Lifecycle Phase Tracker */}
+      <div className="grid grid-cols-4 gap-1 py-1.5 border-y border-zinc-800 text-[10px] font-mono">
+        {stages.map((st, i) => (
+          <div
+            key={st.label}
+            className={\`text-center py-1 rounded \${
+              i < activeStage
+                ? "bg-zinc-850 text-zinc-400"
+                : i === activeStage
+                ? "bg-amber-950/60 border border-amber-800 text-amber-400 font-bold"
+                : "text-zinc-600"
+            }\`}
+          >
+            {st.label} {i < activeStage ? "✓" : ""}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400 pt-0.5">
+        <span>
+          Ticket: <strong className="text-zinc-200">{incidentId}</strong> • {updateTime}
+        </span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSubscribed(!subscribed)}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer"
+            title="Toggle notification alerts"
+          >
+            {subscribed ? <BellOff className="w-3.5 h-3.5 text-amber-400" /> : <Bell className="w-3.5 h-3.5" />}
+            <span className="text-[10px]">{subscribed ? "Alerts On" : "Subscribe"}</span>
+          </button>
+          <a
+            href={statusPageUrl}
+            className="flex items-center gap-1 text-[${tokens.primary}] hover:underline cursor-pointer"
+          >
+            <span>Status</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+      </div>
     </div>
-    <span className="px-2 py-0.5 text-[9px] font-mono rounded-full border border-amber-900 bg-amber-950/60 text-amber-400 font-bold">${escapeText(props.statusText || "Partial Degradation")}</span>
-  </div>
-  <p className="text-xs text-zinc-300">Engineering team is investigating elevated latency across US-East edge nodes.</p>
-  <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-1 border-t border-zinc-800">
-    <span>Ticket: ${escapeText(props.incidentId || "INC-4091")}</span>
-    <span className="text-[${tokens.primary}] cursor-pointer">Status Page →</span>
-  </div>
-</div>`;
+  );
+}
+
+export default IncidentAlert;`;
     },
   },
 
@@ -2333,9 +2657,9 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     ],
     renderComponent: (props, tokens) => {
       const users = [
-        { initials: "AZ", bg: tokens.primary, name: "Azure" },
-        { initials: "FL", bg: "#10b981", name: "Felix" },
-        { initials: "RX", bg: "#f59e0b", name: "Rachel" },
+        { initials: "AZ", bg: tokens.primary, name: "Azure", role: "Editing" },
+        { initials: "FL", bg: "#10b981", name: "Felix", role: "Viewing" },
+        { initials: "RX", bg: "#f59e0b", name: "Rachel", role: "Viewing" },
       ];
       return React.createElement(
         "div",
@@ -2345,56 +2669,225 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
             borderColor: tokens.border,
             borderRadius: `${tokens.radius}px`,
           },
-          className: "p-3 border shadow-lg max-w-sm w-full flex items-center justify-between gap-3 text-white select-none",
+          className: "p-3 border shadow-xl max-w-[310px] w-full space-y-2.5 text-white select-none",
         },
+        /* Top sync header */
         React.createElement(
           "div",
-          { className: "flex items-center -space-x-2 shrink-0" },
-          users.map((u, i) =>
+          { className: "flex items-center justify-between pb-1.5 border-b border-zinc-850 text-[9px] font-mono" },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-1.5 text-zinc-300 font-semibold truncate" },
+            React.createElement("span", {
+              style: { backgroundColor: tokens.primary },
+              className: "w-1.5 h-1.5 rounded-full shadow-xs shrink-0",
+            }),
+            "Doc: Sprint Architecture"
+          ),
+          React.createElement(
+            "span",
+            { className: "text-emerald-400 flex items-center gap-1 shrink-0 font-bold" },
+            React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
+            "Live (8ms)"
+          )
+        ),
+        /* Avatars with status */
+        React.createElement(
+          "div",
+          { className: "flex items-center justify-between" },
+          React.createElement(
+            "div",
+            { className: "flex items-center -space-x-1.5 shrink-0" },
+            users.map((u, i) =>
+              React.createElement(
+                "div",
+                {
+                  key: i,
+                  style: { backgroundColor: u.bg },
+                  className: "w-6 h-6 rounded-full border-2 border-zinc-950 flex items-center justify-center text-[9px] font-mono font-bold text-white shadow-xs relative",
+                  title: `${u.name} (${u.role})`,
+                },
+                u.initials,
+                i === 0 &&
+                  React.createElement("span", {
+                    className: "absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-zinc-950",
+                  })
+              )
+            ),
             React.createElement(
               "div",
-              {
-                key: i,
-                style: { backgroundColor: u.bg },
-                className: "w-7 h-7 rounded-full border-2 border-zinc-950 flex items-center justify-center text-[10px] font-mono font-bold text-white shadow-xs",
-              },
-              u.initials
+              { className: "w-6 h-6 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-300 flex items-center justify-center text-[8px] font-mono font-bold" },
+              "+2"
             )
           ),
           React.createElement(
             "div",
-            { className: "w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-850 text-zinc-300 flex items-center justify-center text-[10px] font-mono font-bold" },
-            "+2"
+            { className: "text-right" },
+            React.createElement("div", { className: "text-[11px] font-semibold text-zinc-100 leading-tight" }, props.activeCount || "4 online"),
+            React.createElement("div", { className: "text-[9px] font-mono text-zinc-500 leading-tight" }, "3 peers in canvas")
           )
         ),
+        /* Simulated cursor preview box */
         React.createElement(
           "div",
-          { className: "flex-1 text-right" },
-          React.createElement("div", { className: "text-xs font-semibold text-zinc-200" }, props.activeCount || "4 online"),
+          { className: "relative h-10 w-full bg-zinc-950/70 border border-zinc-850/80 rounded-xs overflow-hidden flex items-center justify-between px-3 text-[9px] font-mono" },
+          /* Floating Cursor 1 */
           React.createElement(
             "div",
-            { className: "text-[10px] font-mono text-emerald-400 flex items-center justify-end gap-1" },
-            React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
-            props.statusNote || "Live Multiplayer"
+            {
+              style: { color: tokens.primary },
+              className: "flex items-center gap-1 absolute left-3 top-2 animate-pulse",
+            },
+            React.createElement("span", null, "↖"),
+            React.createElement(
+              "span",
+              {
+                style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
+                className: "px-1 py-0.2 rounded text-[7px] font-bold shadow-xs",
+              },
+              "Azure"
+            )
+          ),
+          /* Floating Cursor 2 */
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-1 text-emerald-400 absolute right-4 bottom-2" },
+            React.createElement("span", null, "↖"),
+            React.createElement("span", { className: "px-1 py-0.2 rounded text-[7px] font-bold bg-emerald-500 text-zinc-950 shadow-xs" }, "Felix")
           )
         )
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="p-3 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-lg max-w-sm w-full flex items-center justify-between gap-3 text-white">
-  <div className="flex items-center -space-x-2 shrink-0">
-    <div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-[${tokens.primary}] text-white flex items-center justify-center text-[10px] font-mono font-bold">AZ</div>
-    <div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-emerald-500 text-white flex items-center justify-center text-[10px] font-mono font-bold">FL</div>
-    <div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-800 text-zinc-300 flex items-center justify-center text-[10px] font-mono font-bold">+2</div>
-  </div>
-  <div className="text-right">
-    <div className="text-xs font-semibold text-zinc-200">${escapeText(props.activeCount || "4 online")}</div>
-    <div className="text-[10px] font-mono text-emerald-400 flex items-center justify-end gap-1">
-      <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-      ${escapeText(props.statusNote || "Live Multiplayer")}
+      return `"use client";
+
+import React, { useState } from "react";
+import { Users, Radio, MousePointer, Eye } from "lucide-react";
+
+export interface Collaborator {
+  id: string;
+  name: string;
+  initials: string;
+  color: string;
+  status: "editing" | "viewing" | "idle";
+  cursor?: { x: number; y: number };
+}
+
+export interface MultiplayerPresenceProps {
+  documentName?: string;
+  collaborators?: Collaborator[];
+  onFollowUser?: (userId: string) => void;
+  className?: string;
+}
+
+export function MultiplayerPresence({
+  documentName = "Doc: Sprint Architecture",
+  collaborators = [
+    { id: "1", name: "Azure", initials: "AZ", color: "${tokens.primary}", status: "editing", cursor: { x: 35, y: 40 } },
+    { id: "2", name: "Felix", initials: "FL", color: "#10b981", status: "viewing", cursor: { x: 75, y: 70 } },
+    { id: "3", name: "Rachel", initials: "RX", color: "#f59e0b", status: "viewing" },
+  ],
+  onFollowUser,
+  className = "",
+}: MultiplayerPresenceProps) {
+  const [followingId, setFollowingId] = useState<string | null>(null);
+  const [isBroadcasting, setIsBroadcasting] = useState(true);
+
+  const toggleFollow = (id: string) => {
+    const next = followingId === id ? null : id;
+    setFollowingId(next);
+    if (next) onFollowUser?.(next);
+  };
+
+  return (
+    <div className={\`p-4 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-2xl max-w-sm w-full space-y-3 text-white select-none \${className}\`}>
+      {/* Top Session Sync Status */}
+      <div className="flex items-center justify-between pb-2 border-b border-zinc-800 text-xs font-mono">
+        <div className="flex items-center gap-2 text-zinc-200 font-semibold truncate">
+          <span className="w-2 h-2 rounded-full bg-[${tokens.primary}] shadow-[0_0_8px_${tokens.primary}]" />
+          <span>{documentName}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-[10px]">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Sync (8ms)</span>
+        </div>
+      </div>
+
+      {/* Collaborator Avatars & Controls */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center -space-x-2">
+          {collaborators.map((user) => {
+            const isFollowed = followingId === user.id;
+            return (
+              <button
+                key={user.id}
+                onClick={() => toggleFollow(user.id)}
+                style={{ backgroundColor: user.color }}
+                className={\`w-8 h-8 rounded-full border-2 border-zinc-950 text-white flex items-center justify-center text-xs font-mono font-bold transition-transform cursor-pointer hover:scale-110 hover:z-20 relative \${
+                  isFollowed ? "ring-2 ring-white scale-105 z-10" : ""
+                }\`}
+                title={\`\${user.name} (\${user.status}) - Click to follow\`}
+              >
+                {user.initials}
+                {user.status === "editing" && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-zinc-950" />
+                )}
+              </button>
+            );
+          })}
+          <div className="w-8 h-8 rounded-full border-2 border-zinc-950 bg-zinc-850 text-zinc-300 flex items-center justify-center text-[10px] font-mono font-bold">
+            +2
+          </div>
+        </div>
+
+        <div className="text-right font-mono">
+          <div className="text-xs font-semibold text-white">{collaborators.length + 2} Active</div>
+          <div className="text-[10px] text-zinc-500">
+            {followingId ? \`Following \${collaborators.find((c) => c.id === followingId)?.name}\` : "Click avatar to follow"}
+          </div>
+        </div>
+      </div>
+
+      {/* Live Peer Cursors Simulated Canvas */}
+      <div className="relative h-16 w-full bg-zinc-950/80 border border-zinc-850 rounded-xs overflow-hidden p-2 text-xs font-mono">
+        {collaborators
+          .filter((c) => c.cursor)
+          .map((c) => (
+            <div
+              key={c.id}
+              style={{ left: \`\${c.cursor?.x}%\`, top: \`\${c.cursor?.y}%\` }}
+              className="absolute flex items-center gap-1 transition-all duration-300"
+            >
+              <MousePointer style={{ color: c.color }} className="w-3.5 h-3.5 fill-current" />
+              <span
+                style={{ backgroundColor: c.color }}
+                className="px-1.5 py-0.5 rounded text-[8px] font-bold text-zinc-950 shadow-xs"
+              >
+                {c.name} {c.status === "editing" ? "(editing)" : ""}
+              </span>
+            </div>
+          ))}
+      </div>
+
+      {/* Broadcast Toggle Strip */}
+      <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-1 border-t border-zinc-850">
+        <span className="flex items-center gap-1">
+          <Users className="w-3 h-3 text-zinc-500" />
+          <span>Multiplayer Canvas</span>
+        </span>
+        <button
+          onClick={() => setIsBroadcasting(!isBroadcasting)}
+          className="flex items-center gap-1 text-[${tokens.primary}] hover:underline cursor-pointer"
+        >
+          <Radio className="w-3 h-3" />
+          <span>{isBroadcasting ? "Broadcasting On" : "Broadcast Paused"}</span>
+        </button>
+      </div>
     </div>
-  </div>
-</div>`;
+  );
+}
+
+export default MultiplayerPresence;`;
     },
   },
 
@@ -3620,36 +4113,58 @@ export default FloatingIslandNav;`;
             borderColor: tokens.border,
             borderRadius: `${tokens.radius}px`,
           },
-          className: "p-5 border shadow-xl max-w-sm w-full space-y-4 text-white select-none",
+          className: "p-4 border shadow-2xl max-w-[300px] w-full space-y-3 text-white select-none",
         },
+        /* Header */
         React.createElement(
           "div",
           { className: "flex items-center justify-between" },
-          React.createElement("span", { className: "text-xs font-mono uppercase tracking-wider text-zinc-400" }, props.metricTitle || "Uptime SLA Target"),
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-1.5" },
+            React.createElement("span", {
+              style: { backgroundColor: tokens.primary },
+              className: "w-1.5 h-1.5 rounded-full shadow-xs",
+            }),
+            React.createElement("span", { className: "text-xs font-mono font-semibold uppercase tracking-wider text-zinc-300" }, props.metricTitle || "Uptime SLA")
+          ),
           React.createElement(
             "span",
-            { className: "px-2 py-0.5 rounded-xs border border-emerald-900 bg-emerald-950/80 text-[10px] font-mono text-emerald-400" },
+            { className: "px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/80 text-[9px] font-mono text-emerald-400 font-bold flex items-center gap-1" },
+            React.createElement("span", { className: "w-1 h-1 rounded-full bg-emerald-400 animate-pulse" }),
             props.statusLabel || "Optimal"
           )
         ),
+        /* Circular Multi-Arc Donut */
         React.createElement(
           "div",
-          { className: "flex items-center justify-center py-2" },
+          { className: "flex items-center justify-center py-1" },
           React.createElement(
             "div",
             { className: "relative w-28 h-28 flex items-center justify-center" },
             React.createElement(
               "svg",
-              { className: "w-full h-full -rotate-90", viewBox: "0 0 100 100" },
-              React.createElement("circle", { cx: "50", cy: "50", r: "40", stroke: "#27272a", strokeWidth: "8", fill: "none" }),
+              { className: "w-full h-full -rotate-90 drop-shadow-md", viewBox: "0 0 100 100" },
+              React.createElement("circle", { cx: "50", cy: "50", r: "38", stroke: "#27272a", strokeWidth: "7", fill: "none" }),
               React.createElement("circle", {
                 cx: "50",
                 cy: "50",
-                r: "40",
+                r: "38",
                 stroke: tokens.primary,
-                strokeWidth: "8",
-                strokeDasharray: "251.2",
-                strokeDashoffset: "30",
+                strokeWidth: "7",
+                strokeDasharray: "238.76",
+                strokeDashoffset: "24",
+                strokeLinecap: "round",
+                fill: "none",
+              }),
+              React.createElement("circle", {
+                cx: "50",
+                cy: "50",
+                r: "38",
+                stroke: "#10b981",
+                strokeWidth: "7",
+                strokeDasharray: "238.76",
+                strokeDashoffset: "215",
                 strokeLinecap: "round",
                 fill: "none",
               })
@@ -3657,23 +4172,24 @@ export default FloatingIslandNav;`;
             React.createElement(
               "div",
               { className: "absolute flex flex-col items-center justify-center text-center" },
-              React.createElement("span", { className: "text-base font-bold font-mono tracking-tight" }, props.kpiValue || "99.98%"),
-              React.createElement("span", { className: "text-[9px] font-mono text-zinc-500 uppercase" }, "SLA Rate")
+              React.createElement("span", { className: "text-base font-bold font-mono tracking-tight text-white leading-none" }, props.kpiValue || "99.98%"),
+              React.createElement("span", { className: "text-[8px] font-mono text-zinc-500 uppercase tracking-widest mt-0.5" }, "SLA Met")
             )
           )
         ),
+        /* Telemetry breakdown */
         React.createElement(
           "div",
-          { className: "grid grid-cols-3 gap-2 text-center pt-2 border-t border-zinc-850 text-[10px] font-mono" },
-          React.createElement("div", null,
+          { className: "grid grid-cols-3 gap-1 text-center pt-2 border-t border-zinc-850 text-[9px] font-mono" },
+          React.createElement("div", { className: "p-1 rounded bg-zinc-900/50 border border-zinc-850/80" },
             React.createElement("div", { className: "text-zinc-500" }, "24h Avg"),
             React.createElement("div", { className: "font-semibold text-white" }, "99.99%")
           ),
-          React.createElement("div", null,
+          React.createElement("div", { className: "p-1 rounded bg-zinc-900/50 border border-zinc-850/80" },
             React.createElement("div", { className: "text-zinc-500" }, "P99 Latency"),
-            React.createElement("div", { className: "font-semibold text-white" }, "14ms")
+            React.createElement("div", { className: "font-semibold text-white" }, "12ms")
           ),
-          React.createElement("div", null,
+          React.createElement("div", { className: "p-1 rounded bg-zinc-900/50 border border-zinc-850/80" },
             React.createElement("div", { className: "text-zinc-500" }, "Incidents"),
             React.createElement("div", { className: "font-semibold text-emerald-400" }, "0")
           )
@@ -3681,24 +4197,119 @@ export default FloatingIslandNav;`;
       );
     },
     generateJsx: (props, tokens) => {
-      return `<div className="p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-xl max-w-sm w-full space-y-4 text-white">
-  <div className="flex items-center justify-between">
-    <span className="text-xs font-mono uppercase tracking-wider text-zinc-400">${escapeText(props.metricTitle || "Uptime SLA Target")}</span>
-    <span className="px-2 py-0.5 rounded-xs border border-emerald-900 bg-emerald-950/80 text-[10px] font-mono text-emerald-400">${escapeText(props.statusLabel || "Optimal")}</span>
-  </div>
-  <div className="flex items-center justify-center py-2">
-    <div className="relative w-28 h-28 flex items-center justify-center">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="40" stroke="#27272a" strokeWidth="8" fill="none" />
-        <circle cx="50" cy="50" r="40" stroke="${tokens.primary}" strokeWidth="8" strokeDasharray="251.2" strokeDashoffset="30" strokeLinecap="round" fill="none" />
-      </svg>
-      <div className="absolute flex flex-col items-center justify-center text-center">
-        <span className="text-base font-bold font-mono">${escapeText(props.kpiValue || "99.98%")}</span>
-        <span className="text-[9px] font-mono text-zinc-500 uppercase">SLA Rate</span>
+      return `"use client";
+
+import React, { useState } from "react";
+import { Activity, ShieldCheck, ArrowDownRight, Clock } from "lucide-react";
+
+export interface TelemetryDonutDialProps {
+  metricTitle?: string;
+  kpiValue?: string;
+  statusLabel?: string;
+  className?: string;
+}
+
+export function TelemetryDonutDial({
+  metricTitle = "${escapeText(props.metricTitle || "Uptime SLA Target")}",
+  kpiValue = "${escapeText(props.kpiValue || "99.98%")}",
+  statusLabel = "${escapeText(props.statusLabel || "Optimal")}",
+  className = "",
+}: TelemetryDonutDialProps) {
+  const [selectedMetric, setSelectedMetric] = useState<"uptime" | "latency" | "budget">("uptime");
+
+  const metricData = {
+    uptime: { value: kpiValue, sub: "SLA RATE", avg: "99.99%", p99: "12ms", burn: "0.02%", offset: 24 },
+    latency: { value: "12.4ms", sub: "P99 AVG", avg: "8.1ms", p99: "12.4ms", burn: "-2.1ms", offset: 60 },
+    budget: { value: "4h 19m", sub: "ERROR BUDGET", avg: "94.2%", p99: "100%", burn: "0.8h", offset: 15 },
+  };
+
+  const current = metricData[selectedMetric];
+
+  return (
+    <div className={\`p-5 bg-[${tokens.surface}] border border-[${tokens.border}] rounded-[${tokens.radius}px] shadow-2xl max-w-sm w-full space-y-4 text-white select-none \${className}\`}>
+      {/* Top Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[${tokens.primary}] shadow-[0_0_8px_${tokens.primary}]" />
+          <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-300">{metricTitle}</h4>
+        </div>
+        <span className="px-2.5 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/80 text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>{statusLabel}</span>
+        </span>
+      </div>
+
+      {/* Metric Mode Filter Tabs */}
+      <div className="flex items-center gap-1 p-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-mono">
+        {(["uptime", "latency", "budget"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setSelectedMetric(tab)}
+            className={\`flex-1 py-1 rounded transition-colors uppercase font-medium cursor-pointer \${
+              selectedMetric === tab ? "bg-[${tokens.primary}] text-[${tokens.primaryForeground}] font-bold" : "text-zinc-400 hover:text-white"
+            }\`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Circular Multi-Segment Donut Dial */}
+      <div className="flex items-center justify-center py-2">
+        <div className="relative w-32 h-32 flex items-center justify-center">
+          <svg className="w-full h-full -rotate-90 drop-shadow-md" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="38" stroke="#27272a" strokeWidth="7" fill="none" />
+            <circle
+              cx="50"
+              cy="50"
+              r="38"
+              stroke="${tokens.primary}"
+              strokeWidth="7"
+              strokeDasharray="238.76"
+              strokeDashoffset={current.offset}
+              strokeLinecap="round"
+              fill="none"
+              className="transition-all duration-500"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="38"
+              stroke="#10b981"
+              strokeWidth="7"
+              strokeDasharray="238.76"
+              strokeDashoffset="210"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
+          <div className="absolute flex flex-col items-center justify-center text-center">
+            <span className="text-xl font-bold font-mono tracking-tight text-white leading-none">{current.value}</span>
+            <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest mt-1">{current.sub}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3-Cell Telemetry Stats Grid */}
+      <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-zinc-850 text-xs font-mono">
+        <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850">
+          <div className="text-[10px] text-zinc-500">24h Average</div>
+          <div className="font-semibold text-white mt-0.5">{current.avg}</div>
+        </div>
+        <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850">
+          <div className="text-[10px] text-zinc-500">P99 Latency</div>
+          <div className="font-semibold text-white mt-0.5">{current.p99}</div>
+        </div>
+        <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850">
+          <div className="text-[10px] text-zinc-500">Incidents</div>
+          <div className="font-semibold text-emerald-400 mt-0.5">0 Active</div>
+        </div>
       </div>
     </div>
-  </div>
-</div>`;
+  );
+}
+
+export default TelemetryDonutDial;`;
     },
   },
 };

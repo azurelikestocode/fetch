@@ -136,6 +136,26 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <FloatingGlassNavCanvas props={props} tokens={tokens} />;
   }
 
+  // Virtual Card Interactive System
+  if (template.id === "virtual-card") {
+    return <VirtualCardCanvas props={props} tokens={tokens} />;
+  }
+
+  // System Incident Banner Interactive System
+  if (template.id === "system-incident-banner") {
+    return <SystemIncidentCanvas props={props} tokens={tokens} />;
+  }
+
+  // Multiplayer Presence Interactive System
+  if (template.id === "multiplayer-presence") {
+    return <MultiplayerPresenceCanvas props={props} tokens={tokens} />;
+  }
+
+  // Telemetry Donut Dial Interactive System
+  if (template.id === "telemetry-donut-dial") {
+    return <TelemetryDonutCanvas props={props} tokens={tokens} />;
+  }
+
   // Fallback to template's standard render
   return <>{template.renderComponent(props, tokens)}</>;
 }
@@ -1617,6 +1637,408 @@ function FloatingGlassNavCanvas({ props, tokens }: { props: Record<string, any>;
           {notice}
         </span>
       )}
+    </div>
+  );
+}
+
+function VirtualCardCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [isFrozen, setIsFrozen] = useState(false);
+  const [showCvv, setShowCvv] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyCard = () => {
+    navigator.clipboard?.writeText(`424242424242${props.lastFour || "8842"}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="w-full max-w-[310px] space-y-3 select-none animate-fade-in">
+      <div
+        className={`p-4 border rounded-2xl shadow-2xl space-y-4 text-white relative overflow-hidden transition-all duration-300 ${
+          isFrozen ? "opacity-60 saturate-50 border-red-900/60" : ""
+        }`}
+        style={{
+          backgroundColor: tokens.surface,
+          borderColor: isFrozen ? "#7f1d1d" : tokens.border,
+          background: `linear-gradient(135deg, ${tokens.surface} 0%, color-mix(in srgb, ${tokens.primary} 24%, #09090b) 60%, #000 100%)`,
+          boxShadow: `0 20px 40px -10px rgba(0,0,0,0.8), 0 0 24px ${tokens.primary}20`,
+        }}
+      >
+        <div className="absolute -inset-full bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-12 pointer-events-none" />
+
+        <div className="flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-1.5">
+            <span
+              style={{ backgroundColor: tokens.primary }}
+              className="w-1.5 h-1.5 rounded-full shadow-xs"
+            />
+            <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-zinc-300">
+              {props.cardTier || "Platinum Fleet"}
+            </span>
+          </div>
+          <div className="flex items-center -space-x-1.5">
+            <div
+              style={{ backgroundColor: tokens.primary }}
+              className="w-4 h-4 rounded-full opacity-90 shadow-xs"
+            />
+            <div className="w-4 h-4 rounded-full bg-zinc-400/60 backdrop-blur-xs" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-1 relative z-10">
+          <div className="w-8 h-6 rounded bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 border border-amber-200/80 p-0.5 flex flex-col justify-between shadow-xs">
+            <div className="border-b border-amber-700/60 h-1.5 w-full" />
+            <div className="border-t border-amber-700/60 h-1.5 w-full" />
+          </div>
+          <svg className="w-4 h-4 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M8.5 4.5a14 14 0 0 1 0 15" />
+            <path d="M12.5 7.5a9 9 0 0 1 0 9" />
+            <path d="M16.5 10.5a4 4 0 0 1 0 3" />
+          </svg>
+        </div>
+
+        <div className="font-mono text-[13px] tracking-[0.22em] text-zinc-100 font-bold relative z-10 flex items-center justify-between">
+          <span>•••• •••• •••• {props.lastFour || "8842"}</span>
+          <button
+            type="button"
+            onClick={copyCard}
+            className="text-[9px] font-mono text-zinc-400 hover:text-white px-1.5 py-0.5 rounded bg-black/40 border border-white/10 cursor-pointer"
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between text-[9px] font-mono pt-1.5 border-t border-white/10 relative z-10 text-zinc-300">
+          <div>
+            <div className="text-[7px] text-zinc-500 uppercase tracking-widest">Cardholder</div>
+            <div className="font-semibold text-white">{props.cardHolder || "AZURE ARCHITECT"}</div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div>
+              <div className="text-[7px] text-zinc-500 uppercase tracking-widest">CVV</div>
+              <div className="font-semibold text-white flex items-center gap-1">
+                <span>{showCvv ? "742" : "•••"}</span>
+                <button
+                  type="button"
+                  onClick={() => setShowCvv(!showCvv)}
+                  className="text-zinc-500 hover:text-white cursor-pointer"
+                >
+                  {showCvv ? "hide" : "show"}
+                </button>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-[7px] text-zinc-500 uppercase tracking-widest">Expires</div>
+              <div className="font-semibold text-white">{props.expiry || "09/29"}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between px-1 text-[10px] font-mono text-zinc-400">
+        <div>
+          <span className="text-zinc-500">Spend: </span>
+          <span className="text-white font-semibold">$4,850</span>
+          <span className="text-zinc-600"> / $10k</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsFrozen(!isFrozen)}
+          className={`px-2.5 py-0.5 rounded-full border transition-all cursor-pointer ${
+            isFrozen
+              ? "border-red-900 bg-red-950/80 text-red-400 font-bold"
+              : "border-zinc-800 bg-zinc-900 hover:text-white"
+          }`}
+        >
+          {isFrozen ? "Card Frozen" : "Freeze Card"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SystemIncidentCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [subscribed, setSubscribed] = useState(false);
+  const [activeStage, setActiveStage] = useState(2);
+  const stages = ["Investigate", "Identify", "Monitor", "Resolved"];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+        borderLeft: "4px solid #f59e0b",
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full space-y-3 text-white select-none animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+          <span className="text-xs font-semibold text-white font-mono truncate">
+            {props.serviceName || "Edge Compute & CDN"}
+          </span>
+        </div>
+        <span className="px-2 py-0.5 text-[9px] font-mono rounded-full border border-amber-900 bg-amber-950/70 text-amber-400 font-bold shrink-0">
+          {props.statusText || "Partial Degradation"}
+        </span>
+      </div>
+
+      <p className="text-xs text-zinc-300 leading-relaxed font-normal">
+        Elevated latency and gateway retries on US-East edge nodes. Traffic auto-failover in progress.
+      </p>
+
+      {/* Interactive Lifecycle Stages */}
+      <div className="grid grid-cols-4 gap-1 py-1 border-y border-zinc-850 text-[9px] font-mono">
+        {stages.map((st, i) => (
+          <button
+            key={st}
+            type="button"
+            onClick={() => setActiveStage(i)}
+            className={`text-center py-1 rounded transition-colors cursor-pointer ${
+              i < activeStage
+                ? "bg-zinc-850 text-zinc-400"
+                : i === activeStage
+                ? "bg-amber-950/70 border border-amber-800 text-amber-400 font-bold"
+                : "text-zinc-600 hover:text-zinc-400"
+            }`}
+          >
+            {st} {i < activeStage ? "✓" : ""}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-0.5">
+        <span>
+          Ticket: <strong className="text-zinc-200">{props.incidentId || "INC-4091"}</strong> • {props.updateTime || "4m ago"}
+        </span>
+        <button
+          type="button"
+          onClick={() => setSubscribed(!subscribed)}
+          className="px-2 py-0.5 rounded border border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+        >
+          {subscribed ? "Subscribed ✓" : "Subscribe"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MultiplayerPresenceCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [followingId, setFollowingId] = useState<string | null>("1");
+  const [isBroadcasting, setIsBroadcasting] = useState(true);
+
+  const collaborators = [
+    { id: "1", name: "Azure", initials: "AZ", color: tokens.primary, status: "editing", cursor: { x: 30, y: 35 } },
+    { id: "2", name: "Felix", initials: "FL", color: "#10b981", status: "viewing", cursor: { x: 70, y: 65 } },
+    { id: "3", name: "Rachel", initials: "RX", color: "#f59e0b", status: "viewing" },
+  ];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-4 border shadow-2xl max-w-sm w-full space-y-3 text-white select-none animate-fade-in"
+    >
+      <div className="flex items-center justify-between pb-1.5 border-b border-zinc-800 text-xs font-mono">
+        <div className="flex items-center gap-1.5 text-zinc-200 font-semibold truncate">
+          <span
+            style={{ backgroundColor: tokens.primary }}
+            className="w-2 h-2 rounded-full shadow-xs"
+          />
+          <span>Doc: Sprint Architecture</span>
+        </div>
+        <div className="flex items-center gap-1 text-emerald-400 font-bold text-[10px]">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Sync (8ms)</span>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center -space-x-1.5">
+          {collaborators.map((user) => {
+            const isFollowed = followingId === user.id;
+            return (
+              <button
+                key={user.id}
+                type="button"
+                onClick={() => setFollowingId(isFollowed ? null : user.id)}
+                style={{ backgroundColor: user.color }}
+                className={`w-7 h-7 rounded-full border-2 border-zinc-950 text-white flex items-center justify-center text-[10px] font-mono font-bold transition-transform cursor-pointer hover:scale-110 relative ${
+                  isFollowed ? "ring-2 ring-white scale-105 z-10" : ""
+                }`}
+                title={`${user.name} (${user.status}) - Click to follow`}
+              >
+                {user.initials}
+                {user.status === "editing" && (
+                  <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-zinc-950" />
+                )}
+              </button>
+            );
+          })}
+          <div className="w-7 h-7 rounded-full border-2 border-zinc-950 bg-zinc-850 text-zinc-300 flex items-center justify-center text-[9px] font-mono font-bold">
+            +2
+          </div>
+        </div>
+
+        <div className="text-right font-mono">
+          <div className="text-xs font-semibold text-white">{props.activeCount || "4 online"}</div>
+          <div className="text-[9px] text-zinc-500">
+            {followingId ? `Following ${collaborators.find((c) => c.id === followingId)?.name}` : "Click to follow"}
+          </div>
+        </div>
+      </div>
+
+      {/* Simulated Live Cursor Viewport */}
+      <div className="relative h-14 w-full bg-zinc-950/80 border border-zinc-850 rounded-xs overflow-hidden p-2 text-xs font-mono">
+        {collaborators
+          .filter((c) => c.cursor)
+          .map((c) => (
+            <div
+              key={c.id}
+              style={{ left: `${c.cursor?.x}%`, top: `${c.cursor?.y}%` }}
+              className="absolute flex items-center gap-1 transition-all duration-300"
+            >
+              <span style={{ color: c.color }} className="text-xs">↖</span>
+              <span
+                style={{ backgroundColor: c.color }}
+                className="px-1 py-0.2 rounded text-[7px] font-bold text-zinc-950 shadow-xs"
+              >
+                {c.name} {c.status === "editing" ? "(editing)" : ""}
+              </span>
+            </div>
+          ))}
+      </div>
+
+      <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-1 border-t border-zinc-850">
+        <span>Multiplayer Canvas</span>
+        <button
+          type="button"
+          onClick={() => setIsBroadcasting(!isBroadcasting)}
+          style={{ color: tokens.primary }}
+          className="hover:underline cursor-pointer font-medium"
+        >
+          {isBroadcasting ? "Broadcasting On" : "Broadcast Paused"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function TelemetryDonutCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [selectedMetric, setSelectedMetric] = useState<"uptime" | "latency" | "budget">("uptime");
+
+  const metricData = {
+    uptime: { value: props.kpiValue || "99.98%", sub: "SLA RATE", avg: "99.99%", p99: "12ms", offset: 24 },
+    latency: { value: "12.4ms", sub: "P99 LATENCY", avg: "8.1ms", p99: "12.4ms", offset: 60 },
+    budget: { value: "4h 19m", sub: "ERROR BUDGET", avg: "94.2%", p99: "100%", offset: 15 },
+  };
+
+  const current = metricData[selectedMetric];
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${tokens.radius}px`,
+      }}
+      className="p-5 border shadow-2xl max-w-sm w-full space-y-4 text-white select-none animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span
+            style={{ backgroundColor: tokens.primary }}
+            className="w-1.5 h-1.5 rounded-full shadow-xs"
+          />
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-300">
+            {props.metricTitle || "Uptime SLA"}
+          </span>
+        </div>
+        <span className="px-2 py-0.5 rounded-full border border-emerald-900 bg-emerald-950/80 text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          {props.statusLabel || "Optimal"}
+        </span>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex items-center gap-1 p-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-mono">
+        {(["uptime", "latency", "budget"] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setSelectedMetric(tab)}
+            style={
+              selectedMetric === tab
+                ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
+                : undefined
+            }
+            className={`flex-1 py-1 rounded transition-colors uppercase font-medium cursor-pointer ${
+              selectedMetric !== tab ? "text-zinc-400 hover:text-white" : "font-bold shadow-xs"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center py-1">
+        <div className="relative w-32 h-32 flex items-center justify-center">
+          <svg className="w-full h-full -rotate-90 drop-shadow-md" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="38" stroke="#27272a" strokeWidth="7" fill="none" />
+            <circle
+              cx="50"
+              cy="50"
+              r="38"
+              stroke={tokens.primary}
+              strokeWidth="7"
+              strokeDasharray="238.76"
+              strokeDashoffset={current.offset}
+              strokeLinecap="round"
+              fill="none"
+              className="transition-all duration-500"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="38"
+              stroke="#10b981"
+              strokeWidth="7"
+              strokeDasharray="238.76"
+              strokeDashoffset="210"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
+          <div className="absolute flex flex-col items-center justify-center text-center">
+            <span className="text-xl font-bold font-mono tracking-tight text-white leading-none">
+              {current.value}
+            </span>
+            <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest mt-1">
+              {current.sub}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-zinc-850 text-xs font-mono">
+        <div className="p-1.5 rounded bg-zinc-900/60 border border-zinc-850">
+          <div className="text-[9px] text-zinc-500">24h Avg</div>
+          <div className="font-semibold text-white mt-0.5">{current.avg}</div>
+        </div>
+        <div className="p-1.5 rounded bg-zinc-900/60 border border-zinc-850">
+          <div className="text-[9px] text-zinc-500">P99 Latency</div>
+          <div className="font-semibold text-white mt-0.5">{current.p99}</div>
+        </div>
+        <div className="p-1.5 rounded bg-zinc-900/60 border border-zinc-850">
+          <div className="text-[9px] text-zinc-500">Incidents</div>
+          <div className="font-semibold text-emerald-400 mt-0.5">0 Active</div>
+        </div>
+      </div>
     </div>
   );
 }
