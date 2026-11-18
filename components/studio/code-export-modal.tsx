@@ -45,7 +45,9 @@ export function CodeExportModal({
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
     .join("");
 
-  const fullReactComponent = `import React from "react";
+  const fullReactComponent = tailwindJsx.startsWith('"use client"') || tailwindJsx.includes("export function")
+    ? tailwindJsx
+    : `import React from "react";
 
 export interface ${componentPascalName}Props {
   className?: string;

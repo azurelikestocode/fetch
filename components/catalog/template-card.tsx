@@ -66,9 +66,9 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "otp-code-input":
         return "scale-[0.76] max-w-[300px]";
       case "audio-waveform-player":
-        return "w-full max-w-[320px] scale-[0.88]";
+        return "scale-[0.88] max-w-[285px]";
       case "floating-glass-nav":
-        return "w-full max-w-[310px] scale-[0.84]";
+        return "scale-[0.92] max-w-[280px]";
       case "activity-heatmap":
       case "multi-step-stepper":
         return "w-full max-w-[330px] scale-[0.92]";

@@ -126,6 +126,16 @@ export function InteractivePreview({ template, props, tokens }: InteractivePrevi
     return <MetricSparklineCanvas props={props} tokens={tokens} />;
   }
 
+  // Voice Note Audio Waveform Player Interactive System
+  if (template.id === "audio-waveform-player") {
+    return <AudioWaveformCanvas props={props} tokens={tokens} />;
+  }
+
+  // Floating Glass Island Navbar Interactive System
+  if (template.id === "floating-glass-nav") {
+    return <FloatingGlassNavCanvas props={props} tokens={tokens} />;
+  }
+
   // Fallback to template's standard render
   return <>{template.renderComponent(props, tokens)}</>;
 }
@@ -1415,6 +1425,198 @@ function MetricSparklineCanvas({ props, tokens }: { props: Record<string, any>; 
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function AudioWaveformCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(props.speed || "1.5x");
+  const [seconds, setSeconds] = useState(84); // 01:24
+  const [isMuted, setIsMuted] = useState(false);
+  const totalSeconds = 165; // 02:45
+
+  React.useEffect(() => {
+    if (!isPlaying) return;
+    const rate = speed === "2.0x" ? 2 : speed === "1.5x" ? 1.5 : 1;
+    const interval = setInterval(() => {
+      setSeconds((prev) => (prev >= totalSeconds ? 0 : prev + 1));
+    }, 1000 / rate);
+    return () => clearInterval(interval);
+  }, [isPlaying, speed]);
+
+  const toggleSpeed = () => {
+    setSpeed((prev: string) => (prev === "1.0x" ? "1.5x" : prev === "1.5x" ? "2.0x" : "1.0x"));
+  };
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60).toString().padStart(2, "0");
+    const rem = (s % 60).toString().padStart(2, "0");
+    return `${m}:${rem}`;
+  };
+
+  const barHeights = [30, 55, 75, 40, 90, 100, 65, 35, 80, 95, 50, 25, 70, 85, 45, 90, 60, 30, 75, 90, 40, 65, 80, 50, 30, 60, 40, 20];
+  const activeCount = Math.floor((seconds / totalSeconds) * barHeights.length);
+
+  return (
+    <div
+      style={{
+        backgroundColor: tokens.surface,
+        borderColor: tokens.border,
+        borderRadius: `${Math.max(tokens.radius, 14)}px`,
+      }}
+      className="p-3.5 border shadow-2xl max-w-[280px] w-full space-y-2.5 text-white select-none animate-fade-in"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="relative shrink-0">
+            <div
+              style={{ backgroundColor: tokens.primary, color: tokens.primaryForeground }}
+              className="w-6 h-6 rounded-full flex items-center justify-center font-mono text-[10px] font-bold shadow-xs"
+            >
+              {(props.speakerName || "SJ").slice(0, 2).toUpperCase()}
+            </div>
+            <span className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-zinc-950" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-zinc-100 truncate leading-tight">
+              {props.speakerName || "Sarah Jenkins"}
+            </div>
+            <div className="text-[9px] text-zinc-500 font-mono leading-tight">Voice Note • 48 kHz</div>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={toggleSpeed}
+          className="px-2 py-0.5 rounded-full border border-zinc-800 bg-zinc-900/90 text-[10px] font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
+        >
+          {speed}
+        </button>
+      </div>
+
+      {/* Interactive Bar Seeking */}
+      <div className="flex items-end gap-[2px] h-7 w-full py-0.5">
+        {barHeights.map((h, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setSeconds(Math.floor((i / barHeights.length) * totalSeconds))}
+            style={{
+              height: `${h}%`,
+              backgroundColor: i < activeCount ? tokens.primary : "#3f3f46",
+            }}
+            className="flex-1 rounded-full transition-all cursor-pointer hover:opacity-80"
+            title={`Seek to ${formatTime(Math.floor((i / barHeights.length) * totalSeconds))}`}
+          />
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between pt-0.5">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPlaying(!isPlaying)}
+            style={{ backgroundColor: tokens.primary, color: tokens.primaryForeground }}
+            className="w-6 h-6 rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-transform cursor-pointer text-[10px] pl-0.5"
+          >
+            {isPlaying ? "❚❚" : "▶"}
+          </button>
+          <div className="flex items-center gap-1 text-[10px] font-mono">
+            <span style={{ color: tokens.primary }} className="font-medium">
+              {formatTime(seconds)}
+            </span>
+            <span className="text-zinc-600">/</span>
+            <span className="text-zinc-400">{props.totalDuration || "02:45"}</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsMuted(!isMuted)}
+          className="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+        >
+          {isMuted ? "Muted" : "HD 48k"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FloatingGlassNavCanvas({ props, tokens }: { props: Record<string, any>; tokens: ThemeTokens }) {
+  const [activeTab, setActiveTab] = useState(props.activeTab || "App");
+  const [notice, setNotice] = useState<string | null>(null);
+  const tabs = ["App", "Metrics", "Docs"];
+
+  const handleCommandKey = () => {
+    setNotice("Ctrl+K / ⌘K Palette");
+    setTimeout(() => setNotice(null), 1800);
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <nav
+        style={{
+          backgroundColor: `${tokens.surface}f0`,
+          borderColor: tokens.border,
+          boxShadow: `0 12px 30px -5px rgba(0, 0, 0, 0.6), 0 0 16px ${tokens.primary}20`,
+        }}
+        className="px-2.5 py-1 border backdrop-blur-xl rounded-full max-w-[275px] w-full flex items-center justify-between gap-1.5 text-white select-none animate-fade-in"
+      >
+        {/* Brand */}
+        <div className="flex items-center gap-1.5 font-mono font-bold text-[11px] shrink-0 pl-1">
+          <span
+            style={{ backgroundColor: tokens.primary }}
+            className="w-2 h-2 rounded-full shadow-xs shrink-0"
+          />
+          <span className="tracking-tight text-zinc-100">{props.logo || "Fetch"}</span>
+        </div>
+
+        {/* Dynamic Tabs */}
+        <div className="flex items-center gap-0.5 text-[10px] font-mono shrink-0">
+          {tabs.map((tab) => {
+            const isActive = tab === activeTab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                style={
+                  isActive
+                    ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
+                    : undefined
+                }
+                className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+                  isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white hover:bg-zinc-800/40"
+                }`}
+              >
+                {tab}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Command trigger */}
+        <div className="flex items-center gap-1 shrink-0 pr-0.5">
+          <button
+            type="button"
+            onClick={handleCommandKey}
+            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full border border-zinc-800 bg-zinc-900/90 text-[9px] font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            title="Quick search command"
+          >
+            <span>⌘</span>
+            <span>K</span>
+          </button>
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"
+            title={props.status || "Online"}
+          />
+        </div>
+      </nav>
+
+      {notice && (
+        <span className="text-[10px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-xs animate-fade-in">
+          {notice}
+        </span>
+      )}
     </div>
   );
 }
