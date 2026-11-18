@@ -1628,9 +1628,9 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
     ],
     renderComponent: (props, tokens) => {
       const cards = [
-        { title: props.card1Title || "Type Safe", desc: "Strict TS types & zero ambient overhead.", tag: "01", stat: "100% Strict" },
-        { title: props.card2Title || "Zero Runtime", desc: "Self-contained Tailwind JSX with zero bloat.", tag: "02", stat: "0kb Extra" },
-        { title: props.card3Title || "Deep Theming", desc: "Real-time token adjustments & HSV palettes.", tag: "03", stat: "Live Sync" },
+        { title: props.card1Title || "Type Safe", desc: "100% strict TS types & zero ambient overhead.", tag: "01" },
+        { title: props.card2Title || "Zero Runtime", desc: "Pure Tailwind JSX with zero extra bloat.", tag: "02" },
+        { title: props.card3Title || "Deep Theming", desc: "Real-time token adjustments & HSV palettes.", tag: "03" },
       ];
       return React.createElement(
         "div",
@@ -1666,26 +1666,17 @@ export const TEMPLATES: Record<string, ComponentTemplate> = {
               },
               React.createElement(
                 "div",
-                { className: "space-y-1.5" },
+                { className: "space-y-1" },
                 React.createElement(
                   "div",
-                  { className: "flex items-center justify-between" },
-                  React.createElement(
-                    "span",
-                    {
-                      style: { color: tokens.primary },
-                      className: "text-[9px] font-mono font-bold",
-                    },
-                    c.tag
-                  ),
-                  React.createElement(
-                    "span",
-                    { className: "text-[8px] font-mono text-zinc-500 px-1 py-0.2 rounded bg-zinc-900 border border-zinc-800" },
-                    c.stat
-                  )
+                  {
+                    style: { color: tokens.primary },
+                    className: "text-[10px] font-mono font-bold",
+                  },
+                  c.tag
                 ),
-                React.createElement("div", { className: "text-[11px] font-semibold text-white leading-tight" }, c.title),
-                React.createElement("p", { className: "text-[9px] text-zinc-400 leading-tight font-normal line-clamp-2" }, c.desc)
+                React.createElement("div", { className: "text-xs font-semibold text-white tracking-tight" }, c.title),
+                React.createElement("p", { className: "text-[9px] text-zinc-400 leading-snug font-normal line-clamp-3 pt-0.5" }, c.desc)
               )
             )
           )
@@ -2372,17 +2363,29 @@ export default VirtualCard;`;
           { className: "text-[11px] text-zinc-300 font-normal leading-relaxed line-clamp-2" },
           "Elevated latency and gateway retries on US-East edge nodes. Traffic auto-failover in progress."
         ),
-        /* Incident Progress Steps */
+        /* Incident Lifecycle Progress Track (Segmented) */
         React.createElement(
           "div",
-          { className: "flex items-center justify-between text-[8px] font-mono text-zinc-500 pt-1 pb-0.5 border-t border-zinc-850" },
-          React.createElement("span", { className: "text-zinc-400 font-semibold" }, "1. Investigate ✓"),
-          React.createElement("span", { className: "text-zinc-400 font-semibold" }, "2. Identify ✓"),
-          React.createElement("span", { className: "text-amber-400 font-bold flex items-center gap-0.5" },
-            React.createElement("span", { className: "w-1 h-1 rounded-full bg-amber-400 animate-pulse" }),
-            "3. Monitor"
+          { className: "space-y-1.5 pt-1 border-t border-zinc-850" },
+          React.createElement(
+            "div",
+            { className: "flex items-center gap-1.5 h-1.5 w-full" },
+            React.createElement("div", { className: "flex-1 h-full rounded-full bg-amber-500" }),
+            React.createElement("div", { className: "flex-1 h-full rounded-full bg-amber-500" }),
+            React.createElement("div", { className: "flex-1 h-full rounded-full bg-amber-400 animate-pulse" }),
+            React.createElement("div", { className: "flex-1 h-full rounded-full bg-zinc-800" })
           ),
-          React.createElement("span", { className: "text-zinc-600" }, "4. Resolve")
+          React.createElement(
+            "div",
+            { className: "flex items-center justify-between text-[8px] font-mono" },
+            React.createElement(
+              "span",
+              { className: "text-amber-400 font-bold flex items-center gap-1" },
+              React.createElement("span", { className: "w-1 h-1 rounded-full bg-amber-400 animate-ping" }),
+              "Active: Monitoring Failover"
+            ),
+            React.createElement("span", { className: "text-zinc-500" }, "Stage 3 of 4")
+          )
         ),
         React.createElement(
           "div",
@@ -2730,30 +2733,30 @@ export default IncidentAlert;`;
         /* Simulated cursor preview box */
         React.createElement(
           "div",
-          { className: "relative h-10 w-full bg-zinc-950/70 border border-zinc-850/80 rounded-xs overflow-hidden flex items-center justify-between px-3 text-[9px] font-mono" },
+          { className: "relative h-8 w-full bg-zinc-900/60 rounded-xs overflow-hidden flex items-center justify-between px-3 text-[9px] font-mono border border-zinc-800/40" },
           /* Floating Cursor 1 */
           React.createElement(
             "div",
             {
               style: { color: tokens.primary },
-              className: "flex items-center gap-1 absolute left-3 top-2 animate-pulse",
+              className: "flex items-center gap-1 absolute left-3 top-1.5 animate-pulse",
             },
             React.createElement("span", null, "↖"),
             React.createElement(
               "span",
               {
                 style: { backgroundColor: tokens.primary, color: tokens.primaryForeground },
-                className: "px-1 py-0.2 rounded text-[7px] font-bold shadow-xs",
+                className: "px-1.5 py-0.5 rounded text-[8px] font-bold shadow-xs",
               },
-              "Azure"
+              "Azure (editing)"
             )
           ),
           /* Floating Cursor 2 */
           React.createElement(
             "div",
-            { className: "flex items-center gap-1 text-emerald-400 absolute right-4 bottom-2" },
+            { className: "flex items-center gap-1 text-emerald-400 absolute right-3 bottom-1.5" },
             React.createElement("span", null, "↖"),
-            React.createElement("span", { className: "px-1 py-0.2 rounded text-[7px] font-bold bg-emerald-500 text-zinc-950 shadow-xs" }, "Felix")
+            React.createElement("span", { className: "px-1.5 py-0.5 rounded text-[8px] font-bold bg-emerald-500 text-zinc-950 shadow-xs" }, "Felix")
           )
         )
       );
@@ -4172,26 +4175,26 @@ export default FloatingIslandNav;`;
             React.createElement(
               "div",
               { className: "absolute flex flex-col items-center justify-center text-center" },
-              React.createElement("span", { className: "text-base font-bold font-mono tracking-tight text-white leading-none" }, props.kpiValue || "99.98%"),
-              React.createElement("span", { className: "text-[8px] font-mono text-zinc-500 uppercase tracking-widest mt-0.5" }, "SLA Met")
+              React.createElement("span", { className: "text-lg font-bold font-mono tracking-tight text-white leading-none" }, props.kpiValue || "99.98%"),
+              React.createElement("span", { className: "text-[8px] font-mono text-zinc-400 uppercase tracking-widest mt-1 font-medium" }, "SLA Rate")
             )
           )
         ),
-        /* Telemetry breakdown */
+        /* Telemetry breakdown (Clean Minimal Divider, Anti-Slop) */
         React.createElement(
           "div",
-          { className: "grid grid-cols-3 gap-1 text-center pt-2 border-t border-zinc-850 text-[9px] font-mono" },
-          React.createElement("div", { className: "p-1 rounded bg-zinc-900/50 border border-zinc-850/80" },
-            React.createElement("div", { className: "text-zinc-500" }, "24h Avg"),
-            React.createElement("div", { className: "font-semibold text-white" }, "99.99%")
+          { className: "grid grid-cols-3 divide-x divide-zinc-800/80 text-center pt-2.5 border-t border-zinc-800/60 text-[9px] font-mono" },
+          React.createElement("div", { className: "px-1" },
+            React.createElement("div", { className: "text-zinc-500 text-[8px] uppercase tracking-wider" }, "24h Avg"),
+            React.createElement("div", { className: "font-semibold text-zinc-100 text-[11px] pt-0.5" }, "99.99%")
           ),
-          React.createElement("div", { className: "p-1 rounded bg-zinc-900/50 border border-zinc-850/80" },
-            React.createElement("div", { className: "text-zinc-500" }, "P99 Latency"),
-            React.createElement("div", { className: "font-semibold text-white" }, "12ms")
+          React.createElement("div", { className: "px-1" },
+            React.createElement("div", { className: "text-zinc-500 text-[8px] uppercase tracking-wider" }, "P99"),
+            React.createElement("div", { className: "font-semibold text-zinc-100 text-[11px] pt-0.5" }, "12ms")
           ),
-          React.createElement("div", { className: "p-1 rounded bg-zinc-900/50 border border-zinc-850/80" },
-            React.createElement("div", { className: "text-zinc-500" }, "Incidents"),
-            React.createElement("div", { className: "font-semibold text-emerald-400" }, "0")
+          React.createElement("div", { className: "px-1" },
+            React.createElement("div", { className: "text-zinc-500 text-[8px] uppercase tracking-wider" }, "Incidents"),
+            React.createElement("div", { className: "font-semibold text-emerald-400 text-[11px] pt-0.5" }, "0 Active")
           )
         )
       );

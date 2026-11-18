@@ -53,15 +53,15 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "api-key-vault":
         return "scale-[0.78] w-full max-w-[310px]";
       case "feature-grid":
-        return "scale-[0.82] max-w-[330px]";
+        return "scale-[0.88] max-w-[340px]";
       case "telemetry-donut-dial":
-        return "scale-[0.86] max-w-[305px]";
+        return "scale-[0.90] max-w-[310px]";
       case "virtual-card":
-        return "scale-[0.88] max-w-[295px]";
+        return "scale-[0.90] max-w-[300px]";
       case "system-incident-banner":
-        return "scale-[0.86] max-w-[310px]";
+        return "scale-[0.88] max-w-[315px]";
       case "multiplayer-presence":
-        return "scale-[0.88] max-w-[310px]";
+        return "scale-[0.92] max-w-[325px]";
       case "code-terminal":
       case "file-dropzone":
       case "cookie-banner":

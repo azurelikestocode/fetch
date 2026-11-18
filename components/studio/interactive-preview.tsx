@@ -1789,24 +1789,21 @@ function SystemIncidentCanvas({ props, tokens }: { props: Record<string, any>; t
         Elevated latency and gateway retries on US-East edge nodes. Traffic auto-failover in progress.
       </p>
 
-      {/* Interactive Lifecycle Stages */}
-      <div className="grid grid-cols-4 gap-1 py-1 border-y border-zinc-850 text-[9px] font-mono">
-        {stages.map((st, i) => (
-          <button
-            key={st}
-            type="button"
-            onClick={() => setActiveStage(i)}
-            className={`text-center py-1 rounded transition-colors cursor-pointer ${
-              i < activeStage
-                ? "bg-zinc-850 text-zinc-400"
-                : i === activeStage
-                ? "bg-amber-950/70 border border-amber-800 text-amber-400 font-bold"
-                : "text-zinc-600 hover:text-zinc-400"
-            }`}
-          >
-            {st} {i < activeStage ? "✓" : ""}
-          </button>
-        ))}
+      {/* Real-time Segmented Lifecycle Bar */}
+      <div className="space-y-1.5 py-1 border-y border-zinc-850">
+        <div className="flex items-center gap-1.5 h-1.5 w-full">
+          <div className="flex-1 h-full rounded-full bg-amber-500" />
+          <div className="flex-1 h-full rounded-full bg-amber-500" />
+          <div className="flex-1 h-full rounded-full bg-amber-400 animate-pulse" />
+          <div className="flex-1 h-full rounded-full bg-zinc-800" />
+        </div>
+        <div className="flex items-center justify-between text-[10px] font-mono">
+          <span className="text-amber-400 font-bold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+            Stage: Monitoring Failover
+          </span>
+          <span className="text-zinc-500">Stage 3 of 4</span>
+        </div>
       </div>
 
       <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-0.5">
@@ -2025,17 +2022,18 @@ function TelemetryDonutCanvas({ props, tokens }: { props: Record<string, any>; t
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 text-center pt-2 border-t border-zinc-850 text-xs font-mono">
-        <div className="p-1.5 rounded bg-zinc-900/60 border border-zinc-850">
-          <div className="text-[9px] text-zinc-500">24h Avg</div>
+      {/* Telemetry breakdown (Clean Minimal Divider, Anti-Slop) */}
+      <div className="grid grid-cols-3 divide-x divide-zinc-800/80 text-center pt-2.5 border-t border-zinc-800/60 text-xs font-mono">
+        <div className="px-1">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider">24h Avg</div>
           <div className="font-semibold text-white mt-0.5">{current.avg}</div>
         </div>
-        <div className="p-1.5 rounded bg-zinc-900/60 border border-zinc-850">
-          <div className="text-[9px] text-zinc-500">P99 Latency</div>
+        <div className="px-1">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider">P99 Latency</div>
           <div className="font-semibold text-white mt-0.5">{current.p99}</div>
         </div>
-        <div className="p-1.5 rounded bg-zinc-900/60 border border-zinc-850">
-          <div className="text-[9px] text-zinc-500">Incidents</div>
+        <div className="px-1">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider">Incidents</div>
           <div className="font-semibold text-emerald-400 mt-0.5">0 Active</div>
         </div>
       </div>
