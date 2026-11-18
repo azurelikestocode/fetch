@@ -23,7 +23,7 @@ export function CodeExportModal({
   templateName = "Component",
 }: CodeExportModalProps) {
   const { incrementExportCount } = useAuth();
-  const [activeTab, setActiveTab] = useState<"cli" | "tailwind" | "html" | "tokens" | "typescript">("cli");
+  const [activeTab, setActiveTab] = useState<"cli" | "tailwind" | "html" | "tokens" | "typescript" | "tw4" | "figma">("cli");
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
@@ -89,6 +89,40 @@ pnpm dlx fetch-ui add ${templateId}
 bunx fetch-ui add ${templateId}
 `;
 
+  const tailwindV4Block = `@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary, #6366f1);
+  --color-primary-foreground: var(--primary-foreground, #ffffff);
+  --color-surface: var(--surface, #18181b);
+  --color-border: var(--border, #27272a);
+  --radius-custom: var(--radius, 8px);
+  --font-display: var(--font-family, system-ui);
+}
+`;
+
+  const figmaTokensJson = JSON.stringify(
+    {
+      "version": "1.0.0",
+      "name": `${templateName} Design Tokens`,
+      "tokens": {
+        "color": {
+          "primary": { "value": "#6366f1", "type": "color" },
+          "surface": { "value": "#18181b", "type": "color" },
+          "border": { "value": "#27272a", "type": "color" }
+        },
+        "borderRadius": {
+          "default": { "value": "8px", "type": "borderRadius" }
+        },
+        "font": {
+          "family": { "value": "Inter, system-ui, sans-serif", "type": "fontFamilies" }
+        }
+      }
+    },
+    null,
+    2
+  );
+
   const getCode = () => {
     switch (activeTab) {
       case "cli":
@@ -101,6 +135,10 @@ bunx fetch-ui add ${templateId}
         return themeCss;
       case "typescript":
         return typeScriptDef;
+      case "tw4":
+        return tailwindV4Block;
+      case "figma":
+        return figmaTokensJson;
       default:
         return cliSnippet;
     }
@@ -166,11 +204,10 @@ bunx fetch-ui add ${templateId}
               role="tab"
               aria-selected={activeTab === "cli"}
               onClick={() => setActiveTab("cli")}
-              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
-                activeTab === "cli"
-                  ? "bg-zinc-800 text-emerald-400 border-zinc-700 font-semibold"
-                  : "border-transparent text-zinc-500 hover:text-zinc-300"
-              }`}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${activeTab === "cli"
+                ? "bg-zinc-800 text-emerald-400 border-zinc-700 font-semibold"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
             >
               <Terminal className="w-3 h-3 text-emerald-400" />
               <span>CLI Add</span>
@@ -179,11 +216,10 @@ bunx fetch-ui add ${templateId}
               role="tab"
               aria-selected={activeTab === "tailwind"}
               onClick={() => setActiveTab("tailwind")}
-              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${
-                activeTab === "tailwind"
-                  ? "bg-zinc-800 text-white border-zinc-700 font-medium"
-                  : "border-transparent text-zinc-500 hover:text-zinc-300"
-              }`}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${activeTab === "tailwind"
+                ? "bg-zinc-800 text-white border-zinc-700 font-medium"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
             >
               React (.tsx)
             </button>
@@ -191,11 +227,10 @@ bunx fetch-ui add ${templateId}
               role="tab"
               aria-selected={activeTab === "html"}
               onClick={() => setActiveTab("html")}
-              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${
-                activeTab === "html"
-                  ? "bg-zinc-800 text-white border-zinc-700 font-medium"
-                  : "border-transparent text-zinc-500 hover:text-zinc-300"
-              }`}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${activeTab === "html"
+                ? "bg-zinc-800 text-white border-zinc-700 font-medium"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
             >
               Raw HTML
             </button>
@@ -203,11 +238,10 @@ bunx fetch-ui add ${templateId}
               role="tab"
               aria-selected={activeTab === "tokens"}
               onClick={() => setActiveTab("tokens")}
-              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${
-                activeTab === "tokens"
-                  ? "bg-zinc-800 text-white border-zinc-700 font-medium"
-                  : "border-transparent text-zinc-500 hover:text-zinc-300"
-              }`}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${activeTab === "tokens"
+                ? "bg-zinc-800 text-white border-zinc-700 font-medium"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
             >
               CSS Variables
             </button>
@@ -215,13 +249,34 @@ bunx fetch-ui add ${templateId}
               role="tab"
               aria-selected={activeTab === "typescript"}
               onClick={() => setActiveTab("typescript")}
-              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${
-                activeTab === "typescript"
-                  ? "bg-zinc-800 text-white border-zinc-700 font-medium"
-                  : "border-transparent text-zinc-500 hover:text-zinc-300"
-              }`}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${activeTab === "typescript"
+                ? "bg-zinc-800 text-white border-zinc-700 font-medium"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
             >
               TypeScript
+            </button>
+            <button
+              role="tab"
+              aria-selected={activeTab === "tw4"}
+              onClick={() => setActiveTab("tw4")}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${activeTab === "tw4"
+                ? "bg-zinc-800 text-white border-zinc-700 font-medium"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+            >
+              Tailwind v4
+            </button>
+            <button
+              role="tab"
+              aria-selected={activeTab === "figma"}
+              onClick={() => setActiveTab("figma")}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer ${activeTab === "figma"
+                ? "bg-zinc-800 text-white border-zinc-700 font-medium"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                }`}
+            >
+              Figma Tokens
             </button>
           </div>
 

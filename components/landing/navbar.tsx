@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, ArrowRight, Github } from "lucide-react";
+import { Sparkles, ArrowRight, Github, Search } from "lucide-react";
+import { CommandPalette } from "../common/command-palette";
 
 export function Navbar() {
   const pathname = usePathname() || "";
@@ -52,6 +53,21 @@ export function Navbar() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("open-command-palette"));
+            }}
+            className="hidden sm:inline-flex items-center gap-2 h-8 px-2.5 rounded-xs border border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white hover:border-zinc-700 text-xs font-mono transition-colors cursor-pointer"
+            title="Search components (Ctrl+K)"
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Quick Search</span>
+            <kbd className="text-[10px] px-1 py-0.5 bg-zinc-950 border border-zinc-800 rounded-xs text-zinc-500">
+              ⌘K
+            </kbd>
+          </button>
+
           <a
             href="https://github.com/azurelikestocode/fetch"
             target="_blank"
@@ -71,6 +87,7 @@ export function Navbar() {
           </Link>
         </div>
       </div>
+      <CommandPalette />
     </header>
   );
 }

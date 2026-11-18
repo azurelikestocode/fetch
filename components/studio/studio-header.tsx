@@ -2,8 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Monitor, Tablet, Smartphone, Copy, Check } from "lucide-react";
+import { ArrowLeft, Monitor, Tablet, Smartphone, Copy, Check, Search } from "lucide-react";
 import { ComponentTemplate } from "../../lib/templates";
+import { CommandPalette } from "../common/command-palette";
 
 interface StudioHeaderProps {
   template: ComponentTemplate;
@@ -74,6 +75,21 @@ export function StudioHeader({
       {/* Right: Export / Copy Code */}
       <div className="flex items-center gap-2">
         <button
+          type="button"
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent("open-command-palette"));
+          }}
+          className="hidden sm:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-xs border border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white hover:border-zinc-700 text-xs font-mono transition-colors cursor-pointer"
+          title="Switch template (Ctrl+K)"
+        >
+          <Search className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">Switch</span>
+          <kbd className="text-[10px] px-1 py-0.5 bg-zinc-950 border border-zinc-800 rounded-xs text-zinc-500">
+            ⌘K
+          </kbd>
+        </button>
+
+        <button
           onClick={onOpenCode}
           className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-xs bg-[#fafafa] hover:bg-zinc-200 text-[#09090b] text-xs font-medium tracking-wide uppercase transition-colors cursor-pointer"
         >
@@ -81,6 +97,7 @@ export function StudioHeader({
           <span>{copied ? "Copied" : "Copy Code"}</span>
         </button>
       </div>
+      <CommandPalette />
     </header>
   );
 }
