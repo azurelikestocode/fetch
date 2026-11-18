@@ -9,7 +9,7 @@ export function EditorialHero() {
         {/* Release Pill */}
         <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm border border-zinc-800 bg-zinc-900/60 text-zinc-400 text-xs font-mono mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span>FETCH ARCHITECTURE — 2026</span>
+          <span>FETCH ARCHITECTURE • 2026</span>
         </div>
 
         {/* Crisp Monochromatic Editorial Headline */}

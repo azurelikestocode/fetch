@@ -11,7 +11,7 @@ export function Footer() {
           </div>
           <span className="font-semibold text-white">Fetch</span>
           <span className="text-xs text-zinc-500">
-            — Live-configurable UI components for web developers.
+            : Live-configurable UI components for web developers.
           </span>
         </div>
 

@@ -12,7 +12,7 @@ export function Hero() {
         {/* Release Tag */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6 animate-pulse">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Fetch v1.0 — Live Configurable Primitives</span>
+          <span>Fetch v1.0: Live Configurable Primitives</span>
         </div>
 
         {/* Hero Title & Subhead */}

@@ -3,7 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "../context/auth-context";
 
 export const metadata: Metadata = {
-  title: "Fetch — Live-Configurable UI Components",
+  title: "Fetch: Live-Configurable UI Components",
   description: "Visually tweak tokens, preview live components, and copy clean, accessible code into your Next.js and Tailwind projects.",
 };
 

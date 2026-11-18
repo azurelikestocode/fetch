@@ -187,7 +187,7 @@ bunx fetch-ui add ${templateId}
           <div className="flex items-center gap-2">
             <Code2 className="w-4 h-4 text-zinc-400" />
             <h2 id="export-dialog-title" className="text-xs font-mono font-semibold text-[#fafafa] uppercase tracking-wider">
-              Export Production Code — {templateName}
+              Export Production Code: {templateName}
             </h2>
           </div>
           <button

@@ -195,16 +195,15 @@ function ActionDockCanvas({ props, tokens }: { props: Record<string, any>; token
             style={
               isActive
                 ? {
-                    backgroundColor: tokens.primary,
-                    color: tokens.primaryForeground,
-                  }
+                  backgroundColor: tokens.primary,
+                  color: tokens.primaryForeground,
+                }
                 : {}
             }
-            className={`px-3.5 py-1 rounded-full text-xs font-medium font-mono transition-all cursor-pointer ${
-              isActive
+            className={`px-3.5 py-1 rounded-full text-xs font-medium font-mono transition-all cursor-pointer ${isActive
                 ? "shadow-sm scale-[1.04]"
                 : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
-            }`}
+              }`}
           >
             {item}
           </button>
@@ -237,17 +236,16 @@ function TabsCanvas({ props, tokens }: { props: Record<string, any>; tokens: The
             style={
               isActive
                 ? {
-                    backgroundColor: tokens.primary,
-                    color: tokens.primaryForeground,
-                    borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
-                  }
+                  backgroundColor: tokens.primary,
+                  color: tokens.primaryForeground,
+                  borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
+                }
                 : {
-                    borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
-                  }
+                  borderRadius: `${Math.max(2, tokens.radius - 2)}px`,
+                }
             }
-            className={`px-3 py-1.5 text-xs font-medium font-mono transition-all cursor-pointer ${
-              isActive ? "shadow-xs font-semibold" : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
-            }`}
+            className={`px-3 py-1.5 text-xs font-medium font-mono transition-all cursor-pointer ${isActive ? "shadow-xs font-semibold" : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+              }`}
           >
             {tab}
           </button>
@@ -286,9 +284,8 @@ function SwitchCanvas({ props, tokens }: { props: Record<string, any>; tokens: T
         className="w-10 h-5.5 p-0.5 transition-colors duration-200 ease-in-out shrink-0 cursor-pointer relative"
       >
         <div
-          className={`w-4.5 h-4.5 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-            isChecked ? "translate-x-4.5" : "translate-x-0"
-          }`}
+          className={`w-4.5 h-4.5 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${isChecked ? "translate-x-4.5" : "translate-x-0"
+            }`}
         />
       </div>
     </div>
@@ -316,9 +313,8 @@ function AccordionCanvas({ props, tokens }: { props: Record<string, any>; tokens
         </h4>
         <span
           style={{ color: tokens.primary }}
-          className={`text-xs font-mono font-bold ml-2 transition-transform duration-200 ${
-            isOpen ? "rotate-0" : "rotate-180"
-          }`}
+          className={`text-xs font-mono font-bold ml-2 transition-transform duration-200 ${isOpen ? "rotate-0" : "rotate-180"
+            }`}
         >
           ▲
         </span>
@@ -353,9 +349,8 @@ function RadioGroupCanvas({ props, tokens }: { props: Record<string, any>; token
               borderColor: isSelected ? tokens.primary : tokens.border,
               borderRadius: `${tokens.radius}px`,
             }}
-            className={`p-3.5 border flex items-center justify-between cursor-pointer transition-colors ${
-              isSelected ? "ring-1 ring-offset-0" : ""
-            }`}
+            className={`p-3.5 border flex items-center justify-between cursor-pointer transition-colors ${isSelected ? "ring-1 ring-offset-0" : ""
+              }`}
           >
             <div className="space-y-0.5">
               <div className="text-xs font-semibold text-white font-mono">{item.title}</div>
@@ -843,15 +838,14 @@ function SegmentPickerCanvas({ props, tokens }: { props: Record<string, any>; to
             style={
               isActive
                 ? {
-                    backgroundColor: tokens.primary,
-                    color: tokens.primaryForeground,
-                    borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
-                  }
+                  backgroundColor: tokens.primary,
+                  color: tokens.primaryForeground,
+                  borderRadius: `${Math.max(0, tokens.radius - 2)}px`,
+                }
                 : undefined
             }
-            className={`px-3 py-1.5 text-xs font-medium cursor-pointer transition-all ${
-              isActive ? "shadow-sm font-semibold" : "text-zinc-400 hover:text-white"
-            }`}
+            className={`px-3 py-1.5 text-xs font-medium cursor-pointer transition-all ${isActive ? "shadow-sm font-semibold" : "text-zinc-400 hover:text-white"
+              }`}
           >
             {opt}
           </button>
@@ -902,9 +896,8 @@ function SearchBarPopoverCanvas({ props, tokens }: { props: Record<string, any>;
                   ? { backgroundColor: `${tokens.primary}20`, color: tokens.primary, borderColor: `${tokens.primary}40` }
                   : undefined
               }
-              className={`px-2 py-0.5 text-[10px] font-mono rounded-xs border cursor-pointer transition-colors ${
-                !isChosen ? "border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white" : ""
-              }`}
+              className={`px-2 py-0.5 text-[10px] font-mono rounded-xs border cursor-pointer transition-colors ${!isChosen ? "border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white" : ""
+                }`}
             >
               {tag}
             </button>
@@ -1279,9 +1272,8 @@ function KbdShortcutStripCanvas({ props, tokens }: { props: Record<string, any>;
               setActiveKey(s.key);
               setTimeout(() => setActiveKey(null), 1000);
             }}
-            className={`flex items-center justify-between p-2 rounded-xs border text-xs cursor-pointer transition-all ${
-              activeKey === s.key ? "bg-zinc-800 border-zinc-600 scale-[1.02]" : "bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700"
-            }`}
+            className={`flex items-center justify-between p-2 rounded-xs border text-xs cursor-pointer transition-all ${activeKey === s.key ? "bg-zinc-800 border-zinc-600 scale-[1.02]" : "bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700"
+              }`}
           >
             <span className="text-zinc-300 font-normal">{s.desc}</span>
             <span
@@ -1436,9 +1428,8 @@ function MetricSparklineCanvas({ props, tokens }: { props: Record<string, any>; 
                   ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
                   : undefined
               }
-              className={`px-1.5 py-0.5 rounded-xs transition-colors cursor-pointer ${
-                timeframe !== tf ? "text-zinc-500 hover:text-white bg-zinc-900/60" : "font-bold"
-              }`}
+              className={`px-1.5 py-0.5 rounded-xs transition-colors cursor-pointer ${timeframe !== tf ? "text-zinc-500 hover:text-white bg-zinc-900/60" : "font-bold"
+                }`}
             >
               {tf}
             </button>
@@ -1604,9 +1595,8 @@ function FloatingGlassNavCanvas({ props, tokens }: { props: Record<string, any>;
                     ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
                     : undefined
                 }
-                className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
-                  isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white hover:bg-zinc-800/40"
-                }`}
+                className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${isActive ? "font-semibold shadow-xs" : "text-zinc-400 hover:text-white hover:bg-zinc-800/40"
+                  }`}
               >
                 {tab}
               </button>
@@ -1655,9 +1645,8 @@ function VirtualCardCanvas({ props, tokens }: { props: Record<string, any>; toke
   return (
     <div className="w-full max-w-[310px] space-y-3 select-none animate-fade-in">
       <div
-        className={`p-4 border rounded-2xl shadow-2xl space-y-4 text-white relative overflow-hidden transition-all duration-300 ${
-          isFrozen ? "opacity-60 saturate-50 border-red-900/60" : ""
-        }`}
+        className={`p-4 border rounded-2xl shadow-2xl space-y-4 text-white relative overflow-hidden transition-all duration-300 ${isFrozen ? "opacity-60 saturate-50 border-red-900/60" : ""
+          }`}
         style={{
           backgroundColor: tokens.surface,
           borderColor: isFrozen ? "#7f1d1d" : tokens.border,
@@ -1745,11 +1734,10 @@ function VirtualCardCanvas({ props, tokens }: { props: Record<string, any>; toke
         <button
           type="button"
           onClick={() => setIsFrozen(!isFrozen)}
-          className={`px-2.5 py-0.5 rounded-full border transition-all cursor-pointer ${
-            isFrozen
+          className={`px-2.5 py-0.5 rounded-full border transition-all cursor-pointer ${isFrozen
               ? "border-red-900 bg-red-950/80 text-red-400 font-bold"
               : "border-zinc-800 bg-zinc-900 hover:text-white"
-          }`}
+            }`}
         >
           {isFrozen ? "Card Frozen" : "Freeze Card"}
         </button>
@@ -1865,9 +1853,8 @@ function MultiplayerPresenceCanvas({ props, tokens }: { props: Record<string, an
                 type="button"
                 onClick={() => setFollowingId(isFollowed ? null : user.id)}
                 style={{ backgroundColor: user.color }}
-                className={`w-7 h-7 rounded-full border-2 border-zinc-950 text-white flex items-center justify-center text-[10px] font-mono font-bold transition-transform cursor-pointer hover:scale-110 relative ${
-                  isFollowed ? "ring-2 ring-white scale-105 z-10" : ""
-                }`}
+                className={`w-7 h-7 rounded-full border-2 border-zinc-950 text-white flex items-center justify-center text-[10px] font-mono font-bold transition-transform cursor-pointer hover:scale-110 relative ${isFollowed ? "ring-2 ring-white scale-105 z-10" : ""
+                  }`}
                 title={`${user.name} (${user.status}) - Click to follow`}
               >
                 {user.initials}
@@ -1974,9 +1961,8 @@ function TelemetryDonutCanvas({ props, tokens }: { props: Record<string, any>; t
                 ? { backgroundColor: tokens.primary, color: tokens.primaryForeground }
                 : undefined
             }
-            className={`flex-1 py-1 rounded transition-colors uppercase font-medium cursor-pointer ${
-              selectedMetric !== tab ? "text-zinc-400 hover:text-white" : "font-bold shadow-xs"
-            }`}
+            className={`flex-1 py-1 rounded transition-colors uppercase font-medium cursor-pointer ${selectedMetric !== tab ? "text-zinc-400 hover:text-white" : "font-bold shadow-xs"
+              }`}
           >
             {tab}
           </button>
