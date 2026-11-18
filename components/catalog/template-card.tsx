@@ -42,16 +42,19 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "radio-group":
       case "profile-card":
       case "metric-sparkline":
-      case "empty-state":
-      case "user-table-row":
+      case "model-picker-popover":
         return "scale-[0.68] max-w-[290px]";
       case "code-diff-viewer":
       case "deploy-pipeline-status":
       case "kanban-task-card":
+      case "ai-chat-bubble":
+      case "virtual-card":
         return "scale-[0.74] w-full max-w-[320px]";
       case "usage-quota-meter":
       case "ai-prompt-bar":
       case "telemetry-donut-dial":
+      case "api-key-vault":
+      case "system-incident-banner":
         return "scale-[0.78] w-full max-w-[310px]";
       case "code-terminal":
       case "file-dropzone":
@@ -59,10 +62,8 @@ export function TemplateCard({ template }: TemplateCardProps) {
       case "stat-card":
       case "stat-ring":
       case "search-bar-popover":
-      case "banner-alert":
-      case "segment-picker":
-      case "skeleton-loader":
-      case "slider-stepper":
+      case "multiplayer-presence":
+      case "otp-code-input":
         return "scale-[0.76] max-w-[300px]";
       case "audio-waveform-player":
         return "w-full max-w-[320px] scale-[0.88]";
