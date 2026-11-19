@@ -2,7 +2,7 @@
 
 > Real-time design token studio and architectural UI system catalog built with Next.js 15 Turbopack, React 19, and Tailwind CSS.
 
-**Live Demo:** [https://project-n1b5g.vercel.app](https://project-n1b5g.vercel.app)
+**Live Demo:** [https://fetch-studio.vercel.app](https://fetch-studio.vercel.app)
 
 Fetch UI is a developer-focused design studio that bridges token curation with interactive, high-reliability software components. Rather than offering basic primitive shapes, Fetch UI features 31 production-grade engineering blocks such as CI/CD deployment pipelines, specular fintech cards, cryptographic secret rotation modals, telemetry dials, and collaborative presence indicators.
 
